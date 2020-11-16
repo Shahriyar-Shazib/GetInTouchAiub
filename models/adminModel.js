@@ -12,6 +12,13 @@ module.exports ={
 			}
 		});
 	},
+	AddNotification:function(notify,callback){
+		var sql="INSERT INTO `adminnotice` values ('', '"+notify.userid+"' , '"+notify.subject+"' , '"+notify.body+"' , '"+notify.id+"')"
+		console.log(sql);
+		db.execute(sql, function(status){
+			callback(status);
+		});
+	},
 	getByIdUser: function(user,callback){
 		var sql="SELECT * FROM `user` WHERE id='"+user.id+"'";
 		db.getResults(sql,function (result){
@@ -57,18 +64,18 @@ module.exports ={
 
 	},
 	getAllUser: function(callback){
-		var sql = "select * from user";
+		var sql = "SELECT * FROM `generaluser`";
+		db.getResults(sql, function(results){
+			
+			callback(results);
+		});
+	},
+	getAllContentCont: function(callback){
+		var sql = "select * from contentcontrolmanager";
 		db.getResults(sql, function(results){
 			callback(results);
 		});
 
-	},
-	getAllContentCont: function(callback){
-		/*var sql = "select * from user";
-		db.getResults(sql, function(results){
-			callback(results);
-		});
-*/
 	},
 	getAllAccCont: function(callback){
 		var sql = "SELECT * FROM `accountcontrolmanager`";

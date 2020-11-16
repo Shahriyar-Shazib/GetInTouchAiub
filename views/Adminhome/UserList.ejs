@@ -103,7 +103,42 @@ https://templatemo.com/tm-553-xtra-blog
                 </div>                
             </div>            
             <div class="row tm-row">
-             
+                <div>
+                    <table border="1">
+                        <tr>
+                            <th>picture</th>
+                            <th>Id</th>
+                            <th>Acc Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>DoB</th>
+                            <th>Address</th>
+                            <th>User Type</th>
+                            <th>Action</th>
+                        </tr>
+                        <% for(var i=0; i< userlist.length; i++ ){ %>
+                        <tr>
+                            <td><%= userlist[i].profilepicture %></td>
+                                <td><%= userlist[i].id %></td>
+                                <td><%= userlist[i].guid %></td>
+                                <td><%= userlist[i].name %></td>
+                                <td><%= userlist[i].email %></td>
+                                <td><%= userlist[i].gender %></td>
+                                <td><%= userlist[i].dob %></td>
+                                <td><%= userlist[i].address %></td>
+                                <td><%= userlist[i].userstatus %></td>
+                               
+                                <td>
+                                    <a href="/Adminhome/NotificationAd/<%=userlist[i].guid%>">Notification</a> |
+                                    <a href="/Adminhome/Blockuser/<%=userlist[i].guid%>">Block</a> | 
+                                    <a href="/user/deleteuser/<%=userlist[i].guid%>">Delete</a>  
+                                </td>
+                            
+                            <% } %>
+                        </tr>
+                    </table>
+                </div>   
                              
             </div>            
             <footer class="row tm-row">

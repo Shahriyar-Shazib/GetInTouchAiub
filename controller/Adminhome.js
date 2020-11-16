@@ -24,12 +24,30 @@ router.get('/AccountControllerList', (req, res)=>{
 	   });
    
    })
+   router.post('/NotificationAd/:id', (req, res)=>{
+	//res.render('Adminhome/AccContList');
+	notify={
+		id: req.params.id,
+		userid: req.cookies['uname'],
+		subject: req.body.subject,
+		body: req.body.body
+	}
+	   userModel.AddNotification(notify,function(status){
+		   if(status){
+			res.redirect('/Adminhome/AccountControllerList');
+		   }else {
+			res.redirect('/Adminhome/AccountControllerList');
+		   }
+		   
+	   });
+   
+   })
 
    router.get('/ContentControllerList', (req, res)=>{
-	res.render('Adminhome/ContentContList');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
+	//res.render('Adminhome/ContentContList');
+	userModel.getAllContentCont(function(results){
+		res.render('Adminhome/ContentContList', {userlist: results});
+	});
    
    })
    router.get('/Adminprofile', (req, res)=>{
@@ -88,10 +106,10 @@ router.get('/AccountControllerList', (req, res)=>{
    })
 
 router.get('/userlist', (req, res)=>{
- res.render('Adminhome/UserList');
-	//userModel.getAll(function(results){
-		//res.render('/Adminhome/UserList', {userlist: results});
-	//});
+ //res.render('Adminhome/UserList');
+	userModel.getAllUser(function(results){
+		res.render('Adminhome/UserList', {userlist: results});
+	});
 
 });
 
