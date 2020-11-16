@@ -46,6 +46,20 @@ router.get('/AccountControllerList', (req, res)=>{
 	   //});
    
    })
+   router.get('/PendingPost', (req, res)=>{
+	res.render('Adminhome/PendingPostAd');
+	   //userModel.getAll(function(results){
+		   //res.render('/Adminhome/UserList', {userlist: results});
+	   //});
+   
+   })
+   router.get('/PendingSignup', (req, res)=>{
+	res.render('Adminhome/PendingSignUpAd');
+	   //userModel.getAll(function(results){
+		   //res.render('/Adminhome/UserList', {userlist: results});
+	   //});
+   
+   })
 
 router.get('/userlist', (req, res)=>{
  res.render('Adminhome/UserList');
