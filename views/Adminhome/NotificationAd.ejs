@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Notification</title>
+</head>
+<body>
+	<form method="post">
+		<fieldset>
+			<legend>Notify user</legend>
+			<table>
+				<tr>
+					<td>userid :</td>
+					<td><input type="text" name ="userid" value='<%=users.id%>'></td>
+				</tr>
+				<tr>
+					<td>username :</td>
+					<td><input type="text" name ="adminid" value='<%=users.userid%>'></td>
+				</tr>
+				<tr>
+					<td>subject :</td>
+					<td><input type="text" name ="subject" value=''></td>
+				</tr>
+				<tr>
+					<td>Body :</td>
+					<td><input type="text" name ="body" value=''></td>
+				</tr>
+			</table>
+			<div>
+				<h3>Are you sure?</h3>
+				<input type="submit" name="submit" value="Confirm">
+			</div>
+		</fieldset>
+	</form>
+</body>
+</html>

@@ -4,7 +4,7 @@ const router 	= express.Router();
 
 router.get('/', (req, res)=>{
 	
-	if(req.cookies['uname'] != null){
+	if(req.cookies['uname'] != null && req.session.type=="Admin"){
 		res.render('Adminhome/HomeAdmin');
 		console.log('uname');
 	}else{
@@ -18,10 +18,10 @@ router.post('/', (req, res)=>{
 	get.redirect('/Adminhome/userlist');
 })
 router.get('/AccountControllerList', (req, res)=>{
-	res.render('Adminhome/AccContList');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
+	//res.render('Adminhome/AccContList');
+	   userModel.getAllAccCont(function(results){
+		   res.render('Adminhome/AccContList', {userlist: results});
+	   });
    
    })
 
@@ -54,6 +54,32 @@ router.get('/AccountControllerList', (req, res)=>{
    
    })
    router.get('/PendingSignup', (req, res)=>{
+	res.render('Adminhome/PendingSignUpAd');
+	   //userModel.getAll(function(results){
+		   //res.render('/Adminhome/UserList', {userlist: results});
+	   //});
+   
+   })
+   router.get('/NotificationAd/:id', (req, res)=>{
+	 users ={
+		id: req.params.id,
+		userid: req.cookies['uname']
+	};
+	//res.render('Adminhome/PendingSignUpAd');
+	  // userModel.getByIdAccCont(user,function(results){
+		   res.render('Adminhome/NotificationAd', users);
+	  // });
+   
+   })
+   
+   router.get('/BlockAccCont', (req, res)=>{
+	res.render('Adminhome/PendingSignUpAd');
+	   //userModel.getAll(function(results){
+		   //res.render('/Adminhome/UserList', {userlist: results});
+	   //});
+   
+   })
+   router.get('/deleteAccCont', (req, res)=>{
 	res.render('Adminhome/PendingSignUpAd');
 	   //userModel.getAll(function(results){
 		   //res.render('/Adminhome/UserList', {userlist: results});

@@ -100,7 +100,41 @@ https://templatemo.com/tm-553-xtra-blog
                             <i class="fas fa-search tm-search-icon" aria-hidden="true"></i>
                         </button>                                
                     </form>
-                </div>                
+                </div> 
+                <div>
+                    <table border="1">
+                        <tr>
+                            <th>picture</th>
+                            <th>Id</th>
+                            <th>Acc Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>DoB</th>
+                            <th>Address</th>
+                            <th>Action</th>
+                        </tr>
+                        <% for(var i=0; i< userlist.length; i++ ){ %>
+                        <tr>
+                            <td><%= userlist[i].profilepicture %></td>
+                                <td><%= userlist[i].id %></td>
+                                <td><%= userlist[i].acid %></td>
+                                <td><%= userlist[i].name %></td>
+                                <td><%= userlist[i].email %></td>
+                                <td><%= userlist[i].gender %></td>
+                                <td><%= userlist[i].dob %></td>
+                                <td><%= userlist[i].address %></td>
+                               
+                                <td>
+                                    <a href="/Adminhome/NotificationAd/<%=userlist[i].acid%>">Notification</a> |
+                                    <a href="/Adminhome/BlockAccCont/<%=userlist[i].acid%>">Block</a> | 
+                                    <a href="/user/deleteAccCont/<%=userlist[i].acid%>">Delete</a>  
+                                </td>
+                            
+                            <% } %>
+                        </tr>
+                    </table>
+                </div>               
             </div>            
             <div class="row tm-row">
              

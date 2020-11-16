@@ -71,11 +71,12 @@ module.exports ={
 */
 	},
 	getAllAccCont: function(callback){
-		/*var sql = "select * from user";
+		var sql = "SELECT * FROM `accountcontrolmanager`";
 		db.getResults(sql, function(results){
+			
 			callback(results);
 		});
-*/
+
 	},
 	getAllAdmin: function(callback){
 		/*var sql = "select * from user";

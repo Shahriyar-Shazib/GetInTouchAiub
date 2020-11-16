@@ -17,9 +17,10 @@ router.post('/', (req, res)=>{
 		if(status){
 			console.log(req.body.username);
 			if((result[0].accountstatus== "Active") && (result[0].usertype=="Admin")){
+				req.session.type = result[0].usertype;
 				res.cookie('uname', req.body.username);
 				res.redirect('/Adminhome');
-				console.log(result[0].accountstatus);
+				//console.log(result[0].accountstatus);
 			}
 			//res.cookie('uname', req.body.username);
 			//res.redirect('/home');	
