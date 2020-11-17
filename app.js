@@ -25,7 +25,11 @@ app.use('/logout', logout);
 
 //route
 app.get('/', (req, res)=>{
-	res.send('Hello from express server');	
+	if(req.cookies['uname'] != null && req.session.type=="Admin"){
+		res.redirect('/Adminhome');
+	}else{
+		res.redirect('/login');
+	}	
 });
 
 //server startup

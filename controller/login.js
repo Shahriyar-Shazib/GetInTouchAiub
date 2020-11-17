@@ -1,5 +1,5 @@
 const express 	= require('express');
-const userModel	= require.main.require('./models/adminModel');
+const userModel	= require.main.require('./models/userModel');
 const router 	= express.Router();
 
 router.get('/', (req, res)=>{
@@ -16,7 +16,7 @@ router.post('/', (req, res)=>{
 	userModel.validate(user, function(result,status){
 		if(status){
 			console.log(req.body.username);
-			if((result[0].accountstatus== "Active") && (result[0].usertype=="Admin")){
+			if((result[0].accountstatus == "Active") && (result[0].usertype == "Admin")){
 				req.session.type = result[0].usertype;
 				res.cookie('uname', req.body.username);
 				res.redirect('/Adminhome');
