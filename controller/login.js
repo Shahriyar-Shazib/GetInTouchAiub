@@ -20,10 +20,11 @@ router.post('/', (req, res)=>{
 				req.session.type = result[0].usertype;
 				res.cookie('uname', req.body.username);
 				res.redirect('/Adminhome');
-				//console.log(result[0].accountstatus);
-			}
-			//res.cookie('uname', req.body.username);
-			//res.redirect('/home');	
+			}	
+		}else if((result[0].accountstatus == "Active") && (result[0].usertype == "Content Control Manager")){
+			req.session.type = result[0].usertype;
+			res.cookie('uname', req.body.username);
+			res.redirect('/contentcontroller');
 		}else{
 			res.redirect('/login');
 		}
