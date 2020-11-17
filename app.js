@@ -27,9 +27,11 @@ app.use('/logout', logout);
 app.get('/', (req, res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Admin"){
 		res.redirect('/Adminhome');
+	}else if(req.cookies['uname'] != null && req.session.type=="Admin"){
+		res.redirect('/ccmhome');
 	}else{
 		res.redirect('/login');
-	}	
+	}		
 });
 
 //server startup
