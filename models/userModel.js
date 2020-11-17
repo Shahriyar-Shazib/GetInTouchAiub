@@ -11,7 +11,14 @@ module.exports = {
 				callback(results,false);
 			}
 		});
-    },
+	},
+	getAllUser: function(callback){
+		var sql = "SELECT * FROM `generaluser`";
+		db.getResults(sql, function(results){
+			
+			callback(results);
+		});
+	},
     getByIdUser: function(user,callback){
 		var sql="SELECT * FROM `user` WHERE id='"+user.id+"'";
 		db.getResults(sql,function (result){
