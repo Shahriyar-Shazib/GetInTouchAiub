@@ -13,10 +13,7 @@ router.get('/', (req, res)=>{
 })
 
 
-router.post('/', (req, res)=>{
-	if (req.body.userlist=='userlist')
-	get.redirect('/Adminhome/userlist');
-})
+
 router.get('/AccountControllerList', (req, res)=>{
 	//res.render('Adminhome/AccContList');
 	   userModel.getAllAccCont(function(results){
@@ -26,6 +23,7 @@ router.get('/AccountControllerList', (req, res)=>{
    })
    router.post('/NotificationAd/:id', (req, res)=>{
 	//res.render('Adminhome/AccContList');
+
 	notify={
 		id: req.params.id,
 		userid: req.cookies['uname'],
@@ -33,10 +31,13 @@ router.get('/AccountControllerList', (req, res)=>{
 		body: req.body.body
 	}
 	   userModel.AddNotification(notify,function(status){
+		//userModel.validate( req.params.id,function(result)){
+		
+		//}
 		   if(status){
-			res.redirect('/Adminhome/AccountControllerList');
+			res.redirect('/Adminhome');
 		   }else {
-			res.redirect('/Adminhome/AccountControllerList');
+			res.redirect('/Adminhome');
 		   }
 		   
 	   });
@@ -47,6 +48,13 @@ router.get('/AccountControllerList', (req, res)=>{
 	//res.render('Adminhome/ContentContList');
 	userModel.getAllContentCont(function(results){
 		res.render('Adminhome/ContentContList', {userlist: results});
+	});
+   
+   })
+   router.get('/AdminList', (req, res)=>{
+	//res.render('Adminhome/ContentContList');
+	userModel.getAllAdmin(function(results){
+		res.render('Adminhome/AdminList', {userlist: results});
 	});
    
    })
@@ -104,9 +112,53 @@ router.get('/AccountControllerList', (req, res)=>{
 	   //});
    
    })
+   router.get('/Notification', (req, res)=>{
+	//res.render('Adminhome/Mynotification');
+	
+	   userModel.MyNotification(req.cookies['uname'],function(results){
+		   res.render('Adminhome/Mynotification', {userlist: results});
+	   });
+   
+   })
+   router.post('/Insert',(req,res)=>{
+	  var user={
+		   img:req.body.img,
+		   name: req.body.name,
+		   username: req.body.username,
+		   password: "",
+		   email:req.body.email,
+		   gender:req.body.gender,
+		   dob:req.body.dob,
+		   add:req.body.address,
+		   status: "Active"
+	   }
+	   if(req.body.type=="Admin"){
+		userModel.insertAdmin(user,function(results){
+			if (results){
+				usermodel.insertUser(user,function(status){
+					res.redirect('/Adminhome/AdminList')
+
+				})
+
+			}
+			//res.redirect('Adminhome/Mynotification', {userlist: results});
+		});
+
+	   }else if(req.body.type=="Account Control Manager"){
+
+	   }else if(req.body.type=="Content Control Manage"){
+
+	   }
+   })
+   router.get('/Insert', (req, res)=>{
+
+		   res.render('Adminhome/Insert');
+	  
+   })
+   
 
 router.get('/userlist', (req, res)=>{
- //res.render('Adminhome/UserList');
+ 
 	userModel.getAllUser(function(results){
 		res.render('Adminhome/UserList', {userlist: results});
 	});

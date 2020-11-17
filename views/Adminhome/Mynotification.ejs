@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,12 +108,32 @@ https://templatemo.com/tm-553-xtra-blog
                             <i class="fas fa-search tm-search-icon" aria-hidden="true"></i>
                         </button>                                
                     </form>
-                </div>
-                         
+                </div>                
             </div>            
             <div class="row tm-row">
-             
-                             
+                <% for(var i=0; i< userlist.length; i++ ){ %>
+                <article class="col-12 col-md-6 tm-post">
+                    <hr class="tm-hr-primary">
+                    <a href="post.html" class="effect-lily tm-post-link tm-pt-60">
+                        <div class="tm-post-link-inner">
+                                                       
+                        </div>
+                        <span class="position-absolute tm-new-badge">New</span>
+                        <h2 class="tm-pt-30 tm-color-primary tm-post-title"><%= userlist[i].subject%></h2>
+                    </a>                    
+                    <p class="tm-pt-30">
+                        <%= userlist[i].body%>
+                    </p>
+                    <div class="d-flex justify-content-between tm-pt-45">
+                       
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        
+                        <span> AdminID:  <%= userlist[i].adminid%> </span>
+                    </div>
+                </article>
+                <%}%>
             </div>            
             <footer class="row tm-row">
                 <hr class="col-12">

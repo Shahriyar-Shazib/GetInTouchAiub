@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Insert MAnagement</title>
+</head>
+<body>
+    <fieldset>
+	<form method="post">
+		
+			<legend>Insert MAnagement</legend>
+			<table>
+                <tr>
+					<td>image :</td>
+					<td><input type="file" name ="img" value=''placeholder="image"></td>
+                </tr>
+                <tr>
+					<td>Username :</td>
+					<td><input type="text" name ="username" value=''placeholder="userName"></td>
+                </tr>
+				<tr>
+					<td>Name :</td>
+					<td><input type="text" name ="name" value=''placeholder="Name"></td>
+                </tr>
+                <tr>
+					<td>Email :</td>
+					<td><input type="email" name ="email" value=''placeholder="Email"></td>
+                </tr>
+                
+				<tr>
+					<td>Gender :</td>
+					<td> <select name="gender" id=""placeholder="Gender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select></td>
+				</tr>
+				<tr>
+					<td>DOB :</td>
+					<td><input type="date" name ="dob" value=''></td>
+				</tr>
+				<tr>
+					<td>Address :</td>
+					<td><input style ="height: 50px;width: 170px;"type="text" name ="address" value=''placeholder="Address"></td>
+                </tr>
+                <tr>
+					<td>Type :</td>
+					<td> <select name="type" id=""placeholder="type">
+                        <option value="Admin">Admin</option>
+                        <option value="Account">Account Control Manager</option>
+                        <option value="Content Control Manager">Content Control Manage</option>
+                    </select></td>
+				</tr>
+			</table>
+			<div>
+				<h3>Are you sure?</h3>
+                <input type="submit" name="submit" value="Confirm">
+			</div>
+		
+    </form>
+    <button style ="margin-top: 20px;"class="btn btn-primary "onclick="location.href ='/Adminhome/AccountControllerList';"> 
+        Back
+    </button>
+</fieldset>
+</body>
+</html>

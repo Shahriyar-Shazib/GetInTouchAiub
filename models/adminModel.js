@@ -19,6 +19,15 @@ module.exports ={
 			callback(status);
 		});
 	},
+	MyNotification: function(id,callback){
+		var sql = "SELECT * FROM `adminnotice` where towhom='"+id+"'";
+		console.log(sql);
+		db.getResults(sql, function(results){
+			
+			callback(results);
+		});
+
+	},
 	getByIdUser: function(user,callback){
 		var sql="SELECT * FROM `user` WHERE id='"+user.id+"'";
 		db.getResults(sql,function (result){
@@ -52,7 +61,7 @@ module.exports ={
 		});*/
 
 	},
-	getByIdAdmin: function(user,callback){
+	/*getByIdAdmin: function(user,callback){
 		/*var sql="SELECT * FROM `user` WHERE id='"+user.id+"'";
 		db.getResults(sql,function (result){
 			//if(results.length > 0){
@@ -60,9 +69,9 @@ module.exports ={
 			//}else{
 			//	callback ()
 			//}
-		});*/
+		});
 
-	},
+	},*/
 	getAllUser: function(callback){
 		var sql = "SELECT * FROM `generaluser`";
 		db.getResults(sql, function(results){
@@ -86,16 +95,16 @@ module.exports ={
 
 	},
 	getAllAdmin: function(callback){
-		/*var sql = "select * from user";
+		var sql = "select * from admin";
 		db.getResults(sql, function(results){
 			callback(results);
 		});
-*/
+
 	},
 	insertUser: function(user, callback){
-		var sql = "insert into user VALUES ('', '"+user.username+"' , '"+user.password+"' , '"+user.type+"')";
+		var sql = "insert into user VALUES ('', '"+user.username+"' , '"+user.password+"' , '"+user.type+"','"+user.status+"')";
 		
-		//console.log(sql);
+		console.log(sql);
 
 		db.execute(sql, function(status){
 			callback(status);
@@ -120,17 +129,17 @@ module.exports ={
 		});*/
 	},
 	insertAdmin: function(user, callback){
-		/*var sql = "insert into user VALUES ('', '"+user.username+"' , '"+user.password+"' , '"+user.type+"')";
-		
-		//console.log(sql);
+		var sql = "insert into admin VALUES ('', '"+user.username+"' ,'"+user.name+"' , '"+user.email+"' , '"+user.gender+"', '"+user.dob+"' , '"+user.add+"' , '')";
+		console.log(sql);
 
 		db.execute(sql, function(status){
 			callback(status);
-		});*/
+		});
 	},
 	updateAdmin: function(user, callback){
 		var sql="UPDATE `user` SET `id`='"+user.id+"',`username`='"+user.username+"',`password`='"+user.password+"',`type`='"+user.type+"' WHERE `id`='"+user.id+"' "
 		db.execute(sql, function(status){
+			
 			callback(status);
 		});
 	},
