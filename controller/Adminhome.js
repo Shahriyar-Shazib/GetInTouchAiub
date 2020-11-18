@@ -1,8 +1,9 @@
 const express 	= require('express');
-const AdminModel = require.main.require('./models/adminModel');
-const accContModel = require.main.require('./models/accContModel');
-const contentcontModel = require.main.require('./models/contentcontModel');
-const userModel = require.main.require('./models/userModel');
+const AdminModel = require.main.require('./models/Admin/adminModel');
+const accContModel = require.main.require('./models/Admin/accContModel');
+const contentcontModel = require.main.require('./models/Admin/contentcontModel');
+const userModel = require.main.require('./models/Admin/userModel');
+const GuserModel = require.main.require('./models/Admin/GeneraluserModel');
 const router 	= express.Router();
 
 router.get('/', (req, res)=>{
@@ -19,7 +20,7 @@ router.get('/', (req, res)=>{
 
 router.get('/AccountControllerList', (req, res)=>{
 	//res.render('Adminhome/AccContList');
-	accContModel.getAllAccCont(function(results){
+	accContModel.getAllActiveAccCont(function(results){
 		   res.render('Adminhome/AccContList', {userlist: results});
 	   });
    
@@ -49,7 +50,7 @@ router.get('/AccountControllerList', (req, res)=>{
 
    router.get('/ContentControllerList', (req, res)=>{
 	//res.render('Adminhome/ContentContList');
-	contentcontModel.getAllContentCont(function(results){
+	contentcontModel.getAllActiveContentCont(function(results){
 		res.render('Adminhome/ContentContList', {userlist: results});
 	});
    
@@ -68,6 +69,7 @@ router.get('/AccountControllerList', (req, res)=>{
 	   //});
    
    })
+
    router.get('/editAccount', (req, res)=>{
 	res.render('Adminhome/editAccount');
 	   //userModel.getAll(function(results){
@@ -108,13 +110,78 @@ router.get('/AccountControllerList', (req, res)=>{
 	   //});
    
    })
-   router.get('/deleteAccCont', (req, res)=>{
-	res.render('Adminhome/PendingSignUpAd');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
+  
+
+   router.get('/deleteContentCont/:id', (req, res)=>{
+	//res.render('Adminhome/PendingSignUpAd');
+	users ={
+		id: req.params.id	
+	};
+	contentcontModel.DeleteContentCont(users ,function(results){
+		if (results)
+		{
+			userModel.deleteUser(users ,function(result){
+				if (result)
+				{
+					res.redirect('/Adminhome/ContentControllerList');
+				}
+				  
+			   });
+		
+		}
+		  
+	   });
+
+
    
    })
+
+   router.get('/deleteAccCont/:id', (req, res)=>{
+	//res.render('Adminhome/PendingSignUpAd');
+	users ={
+		id: req.params.id	
+	};
+	contentcontModel.DeleteContentCont(users ,function(results){
+		if (results)
+		{
+			userModel.deleteUser(users ,function(result){
+				if (result)
+				{
+					res.redirect('/Adminhome/AccountControllerList');
+				}
+				  
+			   });
+		
+		}
+		  
+	   });
+	})
+   
+
+	
+	router.get('/deleteuser/:id', (req, res)=>{
+		//res.render('Adminhome/PendingSignUpAd');
+		users ={
+			id: req.params.id	
+		};
+		GuserModel.deleteUser(users ,function(results){
+			if (results)
+			{
+				userModel.deleteUser(users ,function(status){
+					if (status)
+					{
+						res.redirect('/Adminhome/userlist');
+					}
+					  
+				   });
+			
+			}
+			  
+		   });
+		})
+	 
+		
+
    router.get('/Notification', (req, res)=>{
 	//res.render('Adminhome/Mynotification');
 	
@@ -133,24 +200,53 @@ router.get('/AccountControllerList', (req, res)=>{
 		   gender:req.body.gender,
 		   dob:req.body.dob,
 		   add:req.body.address,
+		   type: req.body.type,
 		   status: "Active"
 	   }
 	   if(req.body.type=="Admin"){
-		userModel.insertAdmin(user,function(results){
+		AdminModel.insertAdmin(user,function(results){
 			if (results){
-				usermodel.insertUser(user,function(status){
-					res.redirect('/Adminhome/AdminList')
-
+				userModel.insertUser(user,function(status){
+					if (status)
+					{
+						res.redirect('/Adminhome/AdminList');
+					}
 				})
 
-			}
-			//res.redirect('Adminhome/Mynotification', {userlist: results});
-		});
+				}
+			});
+		
 
 	   }else if(req.body.type=="Account Control Manager"){
 
-	   }else if(req.body.type=="Content Control Manage"){
+		accContModel.insertAccCont(user,function(results){
+			if (results){
+				userModel.insertUser(user,function(status){
+					if (status)
+					{
+						res.redirect('/Adminhome/AccountControllerList');
+					}
+				})
 
+				}
+			});
+
+	   }else if(req.body.type=="Content Control Manager"){
+
+		contentcontModel.insertContentCont(user,function(results){
+			if (results){
+				userModel.insertUser(user,function(status){
+					if (status)
+					{
+						res.redirect('/Adminhome/ContentControllerList');
+					}
+					
+
+				})
+
+				}
+			//res.redirect('Adminhome/Mynotification', {userlist: results});
+			});
 	   }
    })
    router.get('/Insert', (req, res)=>{
@@ -162,7 +258,7 @@ router.get('/AccountControllerList', (req, res)=>{
 
 router.get('/userlist', (req, res)=>{
  
-	userModel.getAllUser(function(results){
+	GuserModel.getAllActiveUser(function(results){
 		res.render('Adminhome/UserList', {userlist: results});
 	});
 

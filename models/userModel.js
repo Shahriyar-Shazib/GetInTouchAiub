@@ -12,37 +12,4 @@ module.exports = {
 			}
 		});
 	},
-	getAllUser: function(callback){
-		var sql = "SELECT * FROM `generaluser`";
-		db.getResults(sql, function(results){
-			
-			callback(results);
-		});
-	},
-    getByIdUser: function(user,callback){
-		var sql="SELECT * FROM `user` WHERE id='"+user.id+"'";
-		db.getResults(sql,function (result){
-			callback(result);
-		});
-
-    },
-    insertUser: function(user, callback){
-		var sql = "insert into user(userid, password, usertype) VALUES ('', '"+user.username+"' , '"+user.password+"' , '"+user.type+"')";
-		db.execute(sql, function(status){
-			callback(status);
-		});
-    },
-    updateUser: function(user, callback){
-		var sql="UPDATE `user` SET `userid`='"+user.username+"',`password`='"+user.password+"',`usertype`='"+user.type+"', accountstatus='"+user.accountstatus+"' WHERE `id`='"+user.id+"' ";
-		db.execute(sql, function(status){
-			callback(status);
-		});
-    },
-    deleteUser: function(user, callback){
-		var sql="DELETE FROM `user` WHERE id='"+user.id+"'";
-		console.log(sql);
-		db.execute(sql, function(status){
-			callback(status);
-		});
-	}
-};
+}

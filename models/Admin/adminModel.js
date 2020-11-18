@@ -1,4 +1,4 @@
-const db = require('./db');
+const db = require('../db');
 
 module.exports ={
 
@@ -71,23 +71,15 @@ module.exports ={
 			callback(status);
 		});*/
 	},
-	insertAccCont: function(user, callback){
-		/*var sql = "insert into user VALUES ('', '"+user.username+"' , '"+user.password+"' , '"+user.type+"')";
-		
-		//console.log(sql);
 
-		db.execute(sql, function(status){
-			callback(status);
-		});*/
-	},
 	insertAdmin: function(user, callback){
-		/*var sql = "insert into user VALUES ('', '"+user.username+"' , '"+user.password+"' , '"+user.type+"')";
+		var sql = "insert into admin VALUES ('', '"+user.username+"' , '"+user.name+"' , '"+user.email+"', '"+user.gender+"' , '"+user.dob+"' , '"+user.add+"','')";
 		
 		//console.log(sql);
 
 		db.execute(sql, function(status){
 			callback(status);
-		});*/
+		});
 	},
 	
 	blockUser: function(user,callback){
