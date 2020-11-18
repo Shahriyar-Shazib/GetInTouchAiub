@@ -4,6 +4,9 @@ const accContModel = require.main.require('./models/Admin/accContModel');
 const contentcontModel = require.main.require('./models/Admin/contentcontModel');
 const userModel = require.main.require('./models/Admin/userModel');
 const GuserModel = require.main.require('./models/Admin/GeneraluserModel');
+const postreqModel = require.main.require('./models/Admin/postReq');
+const regreqModel = require.main.require('./models/Admin/regreqModel');
+const post = require.main.require('./models/Admin/post');
 const router 	= express.Router();
 
 router.get('/', (req, res)=>{
@@ -17,7 +20,7 @@ router.get('/', (req, res)=>{
 })
 
 
-
+////
 router.get('/AccountControllerList', (req, res)=>{
 	//res.render('Adminhome/AccContList');
 	accContModel.getAllActiveAccCont(function(results){
@@ -78,19 +81,79 @@ router.get('/AccountControllerList', (req, res)=>{
    
    })
    router.get('/PendingPost', (req, res)=>{
-	res.render('Adminhome/PendingPostAd');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
+	//res.render('Adminhome/PendingPostAd');
+	postreqModel.getAllpostreq(function(results){
+		   res.render('Adminhome/PendingPostAd', {userlist: results});
+	   });
    
    })
+   router.get('/ApprovePostreq/:id', (req, res)=>{
+	posts={
+		id: req.params.id,	
+	}
+	
+	postreqModel.getpostreqbyID(posts,function(results){
+		if (results.length>0){
+			//console.log(results[0]);
+			post.insertpost(results[0],req.cookies['uname'],function(status){
+				if(status){
+					postreqModel.deletePost(posts,function(status){
+						if(status){
+							res.redirect('/Adminhome/PendingPost'); 	
+						}
+						
+					})
+					
+				}
+			})
+		}
+		  
+	   });
+   
+   })
+
+   router.get('/RemovePostreq/:id', (req, res)=>{
+	posts={
+		id: req.params.id,	
+	}
+	postreqModel.deletePost(posts,function(status){
+		if(status){
+			res.redirect('/Adminhome/PendingPost'); 	
+		}
+		
+	})
+})
    router.get('/PendingSignup', (req, res)=>{
-	res.render('Adminhome/PendingSignUpAd');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
+	   regreqModel.getAllregreq(function(results){
+		   res.render('Adminhome/PendingSignUpAd', {userlist: results});
+	   });
    
    })
+
+   router.get('/approvegureq/:id', (req, res)=>{
+	Guser={
+		id: req.params.id,	
+	}
+	
+	regreqModel.getregreqbyID(Guser,function(results){
+		if (results.length>0){
+			//console.log(results[0]);
+			GuserModel.insertGU(results[0],function(status){
+				if(status){
+					regreqModel.RemoveregReq(Guser,function(status){
+						if(status){
+							res.redirect('/Adminhome/PendingSignup'); 	
+						}
+						
+					})
+					
+				}
+			})
+		}
+		  
+	   });
+   
+   })   
    router.get('/NotificationAd/:id', (req, res)=>{
 	 users ={
 		id: req.params.id,
@@ -190,6 +253,14 @@ router.get('/AccountControllerList', (req, res)=>{
 	   });
    
    })
+   /*router.get('/post', (req, res)=>{
+	//res.render('Adminhome/Mynotification');
+	
+	   AdminModel.MyNotification(req.cookies['uname'],function(results){
+		   res.render('Adminhome/Mynotification', {userlist: results});
+	   });
+   
+   })*/
    router.post('/Insert',(req,res)=>{
 	  var user={
 		   img:req.body.img,

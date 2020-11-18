@@ -17,5 +17,15 @@ module.exports = {
 		db.execute(sql, function(status){
 			callback(status);
 		});
-	}
+    },
+    insertGU: function(Guser,callback){
+        var sql = "INSERT INTO `generaluser` Values ('','"+Guser.guid+"','"+Guser.name+"','"+Guser.email+"','"+Guser.gender+"','"+Guser.dob+"','"+Guser.address+"','"+Guser.profilepicture+"','"+Guser.userstatus+"','Active')";
+
+		db.execute(sql, function(results){
+			
+			callback(results);
+		});
+    },
+
+    
 };
