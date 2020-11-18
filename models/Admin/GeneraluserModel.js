@@ -26,6 +26,13 @@ module.exports = {
 			callback(results);
 		});
     },
+    BlockGU: function(Guser,callback){
+		var sql="UPDATE `generaluser` SET accountstatus='Blocked' WHERE guid='"+Guser.id+"'";
+		console.log(sql);
+		db.execute(sql, function(status){
+			callback(status);
+		});
+	}
 
     
 };
