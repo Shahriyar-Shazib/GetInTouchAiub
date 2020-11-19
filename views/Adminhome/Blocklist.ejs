@@ -30,7 +30,25 @@
                             <th>User Type</th>
                             <th>Action</th>
                         </tr>
-                        
+                        <% for(var i=0; i< Gusr.length; i++ ){ %>
+                            <tr>
+                                <td><%= Gusr[i].profilepicture %></td>
+                                   
+                                    <td><%= Gusr[i].guid %></td>
+                                    <td><%= Gusr[i].name %></td>
+                                    <td><%= Gusr[i].email %></td>
+                                    <td><%= Gusr[i].gender %></td>
+                                    <td><%= Gusr[i].dob %></td>
+                                    <td><%= Gusr[i].address %></td>
+                                    <td><%= Gusr[i].userstatus %></td>
+                                   
+                                    <td>
+                                        <a href="/Adminhome/unBlockuser/<%=Gusr[i].guid%>">UnBlock</a> | 
+                                        <a style="color: red;" href="/Adminhome/deleteuser/<%=Gusr[i].guid%>">Remove Permanently</a>  
+                                    </td>
+                                
+                                <% } %>
+                            </tr>
                     </table>
                 </div>   
                              
@@ -45,17 +63,34 @@
                     <table border="1">
                         <tr>
                             <th>picture</th>
-                            
+                           
                             <th>Acc Id</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Gender</th>
                             <th>DoB</th>
                             <th>Address</th>
-                            <th>User Type</th>
                             <th>Action</th>
                         </tr>
-                        
+                        <% for(var i=0; i< AC.length; i++ ){ %>
+                            <tr>
+                                <td><%= AC[i].profilepicture %></td>
+                                    
+                                    <td><%= AC[i].acid %></td>
+                                    <td><%= AC[i].name %></td>
+                                    <td><%= AC[i].email %></td>
+                                    <td><%= AC[i].gender %></td>
+                                    <td><%= AC[i].dob %></td>
+                                    <td><%= AC[i].address %></td>
+                                   
+                                    <td>
+                                        
+                                        <a href="/Adminhome/unBlockAccCont/<%=AC[i].acid%>">UnBlock</a> | 
+                                        <a  style="color: red;" href="/Adminhome/deleteAccCont/<%=AC[i].acid%>">Remove Permanently</a>  
+                                    </td>
+                                
+                                <% } %>
+                            </tr>
                     </table>
                 </div>   
                              
@@ -75,10 +110,27 @@
                             <th>Gender</th>
                             <th>DoB</th>
                             <th>Address</th>
-                            <th>User Type</th>
+                            
                             <th>Action</th>
                         </tr>
-                        
+                        <% for(var i=0; i< CC.length; i++ ){ %>
+                            <tr>
+                                <td><%= CC[i].profilepicture %></td>
+                                    
+                                    <td><%= CC[i].ccid %></td>
+                                    <td><%= CC[i].name %></td>
+                                    <td><%= CC[i].email %></td>
+                                    <td><%= CC[i].gender %></td>
+                                    <td><%= CC[i].dob %></td>
+                                    <td><%= CC[i].address %></td>
+                                   
+                                    <td>
+                                      
+                                        <a href="/Adminhome/unBlockAccCont/<%=CC[i].ccid%>">UnBlock</a> | 
+                                        <a style="color: red;" href="/Adminhome/deleteAccCont/<%=CC[i].ccid%>">Remove Premanently</a>  
+                                    </td>
+                                
+                                <% } %>
                     </table>
                 </div>   
                              

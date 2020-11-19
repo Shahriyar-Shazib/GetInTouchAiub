@@ -1,3 +1,4 @@
+const { static } = require('express');
 const express 	= require('express');
 const AdminModel = require.main.require('./models/Admin/adminModel');
 const accContModel = require.main.require('./models/Admin/accContModel');
@@ -91,7 +92,22 @@ router.get('/AccountControllerList', (req, res)=>{
 	})
    
 
-
+	router.get('/unBlockAccCont/:id', (req, res)=>{
+		AC ={
+			id: req.params.id	
+		};
+	
+		accContModel.unBlockAC( AC,function(results){
+			if(results){
+				userModel.unBlockUser( AC,function(result){
+				if(result){
+					res.redirect('/Adminhome/Blocklist');
+				}
+				})
+			}
+		   });
+	   
+	   })
  
 ///////Content Controller 
 
@@ -136,7 +152,22 @@ router.get('/AccountControllerList', (req, res)=>{
 	   });
    
    })
+   router.get('/unBlockAccCont/:id', (req, res)=>{
+	CC ={
+		id: req.params.id	
+	};
 
+	contentcontModel.unBlockCC( CC,function(results){
+		if(results){
+			userModel.unBlockUser( CC,function(result){
+			if(result){
+				res.redirect('/Adminhome/Blocklist');
+			}
+			})
+		}
+	   });
+   
+   })
 
    /////////////General User
 
@@ -181,6 +212,24 @@ router.get('/AccountControllerList', (req, res)=>{
 		   });
 	   
 	   })
+
+	   router.get('/unBlockuser/:id', (req, res)=>{
+		GU ={
+			id: req.params.id	
+		};
+	
+		GuserModel.unBlockGU( GU,function(results){
+			if(results){
+				userModel.unBlockUser( GU,function(result){
+				if(result){
+					res.redirect('/Adminhome/Blocklist');
+				}
+				})
+			}
+		   });
+	   
+	   })
+	
 
      //////Notification
 
@@ -385,14 +434,22 @@ router.get('/AccountControllerList', (req, res)=>{
 	  
    })
    
- /*  router.get('/Blocklist', (req, res)=>{
-		var user={};
-		var AC={};
-	AdminModel.GetAllblockUser(function(GU,AC,CC){
-		res.render('Adminhome/Blocklist');
+   router.get('/Blocklist', (req, res)=>{
+	
+	GuserModel.GetAllblockGU(function(results){
+		accContModel.GetAllblockAC(function(result){
+			contentcontModel.GetAllblockCC(function(resul){
+				//console.log (results,result,resul);
+				res.render('Adminhome/Blocklist',{Gusr:results,AC: result,CC:resul});
+			})
+		})
 	})
 	
+	
+	//console.log (GU);
+	//
+	
 
-})*/
+})
 
 module.exports = router;

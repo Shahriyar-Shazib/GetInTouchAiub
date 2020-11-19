@@ -31,5 +31,18 @@ module.exports ={
 		db.execute(sql, function(status){
 			callback(status);
 		});
-	}
+	},
+	GetAllblockCC: function(callback){
+		var sql = "select * from contentcontrolmanager Where accountstatus='Blocked'";
+		db.getResults(sql, function(results){
+			callback(results);
+		});
+	},
+	unBlockCC: function(CC,callback){
+		var sql="UPDATE `contentcontrolmanager` SET accountstatus='Active' WHERE ccid='"+CC.id+"'";
+		console.log(sql);
+		db.execute(sql, function(status){
+			callback(status);
+		});
+	},
 }
