@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetInTouchAiub</title>
+</head>
+<body>
+    <%- include('../menu.ejs') %>
+    <div class="container-fluid">
+        <main class="tm-main">       
+            <div class="row tm-row announcement__header">
+                <h1>Edit Announcement:</h1>
+            </div>
+            <form method="post">
+                <div class="row tm-row tm-row-post">
+                    <hr class="tm-hr-primary tm-hr-primary-post">
+                    <h3>Subject</h3>
+                    <input class="form-control tm-search-input" name="subject" type="text" value="<%= announcement.subject%>">
+                    <div class="row tm-row tm-row-post"><pre> </pre></div>  
+                    
+                    <h3>Body</h3>
+                    <textarea class="form-control tm-search-input tm-search-input-body" name="body" type="textarea"><%= announcement.body%></textarea>
+                </div>
+                <div class="row tm-row tm-mt-100 tm-mb-75">
+                    <div class="tm-prev-next-wrapper">
+                        <input type="submit" name="submit" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20 announcement__btn__update" value="Update">
+                    </div>               
+                </div>    
+            </form>  
+            <footer class="row tm-row">
+                <hr class="col-12">             
+            </footer>
+            
+        </main>
+    </div>
+</body>
+</html>
