@@ -10,9 +10,9 @@ module.exports = {
 
     },
     update: function(contribution, callback){
-		var sql="UPDATE `contribution` set postapproved=? , postdeclined=? WHERE ccid=?";
+		var sql="UPDATE `contribution` set postapproved=? , postdeclined=?, announcements=? WHERE ccid=?";
 		//console.log(sql);
-		db.execute(sql, [contribution.postapproved, contribution.postdeclined, contribution.ccid], function(status){
+		db.execute(sql, [contribution.postapproved, contribution.postdeclined, contribution.announcements, contribution.ccid], function(status){
 			callback(status);
 		});
 	},
