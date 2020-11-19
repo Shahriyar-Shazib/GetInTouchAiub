@@ -13,8 +13,11 @@ const router 	= express.Router();
 router.get('/', (req, res)=>{
 	
 	if(req.cookies['uname'] != null && req.session.type=="Admin"){
-		res.render('Adminhome/HomeAdmin');
-		console.log('uname');
+		
+		post.getAllpost(function(results){
+			res.render('Adminhome/HomeAdmin',{post:results});
+		});
+		
 	}else{
 		res.redirect('/login');
 	}
@@ -31,19 +34,33 @@ router.get('/AdminList', (req, res)=>{
    
    })
    router.get('/Adminprofile', (req, res)=>{
-	res.render('Adminhome/AdminProfile');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
+	//res.render('Adminhome/AdminProfile'{user:});
+	   AdminModel.getByIdAdmin(req.cookies['uname'],function(results){
+		   res.render('Adminhome/AdminProfile', {userlist: results});
+		   //console.log(results);
+	   });
    
    })
    router.get('/editAccount', (req, res)=>{
-	res.render('Adminhome/editAccount');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
+	   AdminModel.getByIdAdmin(req.cookies['uname'],function(results){
+		   res.render('Adminhome/EditAd', {userlist: results});
+	   });
    
    })
+   router.post('/editAccount', (req, res)=>{
+	   admin={
+		   adminid: req.body.username,
+		   name:req.body.name,
+		   email: req.body.email,
+		   gender:req.body.gender,
+		   dob: req.body.dob,
+		   address:req.body.address,
+	   }
+	AdminModel.updateAdmin(admin,function(results){
+		res.redirect('/Adminhome/Adminprofile');
+	});
+
+})
     
 /////Account Controller
 router.get('/AccountControllerList', (req, res)=>{
@@ -367,14 +384,32 @@ router.get('/AccountControllerList', (req, res)=>{
 })
    
 
-   /*router.get('/post', (req, res)=>{
+   router.get('/post', (req, res)=>{
 	//res.render('Adminhome/Mynotification');
 	
-	   AdminModel.MyNotification(req.cookies['uname'],function(results){
-		   res.render('Adminhome/Mynotification', {userlist: results});
+	   post.getAllpostAd(function(results){
+		post.getAllpost(function(result){
+		   
+			res.render('Adminhome/post',{post:results, gpost:result });
+		});
+	
 	   });
    
-   })*/
+   })
+   router.post('/post', (req, res)=>{
+	pst={
+		adid:req.cookies['uname'],
+		text:req.body.post	
+
+	}
+	console.log(req.cookies['uname'])
+	   post.postadmin(pst,function(results){
+		if(results){
+			res.redirect('/Adminhome/post');
+		}
+	   });
+   
+   })
    router.post('/Insert',(req,res)=>{
 	  var user={
 		   img:req.body.img,

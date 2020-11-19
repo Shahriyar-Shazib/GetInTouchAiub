@@ -30,26 +30,16 @@ module.exports ={
 		});*/
 
 	},
-	getByIdContentCont: function(user,callback){
-		/*var sql="SELECT * FROM `user` WHERE id='"+user.id+"'";
-		db.getResults(sql,function (result){
-			//if(results.length > 0){
-				callback(result);
-			//}else{
-			//	callback ()
-			//}
-		});*/
 
-	},
 	getByIdAdmin: function(user,callback){
-		/*var sql="SELECT * FROM `user` WHERE id='"+user.id+"'";
+		var sql="SELECT * FROM `admin` WHERE adminid='"+user+"'";
 		db.getResults(sql,function (result){
-			//if(results.length > 0){
+			if(result.length > 0){
 				callback(result);
-			//}else{
-			//	callback ()
-			//}
-		});*/
+			}else{
+				callback ()
+			}
+		});
 
 	},
 
@@ -81,7 +71,13 @@ module.exports ={
 			callback(status);
 		});
 	},
-	
+	updateAdmin:function(user, callback){
+		var sql = "UPDATE `admin` SET `name`='"+user.name+"',`email`='"+user.email+"',`gender`='"+user.gnder+"',`dob`='"+user.dob+"',`address`='"+user.address+"' WHERE `adminid`='"+user.adminid+"'";
+
+		db.execute(sql, function(status){
+			callback(status);
+		});
+	},
 	blockUser: function(user,callback){
 	/*	var sql="UPDATE `user` SET `id`='"+user.id+"',`username`='"+user.username+"',`password`='"+user.password+"',`type`='"+user.type+"' WHERE `id`='"+user.id+"' "
 		db.execute(sql, function(status){

@@ -7,7 +7,28 @@ module.exports = {
 			
 			callback(results);
 		});
-    },
+	},
+	getAllpost: function(callback){
+		var sql = "SELECT * FROM `gupost`";
+		db.getResults(sql, function(results){
+			
+			callback(results);
+		});
+	},
+	getAllpostAd: function(callback){
+		var sql = "SELECT * FROM `adminpost`";
+		db.getResults(sql, function(results){
+			
+			callback(results);
+		});
+	},
+	postadmin: function(post,callback){
+		var sql = "INSERT INTO `adminpost` Values ('','"+post.adid+"','"+post.text+"','')";
+		db.execute(sql, function(results){
+			
+			callback(results);
+		});
+	},
     /*getAllpostreq: function(callback){
 		var sql = "SELECT * FROM `gupostrequest`";
 		db.getResults(sql, function(results){
