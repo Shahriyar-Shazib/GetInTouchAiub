@@ -13,8 +13,11 @@ const router 	= express.Router();
 router.get('/', (req, res)=>{
 	
 	if(req.cookies['uname'] != null && req.session.type=="Admin"){
-		res.render('Adminhome/HomeAdmin');
-		console.log('uname');
+		
+		post.getAllpost(function(results){
+			res.render('Adminhome/HomeAdmin',{post:results});
+		});
+		
 	}else{
 		res.redirect('/login');
 	}
@@ -384,8 +387,26 @@ router.get('/AccountControllerList', (req, res)=>{
    router.get('/post', (req, res)=>{
 	//res.render('Adminhome/Mynotification');
 	
-	   post.getAllpost(function(results){
-		   res.render('Adminhome/post',{post:results});
+	   post.getAllpostAd(function(results){
+		post.getAllpost(function(result){
+		   
+			res.render('Adminhome/post',{post:results, gpost:result });
+		});
+	
+	   });
+   
+   })
+   router.post('/post', (req, res)=>{
+	pst={
+		adid:req.cookies['uname'],
+		text:req.body.post	
+
+	}
+	console.log(req.cookies['uname'])
+	   post.postadmin(pst,function(results){
+		if(results){
+			res.redirect('/Adminhome/post');
+		}
 	   });
    
    })
