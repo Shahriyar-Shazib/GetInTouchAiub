@@ -31,19 +31,33 @@ router.get('/AdminList', (req, res)=>{
    
    })
    router.get('/Adminprofile', (req, res)=>{
-	res.render('Adminhome/AdminProfile');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
+	//res.render('Adminhome/AdminProfile'{user:});
+	   AdminModel.getByIdAdmin(req.cookies['uname'],function(results){
+		   res.render('Adminhome/AdminProfile', {userlist: results});
+		   //console.log(results);
+	   });
    
    })
    router.get('/editAccount', (req, res)=>{
-	res.render('Adminhome/editAccount');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
+	   AdminModel.getByIdAdmin(req.cookies['uname'],function(results){
+		   res.render('Adminhome/EditAd', {userlist: results});
+	   });
    
    })
+   router.post('/editAccount', (req, res)=>{
+	   admin={
+		   adminid: req.body.username,
+		   name:req.body.name,
+		   email: req.body.email,
+		   gender:req.body.gender,
+		   dob: req.body.dob,
+		   address:req.body.address,
+	   }
+	AdminModel.updateAdmin(admin,function(results){
+		res.redirect('/Adminhome/Adminprofile');
+	});
+
+})
     
 /////Account Controller
 router.get('/AccountControllerList', (req, res)=>{
@@ -367,14 +381,14 @@ router.get('/AccountControllerList', (req, res)=>{
 })
    
 
-   /*router.get('/post', (req, res)=>{
+   router.get('/post', (req, res)=>{
 	//res.render('Adminhome/Mynotification');
 	
-	   AdminModel.MyNotification(req.cookies['uname'],function(results){
-		   res.render('Adminhome/Mynotification', {userlist: results});
+	   post.getAllpost(function(results){
+		   res.render('Adminhome/post',{post:results});
 	   });
    
-   })*/
+   })
    router.post('/Insert',(req,res)=>{
 	  var user={
 		   img:req.body.img,

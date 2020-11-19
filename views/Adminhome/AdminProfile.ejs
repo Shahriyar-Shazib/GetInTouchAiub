@@ -37,8 +37,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<a class="cd-nav-trigger" href=""> Menu <span aria-hidden="true"></span> </a>
 					<ul>
 						<li><a href="/Adminhome" class=""><span>Home</span></a></li>
-						<li><a href="/Adminhome/editAccount" class=""><span>Edit</span></a></li>
-						
+						<li><a href="/Adminhome/editAccount" ><span>Edit</span></a></li>
+						<li><a href="/Adminhome" ><span>Change_password</span></a></li>
 					
 					</ul> 
 					<span aria-hidden="true" class="stretchy-nav-bg"></span>
@@ -49,8 +49,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<div class="col-md-6 w3-banner-grid-left">
 				<div class="w3-banner-img">
 					<img src="/assets/images/ban661.jpg" alt="img">
-					<h3 class="test">Chris Adam</h3>
-					<p class="test" >Graphic designer</p>
+					<h3 class="test"><%= userlist[0].name%></h3>
+					<p class="test" >Admin</p>
 				</div>
 			</div>
 			<!--<div class="col-md-6 w3-banner-grid-right">
@@ -63,19 +63,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								<li>
 									<ul class="agileits-address-text ">
 										<li class="agile-it-adress-left"><b>USER ID</b></li>
-										<li><span>:</span>shazib1</li>
+										<li><span>:</span><%= userlist[0].adminid%></li>
 									</ul>
 								</li>
 								<li>
 									<ul class="agileits-address-text ">
 										<li class="agile-it-adress-left"><b>NAME</b></li>
-										<li><span>:</span>Shahriyar Shazib</li>
+										<li><span>:</span><%= userlist[0].name%></li>
 									</ul>
 								</li>
 								<li>
 									<ul class="agileits-address-text ">
 										<li class="agile-it-adress-left"><b>D.O.B</b></li>
-										<li><span>:</span>21-08-1987</li>
+										<li><span>:</span><%= userlist[0].dob%></li>
 									</ul>
 								</li>
 								<li>
@@ -87,20 +87,17 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								<li>
 									<ul class="agileits-address-text">
 										<li class="agile-it-adress-left"><b>ADDRESS</b></li>
-										<li><span>:</span>3030 New York, NY, USA</li>
+										<li><span>:</span><%= userlist[0].address%></li>
 									</ul>
 								</li>
 								<li>
 									<ul class="agileits-address-text">
 										<li class="agile-it-adress-left"><b>E-MAIL</b></li>
-										<li><span>:</span><a href="mailto:example@mail.com"> info@example.com</a></li>
+										<li><span>:</span><a href="mailto:example@mail.com"> <%= userlist[0].email%></a></li>
 									</ul>
 								</li>
 								<li>
-									<ul class="agileits-address-text">
-										<li class="agile-it-adress-left"><b>WEBSITE</b></li>
-										<li><span>:</span><a href="#">www.myresume.com</a></li>
-									</ul>
+									
 								</li>
 							</ul> 
 
@@ -110,9 +107,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		</div>
 		</div>
 		<div class="thim-click-to-bottom">
-				<a href="#about" class="scroll">
-					<i class="fa  fa-chevron-down"></i>
-				</a>
+				
 			</div>
 
 	</div>
@@ -131,7 +126,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						</div>
 						<div class="w3ls_footer_grid_leftr">
 							<h4>Location</h4>
-							<p>3030 New York, NY, USA</p>
+							<p><%= userlist[0].address%></p>
 						</div>
 						<div class="clearfix"> </div>
 					</div>
@@ -141,18 +136,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						</div>
 						<div class="w3ls_footer_grid_leftr">
 							<h4>Email</h4>
-							<a href="mailto:info@example.com">info@example.com</a>
+							<a href="mailto:info@example.com"><%= userlist[0].email%></a>
 						</div>
 						<div class="clearfix"> </div>
 					</div>
 					<div class="col-md-4 w3ls_footer_grid_left">
-						<div class="w3ls_footer_grid_leftl">
-							<i class="fa fa-phone" aria-hidden="true"></i>
-						</div>
-						<div class="w3ls_footer_grid_leftr">
-							<h4>Call Me</h4>
-							<p>(+000) 003 003 0052</p>
-						</div>
+						
+						
 						<div class="clearfix"> </div>
 					</div>
 					<div class="clearfix"> </div>

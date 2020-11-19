@@ -7,6 +7,13 @@ module.exports = {
 			
 			callback(results);
 		});
+	},
+	getAllpost: function(callback){
+		var sql = "SELECT * FROM `gupost`";
+		db.getResults(sql, function(results){
+			
+			callback(results);
+		});
     },
     /*getAllpostreq: function(callback){
 		var sql = "SELECT * FROM `gupostrequest`";
