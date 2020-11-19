@@ -1,0 +1,148 @@
+<%- include('menu.ejs') %>
+    <div class="container-fluid">
+        <main class="tm-main">
+            <!-- Search form -->
+            <div class="row tm-row">
+                <div class="col-12">
+                    <form method="GET" class="form-inline tm-mb-80 tm-search-form">                
+                        <input class="form-control tm-search-input" name="query" type="text" placeholder="Search..." aria-label="Search">
+                        <button class="tm-search-button" type="submit">
+                            <i class="fas fa-search tm-search-icon" aria-hidden="true"></i>
+                        </button>                                
+                    </form>
+                </div>                
+            </div>  
+            <div class="tm-site-header ">          
+                <h1  style ="color: skyblue;"class="text-center">General USer Block List</h1>
+            </div>          
+            <div class="row tm-row">
+                <div>
+                    <table border="1">
+                        <tr>
+                            <th>picture</th>
+                            
+                            <th>Acc Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>DoB</th>
+                            <th>Address</th>
+                            <th>User Type</th>
+                            <th>Action</th>
+                        </tr>
+                        <% for(var i=0; i< Gusr.length; i++ ){ %>
+                            <tr>
+                                <td><%= Gusr[i].profilepicture %></td>
+                                   
+                                    <td><%= Gusr[i].guid %></td>
+                                    <td><%= Gusr[i].name %></td>
+                                    <td><%= Gusr[i].email %></td>
+                                    <td><%= Gusr[i].gender %></td>
+                                    <td><%= Gusr[i].dob %></td>
+                                    <td><%= Gusr[i].address %></td>
+                                    <td><%= Gusr[i].userstatus %></td>
+                                   
+                                    <td>
+                                        <a href="/Adminhome/unBlockuser/<%=Gusr[i].guid%>">UnBlock</a> | 
+                                        <a style="color: red;" href="/Adminhome/deleteuser/<%=Gusr[i].guid%>">Remove Permanently</a>  
+                                    </td>
+                                
+                                <% } %>
+                            </tr>
+                    </table>
+                </div>   
+                             
+            </div>   
+            
+            
+            <div class="tm-site-header ">          
+                <h1  style ="color: skyblue;"class="text-center">Account Controller Block List</h1>
+            </div>          
+            <div class="row tm-row">
+                <div>
+                    <table border="1">
+                        <tr>
+                            <th>picture</th>
+                           
+                            <th>Acc Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>DoB</th>
+                            <th>Address</th>
+                            <th>Action</th>
+                        </tr>
+                        <% for(var i=0; i< AC.length; i++ ){ %>
+                            <tr>
+                                <td><%= AC[i].profilepicture %></td>
+                                    
+                                    <td><%= AC[i].acid %></td>
+                                    <td><%= AC[i].name %></td>
+                                    <td><%= AC[i].email %></td>
+                                    <td><%= AC[i].gender %></td>
+                                    <td><%= AC[i].dob %></td>
+                                    <td><%= AC[i].address %></td>
+                                   
+                                    <td>
+                                        
+                                        <a href="/Adminhome/unBlockAccCont/<%=AC[i].acid%>">UnBlock</a> | 
+                                        <a  style="color: red;" href="/Adminhome/deleteAccCont/<%=AC[i].acid%>">Remove Permanently</a>  
+                                    </td>
+                                
+                                <% } %>
+                            </tr>
+                    </table>
+                </div>   
+                             
+            </div>
+            <div class="tm-site-header ">          
+                <h1  style ="color: skyblue;"class="text-center">Content Controller Block List</h1>
+            </div>          
+            <div class="row tm-row">
+                <div>
+                    <table border="1">
+                        <tr>
+                            <th>picture</th>
+                            
+                            <th>Acc Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>DoB</th>
+                            <th>Address</th>
+                            
+                            <th>Action</th>
+                        </tr>
+                        <% for(var i=0; i< CC.length; i++ ){ %>
+                            <tr>
+                                <td><%= CC[i].profilepicture %></td>
+                                    
+                                    <td><%= CC[i].ccid %></td>
+                                    <td><%= CC[i].name %></td>
+                                    <td><%= CC[i].email %></td>
+                                    <td><%= CC[i].gender %></td>
+                                    <td><%= CC[i].dob %></td>
+                                    <td><%= CC[i].address %></td>
+                                   
+                                    <td>
+                                      
+                                        <a href="/Adminhome/unBlockAccCont/<%=CC[i].ccid%>">UnBlock</a> | 
+                                        <a style="color: red;" href="/Adminhome/deleteAccCont/<%=CC[i].ccid%>">Remove Premanently</a>  
+                                    </td>
+                                
+                                <% } %>
+                    </table>
+                </div>   
+                             
+            </div>
+            <footer class="row tm-row">
+                <hr class="col-12">
+                
+                
+            </footer>
+        </main>
+    </div>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/templatemo-script.js"></script>
+</body>
+</html>

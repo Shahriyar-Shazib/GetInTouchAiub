@@ -38,5 +38,19 @@ module.exports = {
 		db.execute(sql, function(status){
 			callback(status);
 		});
+	},
+	BlockUser: function(AC,callback){
+		var sql="UPDATE `user` SET accountstatus='Blocked' WHERE userid='"+AC.id+"'";
+		console.log(sql);
+		db.execute(sql, function(status){
+			callback(status);
+		});
+	},
+	unBlockUser: function(AC,callback){
+		var sql="UPDATE `user` SET accountstatus='Active' WHERE userid='"+AC.id+"'";
+		console.log(sql);
+		db.execute(sql, function(status){
+			callback(status);
+		});
 	}
 };

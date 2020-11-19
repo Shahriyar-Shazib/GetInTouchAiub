@@ -1,9 +1,13 @@
+const { static } = require('express');
 const express 	= require('express');
 const AdminModel = require.main.require('./models/Admin/adminModel');
 const accContModel = require.main.require('./models/Admin/accContModel');
 const contentcontModel = require.main.require('./models/Admin/contentcontModel');
 const userModel = require.main.require('./models/Admin/userModel');
 const GuserModel = require.main.require('./models/Admin/GeneraluserModel');
+const postreqModel = require.main.require('./models/Admin/postReq');
+const regreqModel = require.main.require('./models/Admin/regreqModel');
+const post = require.main.require('./models/Admin/post');
 const router 	= express.Router();
 
 router.get('/', (req, res)=>{
@@ -17,45 +21,9 @@ router.get('/', (req, res)=>{
 })
 
 
+/////// Admin
 
-router.get('/AccountControllerList', (req, res)=>{
-	//res.render('Adminhome/AccContList');
-	accContModel.getAllActiveAccCont(function(results){
-		   res.render('Adminhome/AccContList', {userlist: results});
-	   });
-   
-   })
-   router.post('/NotificationAd/:id', (req, res)=>{
-	//res.render('Adminhome/AccContList');
-
-	notify={
-		id: req.params.id,
-		userid: req.cookies['uname'],
-		subject: req.body.subject,
-		body: req.body.body
-	}
-	   AdminModel.AddNotification(notify,function(status){
-		//userModel.validate( req.params.id,function(result)){
-		
-		//}
-		   if(status){
-			res.redirect('/Adminhome');
-		   }else {
-			res.redirect('/Adminhome');
-		   }
-		   
-	   });
-   
-   })
-
-   router.get('/ContentControllerList', (req, res)=>{
-	//res.render('Adminhome/ContentContList');
-	contentcontModel.getAllActiveContentCont(function(results){
-		res.render('Adminhome/ContentContList', {userlist: results});
-	});
-   
-   })
-   router.get('/AdminList', (req, res)=>{
+router.get('/AdminList', (req, res)=>{
 	//res.render('Adminhome/ContentContList');
 	AdminModel.getAllAdmin(function(results){
 		res.render('Adminhome/AdminList', {userlist: results});
@@ -69,7 +37,6 @@ router.get('/AccountControllerList', (req, res)=>{
 	   //});
    
    })
-
    router.get('/editAccount', (req, res)=>{
 	res.render('Adminhome/editAccount');
 	   //userModel.getAll(function(results){
@@ -77,43 +44,82 @@ router.get('/AccountControllerList', (req, res)=>{
 	   //});
    
    })
-   router.get('/PendingPost', (req, res)=>{
-	res.render('Adminhome/PendingPostAd');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
+    
+/////Account Controller
+router.get('/AccountControllerList', (req, res)=>{
+	
+	accContModel.getAllActiveAccCont(function(results){
+		   res.render('Adminhome/AccContList', {userlist: results});
+	   });
    
    })
-   router.get('/PendingSignup', (req, res)=>{
-	res.render('Adminhome/PendingSignUpAd');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
-   
-   })
-   router.get('/NotificationAd/:id', (req, res)=>{
-	 users ={
-		id: req.params.id,
-		userid: req.cookies['uname']
-	};
-	//res.render('Adminhome/PendingSignUpAd');
-	  // userModel.getByIdAccCont(user,function(results){
-		   res.render('Adminhome/NotificationAd', users);
-	  // });
-   
-   })
-   
-   router.get('/BlockAccCont', (req, res)=>{
-	res.render('Adminhome/PendingSignUpAd');
-	   //userModel.getAll(function(results){
-		   //res.render('/Adminhome/UserList', {userlist: results});
-	   //});
-   
-   })
+
   
 
+   router.get('/BlockAccCont/:id', (req, res)=>{
+	AC ={
+		id: req.params.id	
+	};
+
+	accContModel.BlockAC( AC,function(results){
+		if(results){
+			userModel.BlockUser( AC,function(result){
+			if(result){
+				res.redirect('/Adminhome/AccountControllerList');
+			}
+			})
+		}
+		  
+	   });
+   
+   })
+
+   router.get('/deleteAccCont/:id', (req, res)=>{
+	users ={
+		id: req.params.id	
+	};
+	accContModel.DeleteAccCont(users ,function(results){
+		if (results)
+		{
+			userModel.deleteUser(users ,function(result){
+				if (result)
+				{
+					res.redirect('/Adminhome/AccountControllerList');
+				}			  
+			});
+		}		  
+	   });
+	})
+   
+
+	router.get('/unBlockAccCont/:id', (req, res)=>{
+		AC ={
+			id: req.params.id	
+		};
+	
+		accContModel.unBlockAC( AC,function(results){
+			if(results){
+				userModel.unBlockUser( AC,function(result){
+				if(result){
+					res.redirect('/Adminhome/Blocklist');
+				}
+				})
+			}
+		   });
+	   
+	   })
+ 
+///////Content Controller 
+
+   router.get('/ContentControllerList', (req, res)=>{
+	//res.render('Adminhome/ContentContList');
+	contentcontModel.getAllActiveContentCont(function(results){
+		res.render('Adminhome/ContentContList', {userlist: results});
+	});
+   
+   })
+
    router.get('/deleteContentCont/:id', (req, res)=>{
-	//res.render('Adminhome/PendingSignUpAd');
 	users ={
 		id: req.params.id	
 	};
@@ -124,72 +130,251 @@ router.get('/AccountControllerList', (req, res)=>{
 				if (result)
 				{
 					res.redirect('/Adminhome/ContentControllerList');
-				}
-				  
-			   });
-		
+				}				  
+			 });
+		}		  
+	   }); 
+   })
+
+   router.get('/BlockContentCont/:id', (req, res)=>{
+	CC ={
+		id: req.params.id	
+	};
+
+	contentcontModel.BlockCC( CC,function(results){
+		if(results){
+			userModel.BlockUser( CC,function(result){
+			if(result){
+				res.redirect('/Adminhome/ContentControllerList');
+			}
+			})
 		}
-		  
 	   });
+   
+   })
+   router.get('/unBlockAccCont/:id', (req, res)=>{
+	CC ={
+		id: req.params.id	
+	};
 
-
+	contentcontModel.unBlockCC( CC,function(results){
+		if(results){
+			userModel.unBlockUser( CC,function(result){
+			if(result){
+				res.redirect('/Adminhome/Blocklist');
+			}
+			})
+		}
+	   });
    
    })
 
-   router.get('/deleteAccCont/:id', (req, res)=>{
-	//res.render('Adminhome/PendingSignUpAd');
+   /////////////General User
+
+   router.get('/deleteuser/:id', (req, res)=>{	
 	users ={
 		id: req.params.id	
 	};
-	contentcontModel.DeleteContentCont(users ,function(results){
+	GuserModel.deleteUser(users ,function(results){
 		if (results)
 		{
-			userModel.deleteUser(users ,function(result){
-				if (result)
+			userModel.deleteUser(users ,function(status){
+				if (status)
 				{
-					res.redirect('/Adminhome/AccountControllerList');
+					res.redirect('/Adminhome/userlist');
+				}				  
+			   });		
+		}		  
+	   });
+	})
+ 
+	router.get('/userlist', (req, res)=>{
+ 
+		GuserModel.getAllActiveUser(function(results){
+			res.render('Adminhome/UserList', {userlist: results});
+		});
+	
+	});
+	
+	router.get('/Blockuser/:id', (req, res)=>{
+		Guser ={
+			id: req.params.id	
+		};
+	
+		GuserModel.BlockGU( Guser,function(results){
+			if(results){
+				userModel.BlockUser( Guser,function(result){
+				if(result){
+					res.redirect('/Adminhome/userlist');
 				}
-				  
-			   });
+				})
+			}
+		   });
+	   
+	   })
+
+	   router.get('/unBlockuser/:id', (req, res)=>{
+		GU ={
+			id: req.params.id	
+		};
+	
+		GuserModel.unBlockGU( GU,function(results){
+			if(results){
+				userModel.unBlockUser( GU,function(result){
+				if(result){
+					res.redirect('/Adminhome/Blocklist');
+				}
+				})
+			}
+		   });
+	   
+	   })
+	
+
+     //////Notification
+
+
+	 router.post('/NotificationAd/:id', (req, res)=>{
+		notify={
+			id: req.params.id,
+			userid: req.cookies['uname'],
+			subject: req.body.subject,
+			body: req.body.body
+		}
+		   AdminModel.AddNotification(notify,function(status){
+			   if(status){
+				res.redirect('/Adminhome');
+			   }else {
+				res.redirect('/Adminhome');
+			   }
+			   
+		   });
+	   
+	   })
+	
+	   router.get('/NotificationAd/:id', (req, res)=>{
+		users ={
+		   id: req.params.id,
+		   userid: req.cookies['uname']
+	   };
+	   
+			  res.render('Adminhome/NotificationAd', users);
+	  
+	  })
+
+	  router.get('/Notification', (req, res)=>{
+		//res.render('Adminhome/Mynotification');
 		
+		   AdminModel.MyNotification(req.cookies['uname'],function(results){
+			   res.render('Adminhome/Mynotification', {userlist: results});
+		   });
+	   
+	   })
+
+
+ ///////pending Post Request
+
+   router.get('/PendingPost', (req, res)=>{
+	//res.render('Adminhome/PendingPostAd');
+	postreqModel.getAllpostreq(function(results){
+		   res.render('Adminhome/PendingPostAd', {userlist: results});
+	   });
+   
+   })
+   router.get('/ApprovePostreq/:id', (req, res)=>{
+	posts={
+		id: req.params.id,	
+	}
+	
+	postreqModel.getpostreqbyID(posts,function(results){
+		if (results.length>0){
+			//console.log(results[0]);
+			post.insertpost(results[0],req.cookies['uname'],function(status){
+				if(status){
+					postreqModel.deletePost(posts,function(status){
+						if(status){
+							res.redirect('/Adminhome/PendingPost'); 	
+						}
+						
+					})
+					
+				}
+			})
 		}
 		  
 	   });
+   
+   })
+
+   router.get('/RemovePostreq/:id', (req, res)=>{
+	posts={
+		id: req.params.id,	
+	}
+	postreqModel.deletePost(posts,function(status){
+		if(status){
+			res.redirect('/Adminhome/PendingPost'); 	
+		}
+		
 	})
+})
+
+
+//////pending Signup Request
+
+
+   router.get('/PendingSignup', (req, res)=>{
+	   regreqModel.getAllregreq(function(results){
+		   res.render('Adminhome/PendingSignUpAd', {userlist: results});
+	   });
+   
+   })
+
+   router.get('/approvegureq/:id', (req, res)=>{
+	Guser={
+		id: req.params.id,	
+	}
+	
+	regreqModel.getregreqbyID(Guser,function(results){
+		if (results.length>0){
+			//console.log(results[0]);
+			GuserModel.insertGU(results[0],function(status){
+				if(status){
+					regreqModel.RemoveregReq(Guser,function(status){
+						if(status){
+							res.redirect('/Adminhome/PendingSignup'); 	
+						}
+						
+					})
+					
+				}
+			})
+		}
+		  
+	   });
+   
+   })   
+
+   router.get('/removegureq/:id', (req, res)=>{
+	Guser={
+		id: req.params.id,	
+	}
+	regreqModel.RemoveregReq(Guser,function(status){
+		if(status){
+			res.redirect('/Adminhome/PendingSignup'); 	
+		}
+		
+	})
+})
    
 
-	
-	router.get('/deleteuser/:id', (req, res)=>{
-		//res.render('Adminhome/PendingSignUpAd');
-		users ={
-			id: req.params.id	
-		};
-		GuserModel.deleteUser(users ,function(results){
-			if (results)
-			{
-				userModel.deleteUser(users ,function(status){
-					if (status)
-					{
-						res.redirect('/Adminhome/userlist');
-					}
-					  
-				   });
-			
-			}
-			  
-		   });
-		})
-	 
-		
-
-   router.get('/Notification', (req, res)=>{
+   /*router.get('/post', (req, res)=>{
 	//res.render('Adminhome/Mynotification');
 	
 	   AdminModel.MyNotification(req.cookies['uname'],function(results){
 		   res.render('Adminhome/Mynotification', {userlist: results});
 	   });
    
-   })
+   })*/
    router.post('/Insert',(req,res)=>{
 	  var user={
 		   img:req.body.img,
@@ -215,8 +400,6 @@ router.get('/AccountControllerList', (req, res)=>{
 
 				}
 			});
-		
-
 	   }else if(req.body.type=="Account Control Manager"){
 
 		accContModel.insertAccCont(user,function(results){
@@ -240,12 +423,8 @@ router.get('/AccountControllerList', (req, res)=>{
 					{
 						res.redirect('/Adminhome/ContentControllerList');
 					}
-					
-
 				})
-
 				}
-			//res.redirect('Adminhome/Mynotification', {userlist: results});
 			});
 	   }
    })
@@ -255,13 +434,22 @@ router.get('/AccountControllerList', (req, res)=>{
 	  
    })
    
+   router.get('/Blocklist', (req, res)=>{
+	
+	GuserModel.GetAllblockGU(function(results){
+		accContModel.GetAllblockAC(function(result){
+			contentcontModel.GetAllblockCC(function(resul){
+				//console.log (results,result,resul);
+				res.render('Adminhome/Blocklist',{Gusr:results,AC: result,CC:resul});
+			})
+		})
+	})
+	
+	
+	//console.log (GU);
+	//
+	
 
-router.get('/userlist', (req, res)=>{
- 
-	GuserModel.getAllActiveUser(function(results){
-		res.render('Adminhome/UserList', {userlist: results});
-	});
-
-});
+})
 
 module.exports = router;

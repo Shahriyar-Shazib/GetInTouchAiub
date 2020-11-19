@@ -18,12 +18,31 @@ module.exports ={
 			callback(status);
 		});
 	},
-	DeleteContentCont: function(user, callback){
+	DeleteAccCont: function(user, callback){
 		var sql="DELETE FROM `accountcontrolmanager` WHERE acid='"+user.id+"'";
 		console.log(sql);
 		db.execute(sql, function(status){
 			callback(status);
 		});
-	}
-
+	},
+	BlockAC: function(AC,callback){
+		var sql="UPDATE `accountcontrolmanager` SET accountstatus='Blocked' WHERE acid='"+AC.id+"'";
+		console.log(sql);
+		db.execute(sql, function(status){
+			callback(status);
+		});
+	},
+	GetAllblockAC: function(callback){
+		var sql = "select * from accountcontrolmanager Where accountstatus='Blocked'";
+		db.getResults(sql, function(results){
+			callback(results);
+		});
+	},
+	unBlockAC: function(AC,callback){
+		var sql="UPDATE `accountcontrolmanager` SET accountstatus='Active' WHERE acid='"+AC.id+"'";
+		console.log(sql);
+		db.execute(sql, function(status){
+			callback(status);
+		});
+	},
 }
