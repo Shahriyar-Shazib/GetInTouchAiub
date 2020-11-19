@@ -1,10 +1,10 @@
-const db = require('../db');
+const db = require('../db-secure');
 
 module.exports = {
 
     validate: function(user, callback){
-		var sql = "select * from user where userid='"+user.username+"' and password='"+user.password+"'";
-		db.getResults(sql, function(results){
+		var sql = "select * from user where userid=? and password=?";
+		db.getResults(sql,[user.username, user.password], function(results){
 			if(results.length > 0){
 				callback(results,true);
 			}else{
@@ -14,29 +14,16 @@ module.exports = {
 	},
 	
     getByIdUser: function(user,callback){
-		var sql="SELECT * FROM `user` WHERE id='"+user.id+"'";
-		db.getResults(sql,function (result){
+		var sql="SELECT * FROM `user` WHERE id=?";
+		db.getResults(sql,[user.id],function (result){
 			callback(result);
 		});
 
     },
-    insertUser: function(user, callback){
-		var sql = "insert into user VALUES ('', '"+user.username+"' , '"+user.password+"' , '"+user.type+"','Active')";
-		db.execute(sql, function(status){
-			callback(status);
-		});
-    },
     updateUser: function(user, callback){
-		var sql="UPDATE `user` SET `userid`='"+user.username+"',`password`='"+user.password+"',`usertype`='"+user.type+"', accountstatus='"+user.accountstatus+"' WHERE `id`='"+user.id+"' ";
-		db.execute(sql, function(status){
+		var sql="UPDATE `user` SET `userid`=?,`password`=?,`usertype`=?, accountstatus=? WHERE `id`='?";
+		db.execute(sql, [user.userId, user.password, user.type, user.accountstatus, user.id], function(status){
 			callback(status);
 		});
-    },
-    deleteUser: function(user, callback){
-		var sql="DELETE FROM `user` WHERE userid='"+user.id+"'";
-		//console.log(sql);
-		db.execute(sql, function(status){
-			callback(status);
-		});
-	}
+    }
 };
