@@ -6,7 +6,7 @@ function getConnection(callback){
 	  host     : '127.0.0.1',
 	  user     : 'root',
 	  password : '',
-	  database : 'node1'
+	  database : 'getintouchaiub'
 	});
 	 
 	connection.connect(function(err) {
