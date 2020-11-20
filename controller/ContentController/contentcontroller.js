@@ -299,4 +299,29 @@ router.get('/reports/usersreports', (req, res)=>{
 	}
 })
 
+router.post('/reports/usersreports', (req, res)=>{
+
+})
+
+router.get('/reports/contentsreports', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		var data = new Array(3);
+		postModel.countAllPosts(function(results){
+			var active = results[0].counter;
+			data[0] = active;
+			contributionModel.countAllApprovedPosts(function(result){
+				var approved = result[0].counter;
+				data[1] = approved;
+				contributionModel.countAllDeclinedPosts(function(result){
+					var declined = result[0].counter;
+					data[2] = declined;
+					res.render('ContentController/reports/contentsReports', {clicked: clicker(5), data: data});
+				});
+			});
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
 module.exports = router;
