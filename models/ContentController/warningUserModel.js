@@ -27,5 +27,11 @@ module.exports = {
 			callback(result);
 		});
 
+	},
+	countAllDistinctGId: function(callback){
+		var sql = "select count(distinct(guid)) as counter from warninguser";
+		db.getResults(sql, null, function(results){
+			callback(results);
+		});
     }
 };
