@@ -1,6 +1,7 @@
-const express 	= require('express');
-const fs 			= require('fs');
-const JSDOM 		= require('jsdom').JSDOM;
+const express = require('express');
+const fs = require('fs');
+const JSDOM = require('jsdom').JSDOM;
+const downloadsFolder = require('downloads-folder');
 const generalUserModel = require('../../models/ContentController/generalUserModel');
 const userModel = require.main.require('./models/ContentController/userModel');
 const postModel = require.main.require('./models/ContentController/postModel');
@@ -10,7 +11,7 @@ const contributionModel = require.main.require('./models/ContentController/contr
 const warningUserModel = require.main.require('./models/ContentController/warningUserModel');
 const announcementModel = require.main.require('./models/ContentController/announcementModel');
 const contentControllerModel = require.main.require('./models/ContentController/contentControllerModel');
-const router 	= express.Router();
+const router = express.Router();
 
 function clicker(serial){
 	var clicked = new Array(8);
@@ -20,7 +21,7 @@ function clicker(serial){
 	return clicked;
 }
 
-function chart(callback){
+function chartPDF(values,type,dn,callback){
 	// Require JSDOM Class.
 	var JSDOM = require('jsdom').JSDOM;
 	// Create instance of JSDOM.
@@ -31,14 +32,25 @@ function chart(callback){
 	var anychart = require('anychart')(window);
 	var anychartExport = require('anychart-nodejs')(anychart);
 
-	var data = [
-		{x: "A", value: 637166},
-		{x: "B", value: 721630},
-		{x: "C", value: 148662},
-		{x: "D", value: 78662},
-		{x: "E", value: 90000}
-	  ];	  
-	var chart = anychart.pie(data);
+	var chart;
+
+	if(type == "ContentReport"){
+		var data = [
+			{x: "Active Posts", value: values[0]},
+			{x: "Approved Posts", value: values[1]},
+			{x: "Declined Posts", value: values[2]}
+		];
+		chart = anychart.column(data);
+		chart.title('All Content Report');
+	}else{
+		chart = anychart.column();
+		chart.data({header: ["#", "Total", "My"],
+			rows: [
+			{x: "Approved Posts", Total: values[0], My: values[1]},
+			{x: "Declined Posts", Total: values[2], My: values[3]},
+			{x: "Announcements", Total: values[4] , My: values[5]}
+		]});
+	}
 	chart.bounds(0, 0, 800, 600);
 	chart.container('container');
 	chart.draw();
@@ -46,8 +58,8 @@ function chart(callback){
 	var status = false;
 
 	// generate JPG image and save it to a file
-	anychartExport.exportTo(chart, 'jpg').then(function(image) {
-		fs.writeFile('assets/charts/anychart.jpg', image, function(fsWriteError) {
+	anychartExport.exportTo(chart, 'pdf').then(function(image) {
+		fs.writeFile(downloadsFolder()+'/'+type+'_'+dn+'.pdf', image, function(fsWriteError) {
 		if (fsWriteError) {
 			console.log(fsWriteError);
 			callback(status);
@@ -322,6 +334,79 @@ router.get('/reports/contentsreports', (req, res)=>{
 	}else{
 		res.redirect('/login');
 	}
+})
+
+router.post('/reports/contentsreports', (req, res)=>{
+	var data = new Array(3);
+	postModel.countAllPosts(function(results){
+		var active = results[0].counter;
+		data[0] = active;
+		contributionModel.countAllApprovedPosts(function(result){
+			var approved = result[0].counter;
+			data[1] = approved;
+			contributionModel.countAllDeclinedPosts(function(result){
+				var declined = result[0].counter;
+				data[2] = declined;
+				var dn = Date.now();
+				chartPDF(data,"ContentReport", dn, function(status){
+					if(status){
+						req.flash("Success", "PDF of report has been downloded to your Downloads folder.");
+					}else{
+						req.flash("Error", "Failed to save report");
+					}
+				});
+			});
+		});
+	});
+})
+
+router.get('/contribution', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		var data = new Array(6);
+		contributionModel.countAllApprovedPosts(function(results){
+			data[0] = results[0].counter;
+			contributionModel.countAllDeclinedPosts(function(results){
+				data[2] = results[0].counter;
+				contributionModel.countAllAnnouncements(function(results){
+					data[4] = results[0].counter;
+						contributionModel.getByCId(req.cookies['uname'], function(results){
+							data[1] = results[0].postapproved;
+							data[3] = results[0].postdeclined;
+							data[5] = results[0].announcements;
+							res.render('ContentController/contribution/contribution', {clicked: clicker(6), data: data, cid: req.cookies['uname']});
+						});
+				});
+			});
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/contribution', (req, res)=>{
+	var data = new Array(6);
+	contributionModel.countAllApprovedPosts(function(results){
+		data[0] = results[0].counter;
+		contributionModel.countAllDeclinedPosts(function(results){
+			data[2] = results[0].counter;
+			contributionModel.countAllAnnouncements(function(results){
+				data[4] = results[0].counter;
+				contributionModel.getByCId(req.cookies['uname'], function(results){
+					data[1] = results[0].postapproved;
+					data[3] = results[0].postdeclined;
+					data[5] = results[0].announcements;
+					var dn = Date.now();
+					chartPDF(data,"Contribution", dn, function(status){
+						if(status){
+							req.flash("Success", "PDF of report has been downloded to your Downloads folder.");
+						}else{
+							req.flash("Error", "Failed to save report");
+						}
+					});
+				});
+			});
+		});
+	});
 })
 
 module.exports = router;
