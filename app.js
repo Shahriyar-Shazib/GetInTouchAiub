@@ -6,6 +6,7 @@ const cookieParser 	= require('cookie-parser');
 const login			= require('./controller/login');
 const home			= require('./controller/Adminhome');
 const contentcontroller			= require('./controller/ContentController/contentcontroller');
+const acHome = require('./controller/accountController/acHome')
 const logout		= require('./controller/logout');
 //const user			= require('./controller/user');
 const app 			= express();
@@ -23,6 +24,7 @@ app.use('/login', login);
 app.use('/Adminhome', home);
 app.use('/logout', logout);
 app.use('/contentcontroller', contentcontroller);
+app.use('/achome', acHome)
 //app.use('/user', user);
 
 //route
@@ -31,7 +33,10 @@ app.get('/', (req, res)=>{
 		res.redirect('/Adminhome');
 	}else if(req.cookies['uname'] != null && req.session.type=="Content Controll Manager"){
 		res.redirect('/contentcontroller');
-	}else{
+	}else if(req.cookies['uname'] != null && req.session.type=="Account Control Manager"){
+		res.redirect('/achome');
+	}
+	else{
 		res.redirect('/login');
 	}		
 });
