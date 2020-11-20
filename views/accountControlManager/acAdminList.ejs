@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
+	<title>Account Controll Manager Home</title>
+</head>
+<body>
+	<%- include('acNavBar') %>
+	<div id="workspace">
+		<h1 align='center'>Admin List</h1>
+		<br/>
+		<table id="view">
+			<tr>
+				<td>Admin ID</td>
+				<td>Name</td>
+				<td>Email</td>
+				<td>Gender</td>
+				<td>Date Of Birth</td>
+				<td>Address</td>
+				<td>Profile Picture</td>
+			</tr>
+			<% for(var i=0; i< userlist.length; i++ ){ %>
+			<tr>
+				<td><%= userlist[i].adminid %></td>
+				<td><%= userlist[i].name %></td>
+				<td><%= userlist[i].email %></td>
+				<td><%= userlist[i].gender %></td>
+				<td><%= userlist[i].dob %></td>
+				<td><%= userlist[i].address %></td>
+				<td><%= userlist[i].profilepicture %></td>
+			</tr>
+			<% } %>
+		</table>
+		<br/>
+		<h2 align='center'>Search Admin</h2>
+		<form>
+			<input type="text" name="searchkey">
+			<input type="button" name="search" value="Search">
+		</form>
+	</div>
+</body>
+</html>
