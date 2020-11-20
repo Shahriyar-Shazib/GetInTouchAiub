@@ -1,6 +1,8 @@
 //declaration
 const express 		= require('express');
 const bodyParser 	= require('body-parser');
+const flash = require('express-flash-notification');
+const flush = require('connect-flash');
 const exSession 	= require('express-session');
 const cookieParser 	= require('cookie-parser');
 const login			= require('./controller/login');
@@ -19,12 +21,14 @@ app.use('/assets',express.static('assets'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(exSession({secret: 'my secret value', saveUninitialized: true, resave: false }));
 app.use(cookieParser());
+app.use(flash(app));
+app.use(flush());
 
 app.use('/login', login);
 app.use('/Adminhome', home);
 app.use('/logout', logout);
 app.use('/contentcontroller', contentcontroller);
-app.use('/achome', acHome)
+app.use('/achome', acHome);
 //app.use('/user', user);
 
 //route
