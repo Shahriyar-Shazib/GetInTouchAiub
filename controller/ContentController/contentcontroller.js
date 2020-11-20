@@ -265,7 +265,7 @@ router.post('/announcement/delete/:id', (req, res)=>{
 
 router.get('/reports', (req, res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
-		res.render('ContentController/reports/reports', {clicked: clicker(6)});
+		res.render('ContentController/reports/reports', {clicked: clicker(5)});
 	}else{
 		res.redirect('/login');
 	}
@@ -291,7 +291,7 @@ router.get('/reports/usersreports', (req, res)=>{
 				var warned = result[0].counter;
 				console.log(warned);
 				data[2] = warned;
-				res.render('ContentController/reports/usersReports', {clicked: clicker(6), data: data});
+				res.render('ContentController/reports/usersReports', {clicked: clicker(5), data: data});
 			});
 		});
 	}else{
