@@ -33,5 +33,11 @@ module.exports = {
 		db.getResults(sql, null, function(results){
 			callback(results);
 		});
+	},
+	countAllAnnouncements: function(callback){
+		var sql = "select sum(announcements) as counter from contribution";
+		db.getResults(sql, null, function(results){
+			callback(results);
+		});
 	}
 };
