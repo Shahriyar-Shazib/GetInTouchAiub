@@ -24,6 +24,11 @@ router.post('/', (req, res)=>{
 				req.session.type = result[0].usertype;
 				res.cookie('uname', req.body.username);
 				res.redirect('/contentcontroller');
+			}else if((result[0].accountstatus == "Active") && (result[0].usertype == "Account Control Manager")){
+				req.session.type = result[0].usertype;
+				res.cookie('uname', result[0].uname);
+				res.cookie('usertype', result[0].usertype);
+				res.redirect('/achome');
 			}	
 		}else{
 			res.redirect('/login');
