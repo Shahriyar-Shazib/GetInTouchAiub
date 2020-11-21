@@ -13,5 +13,11 @@ module.exports = {
 		db.getResults(sql, null, function(results){
 			callback(results);
 		});
+	},
+	getPostByGId: function(id, callback){
+		var sql = "select * from gupost where guid=?";
+		db.getResults(sql, [id], function(results){
+			callback(results);
+		});
     }
 };
