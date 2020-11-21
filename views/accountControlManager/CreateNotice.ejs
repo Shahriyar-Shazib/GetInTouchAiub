@@ -4,6 +4,7 @@
 	<title>Create Notice</title>
 	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
 	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
+	<script type="text/javascript" src="/assets/accountControlManager/js/CreateNotice.js"></script>
 </head>
 <body>
 	<%- include('acNavBar') %>
@@ -32,9 +33,11 @@
 				</a>
 				<input type="button" id="addnotice" name="addnotice" value="Send">
 				<input type="reset" id="reset" name="reset">
+				<input type="hidden" id="id" name="id" value="<%= acid[0] %>">
 				<div id="output"></div>
 			</form>
 		</table>
+		<br/>
 		<div id="searchresult">
 		</div>
 	</div>

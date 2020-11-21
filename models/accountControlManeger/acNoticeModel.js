@@ -7,5 +7,11 @@ module.exports ={
 		db.getResults(sql, null, function(results){
 			callback(results);
 		});
-	}
+	},
+	createNotice: function(data, callback){
+		var sql = "insert into acnotice VALUES (?, ? , ? , ? , ?)";
+		db.execute(sql, ['' , data.acid , data.subject , data.body , data.towhom] , function(status){
+			callback(status);
+		});
+	},
 }
