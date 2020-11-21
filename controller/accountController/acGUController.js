@@ -30,10 +30,10 @@ router.get('/registrationrequest', (req, res)=>{
 
 router.get('/GUDecline/:id', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){	
-		var id ={
+		var data ={
 			id: req.params.id
 		};
-		acGUModel.getByIdRegistrationRequest(id, function(results){
+		acGUModel.getByIdRegistrationRequest(data, function(results){
 			console.log(results);
 			res.render('accountControlManager/declineUserRequst', {value: results});
 		});
@@ -43,10 +43,10 @@ router.get('/GUDecline/:id', (req, res)=>{
 })
 router.post('/GUDecline/:id', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){	
-		var user ={
+		var data ={
 			id: req.params.id
 		};
-		acGUModel.deleteRegistrationRequest(user, function(status){
+		acGUModel.deleteRegistrationRequest(data, function(status){
 			if(status)
 			{
 				res.redirect('/acGUController/registrationrequest');	

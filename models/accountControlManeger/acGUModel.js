@@ -10,20 +10,21 @@ module.exports ={
 	},
 
 	getAllRegistrationRequest: function(callback){
-		var sql = "select * from registrationrequest";
+		var sql = "select * from `registrationrequest`";
 		db.getResults(sql, null, function(results){
 			callback(results);
 		});
 	},
-	getByIdRegistrationRequest: function(id , callback){
-		var sql = "select * from registrationrequest where id=?";
-		db.getResults(sql, [id], function(results){
+	getByIdRegistrationRequest: function(data , callback){
+		console.log(data.id);
+		var sql = "select * from `registrationrequest` where id=?";
+		db.getResults(sql, [data.id], function(results){
 			callback(results);
 		});
 	},
-	deleteRegistrationRequest: function(id , callback){
+	deleteRegistrationRequest: function(data , callback){
 		var sql = "DELETE FROM `registrationrequest` WHERE id=?";
-		db.getStatus(sql, [id], function(status){
+		db.execute(sql, [data.id], function(status){
 			callback(status);
 		});
 	}
