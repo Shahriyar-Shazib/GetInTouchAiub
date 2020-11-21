@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Admin List</title>
+	<title>Content COntrol Manager List</title>
 	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
 	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
 	<script type="text/javascript" src="/assets/accountControlManager/js/searchAdmin.js"></script>
@@ -9,32 +9,39 @@
 <body>
 	<%- include('acNavBar') %>
 	<div id="workspace">
-		<h1 align='center'>Admin List</h1>
+		<h1 align='center'>Content Control Manager List</h1>
 		<br/>
 		<table id="view">
 			<tr>
-				<td>Admin ID</td>
+				<td>CC ID</td>
 				<td>Name</td>
 				<td>Email</td>
 				<td>Gender</td>
 				<td>Date Of Birth</td>
 				<td>Address</td>
 				<td>Profile Picture</td>
+				<td>Account Status</td>
+				<td>Action</td>
 			</tr>
 			<% for(var i=0; i< userlist.length; i++ ){ %>
 			<tr>
-				<td><%= userlist[i].adminid %></td>
+				<td><%= userlist[i].ccid %></td>
 				<td><%= userlist[i].name %></td>
 				<td><%= userlist[i].email %></td>
 				<td><%= userlist[i].gender %></td>
 				<td><%= userlist[i].dob %></td>
 				<td><%= userlist[i].address %></td>
 				<td><%= userlist[i].profilepicture %></td>
+				<td><%= userlist[i].accountstatus %></td>
+				<td>
+					<a href="/acCCController/CCEdit/<%=userlist[i].id%>">Edit</a> | 
+					<a href="/acCCController/CCdelete/<%=userlist[i].id%>">Delete</a>
+				</td>
 			</tr>
 			<% } %>
 		</table>
 		<br/>
-		<h2 align='center'>Search Admin</h2>
+		<h2 align='center'>Search Content Control Manager</h2>
 		
 		<form>
 			<input type="text" name="searchkey">

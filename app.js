@@ -8,8 +8,9 @@ const cookieParser 	= require('cookie-parser');
 const login			= require('./controller/login');
 const home			= require('./controller/Adminhome');
 const contentcontroller			= require('./controller/ContentController/contentcontroller');
-const acHome 			= require('./controller/accountController/acHome')
-const acAdminController	= require('./controller/accountController/acAdminController')
+const acHome 					= require('./controller/accountController/acHome')
+const acAdminController			= require('./controller/accountController/acAdminController')
+const acCCController = require('./controller/accountController/acCCController')
 const logout		= require('./controller/logout');
 //const user			= require('./controller/user');
 const guHome = require('./controller/userController/guHome')
@@ -33,6 +34,7 @@ app.use('/logout', logout);
 app.use('/contentcontroller', contentcontroller);
 app.use('/achome', acHome);
 app.use('/acadmincontroller',acAdminController);
+app.use('/acCCController', acCCController)
 app.use('/userController', guHome);
 //app.use('/user', user);
 

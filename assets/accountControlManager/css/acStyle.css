@@ -96,3 +96,8 @@ input[type=reset] {
 input[type=submit]:hover {
   background-color: #45a049;
 }
+input[type=button]:hover {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  box-shadow: 0 0px 10px 3px #222;
+}

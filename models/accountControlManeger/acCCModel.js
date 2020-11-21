@@ -2,15 +2,15 @@ const db = require('../db-secure');
 
 module.exports ={
 	
-	getAllAdmin: function(callback){
-		var sql = "select * from admin";
+	getAllContentControlManager: function(callback){
+		var sql = "select * from contentcontrolmanager";
 		db.getResults(sql, null, function(results){
 			callback(results);
 		});
 	}/*,
 	
-	adminSearch: function(data,callback){
-		var sql = "select * from admin where adminid like '% ? %'"
+	CCSearch: function(data,callback){
+		var sql = "select * from contentcontrolmanager where ccid like '% ? %'"
 		db.getResults(sql, [data.key], function(results){
 			callback(results);
 		});
