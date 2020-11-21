@@ -275,6 +275,74 @@ router.post('/announcement/delete/:id', (req, res)=>{
 	
 })
 
+router.get('/users',(req,res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		generalUserModel.getAll(function(results){
+			res.render('ContentController/users/usersList', {clicked: clicker(3), userlist: results});
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/users', (req,res)=>{
+
+})
+
+router.get('/analyzeposter/:pid/:guid', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		var data = new Array(3);
+		postModel.getPostByGId(req.params.guid, function(results){
+			data[0] = results.length;
+			warningUserModel.getByGId(req.params.guid, function(results){
+				var declined = results.filter(function(result){
+					return result.warningtext == "";
+				});
+				data[1] = declined.length;
+				var warned = results.filter(function(result){
+					return result.warningtext.length > 0;
+				});
+				data[2] = warned.length;
+				generalUserModel.getByGIdGeneralUser(req.params.guid, function(result){
+					res.render('ContentController/post/analyzePoster', {clicked: clicker(1), data: data, pid: req.params.pid, user: result[0]});
+				});
+			});
+		});
+		
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/analyzeposter/:pid/:guid', (req, res)=>{
+
+})
+
+router.get('/users/report/:guid', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		var data = new Array(3);
+		postModel.getPostByGId(req.params.guid, function(results){
+			data[0] = results.length;
+			warningUserModel.getByGId(req.params.guid, function(results){
+				var declined = results.filter(function(result){
+					return result.warningtext == "";
+				});
+				data[1] = declined.length;
+				var warned = results.filter(function(result){
+					return result.warningtext.length > 0;
+				});
+				data[2] = warned.length;
+				generalUserModel.getByGIdGeneralUser(req.params.guid, function(result){
+					res.render('ContentController/users/individualReport', {clicked: clicker(3), data: data, user: result[0]});
+				});
+			});
+		});
+		
+	}else{
+		res.redirect('/login');
+	}
+})
+
 router.get('/reports', (req, res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
 		res.render('ContentController/reports/reports', {clicked: clicker(5)});
