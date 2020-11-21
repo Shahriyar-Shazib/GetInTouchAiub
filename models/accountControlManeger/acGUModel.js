@@ -7,9 +7,16 @@ module.exports ={
 		db.getResults(sql, null, function(results){
 			callback(results);
 		});
-	}/*,
+	},
+
+	getAllRegistrationRequest: function(callback){
+		var sql = "select * from registrationrequest";
+		db.getResults(sql, null, function(results){
+			callback(results);
+		});
+	}
 	
-	CCSearch: function(data,callback){
+	/*CCSearch: function(data,callback){
 		var sql = "select * from contentcontrolmanager where ccid like '% ? %'"
 		db.getResults(sql, [data.key], function(results){
 			callback(results);

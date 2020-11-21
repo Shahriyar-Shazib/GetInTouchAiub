@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Verify User</title>
+	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
+	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
+</head>
+<body>
+	<%- include('acNavBar') %>
+	<div id="workspace">
+		<h1 align='center'>Verify Signup Requests</h1>
+		<br/>
+		<table id="view">
+			<tr>
+				<td>GU ID</td>
+				<td>Name</td>
+				<td>Email</td>
+				<td>Gender</td>
+				<td>Date Of Birth</td>
+				<td>Address</td>
+				<td>Profile Picture</td>
+				<td>User Status</td>
+				<td>Action</td>
+			</tr>
+			<% for(var i=0; i< userlist.length; i++ ){ %>
+			<tr>
+				<td><%= userlist[i].guid %></td>
+				<td><%= userlist[i].name %></td>
+				<td><%= userlist[i].email %></td>
+				<td><%= userlist[i].gender %></td>
+				<td><%= userlist[i].dob %></td>
+				<td><%= userlist[i].address %></td>
+				<td><%= userlist[i].profilepicture %></td>
+				<td><%= userlist[i].userstatus %></td>
+				<td>
+					<a href="/acGUController/GUApprove/<%=userlist[i].id%>">Approve</a>
+					<a href="/acGUController/GUDecline/<%=userlist[i].id%>">Decline</a>
+				</td>
+			</tr>
+			<% } %>
+		</table>
+		<div id="searchresult">
+		</div>
+	</div>
+</body>
+</html>

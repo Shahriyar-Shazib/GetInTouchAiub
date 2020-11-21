@@ -4,9 +4,9 @@ const router 	= express.Router();
 
 router.get('/GUlist', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){
-		console.log('check3');
+		console.log('/GUlist');
 		acGUModel.getAllGeneralUser(function(results){
-			console.log('results');
+			//console.log('results');
 			res.render('accountControlManager/acGUList', {userlist: results});
 		});
 	}else{
@@ -14,6 +14,20 @@ router.get('/GUlist', (req, res)=>{
 	}
 
 })
+
+router.get('/registrationrequest', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){
+		console.log('/registrationrequest');
+		acGUModel.getAllRegistrationRequest(function(results){
+			//console.log('results');
+			res.render('accountControlManager/verifyUser', {userlist: results});
+		});
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
 
 /*router.get('/searchadmin', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){
