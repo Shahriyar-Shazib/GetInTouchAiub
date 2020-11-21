@@ -21,8 +21,8 @@ function getConnection(callback){
 }
 
 module.exports = {
+	
 	getResults : function(sql, params, callback){
-
 		getConnection(function(connection){
 			
 			if(params != null){
