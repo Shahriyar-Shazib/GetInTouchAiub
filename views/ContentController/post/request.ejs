@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>GetInTouchAiub</title>
 </head>
 <body>
     <%- include('../menu.ejs') %>
     <div class="container-fluid">
         <main class="tm-main">       
             <div class="row tm-row announcement__header">
-                <h1> Pending Posts:</h1>
+                <h1> Pending Posts</h1>
             </div>
             <div class="row tm-row tm-row-post">
                 <article class="col-12 col-md-6 tm-post tm-post-post">
@@ -31,7 +31,7 @@
                 <div class="tm-prev-next-wrapper">
                     <a href="/contentcontroller/declinepost/<%=posts[0].id%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20 request__btn__decline">Decline</a>
                     <a href="/contentcontroller/approvepost/<%=posts[0].id%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next request__btn__approve">Approve</a>
-                    <a href="/contentcontroller/analyzeposter/<%=posts[0].id%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next request__btn__report">Analyze</a>
+                    <a href="/contentcontroller/analyzeposter/<%=posts[0].id%>/<%= guser[0].guid%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next request__btn__report">Analyze</a>
                 </div>   
                 <div class="tm-paging-wrapper">
                     <span class="d-inline-block mr-3">Post Left</span>

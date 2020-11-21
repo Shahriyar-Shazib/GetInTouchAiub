@@ -1,0 +1,44 @@
+<%- include('../menu.ejs') %>
+    <div class="container-fluid">
+        <main class="tm-main">    
+            <div class="row tm-row">
+                <h1>General Users</h1>
+                <hr class="tm-hr-primary tm-hr-primary-post">
+            </div>      
+            <div class="row tm-row tm-row-post">
+                <div>
+                      <table class="table table-custom">
+                        <thead class="thead-light">
+                          <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <% for(var i=0; i< userlist.length; i++ ){ %>
+                                <tr>
+                                    <td><%= userlist[i].guid %></td>
+                                    <td><%= userlist[i].name %></td>
+                                    <td><%= userlist[i].email %></td>
+                                    <td>
+                                        <div class="tm-prev-next-wrapper d-inline">
+                                            <a href="/contentcontroller/users/profile/<%=userlist[i].guid%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20">Profile</a>
+                                            <a href="/contentcontroller/users/report/<%=userlist[i].guid%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next">Report</a>
+                                        </div> 
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                      </table>
+                </div>   
+                            
+            </div>            
+            <footer class="row tm-row">
+                <hr class="col-12">
+                
+                
+            </footer>
+        </main>
+    </div>
