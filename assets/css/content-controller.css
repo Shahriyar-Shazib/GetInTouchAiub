@@ -53,3 +53,7 @@
     min-height: 500px;
     min-width: 100%;
 }
+
+.table-custom{
+    min-width: 115%;
+}
