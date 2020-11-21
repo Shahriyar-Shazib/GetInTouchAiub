@@ -11,6 +11,7 @@ const contentcontroller			= require('./controller/ContentController/contentcontr
 const acHome 					= require('./controller/accountController/acHome')
 const acAdminController			= require('./controller/accountController/acAdminController')
 const acCCController = require('./controller/accountController/acCCController')
+const acGUController = require('./controller/accountController/acGUController')
 const logout		= require('./controller/logout');
 //const user			= require('./controller/user');
 const guHome = require('./controller/userController/guHome')
@@ -35,6 +36,7 @@ app.use('/contentcontroller', contentcontroller);
 app.use('/achome', acHome);
 app.use('/acadmincontroller',acAdminController);
 app.use('/acCCController', acCCController)
+app.use('/acGUController', acGUController)
 app.use('/userController', guHome);
 //app.use('/user', user);
 
