@@ -4,11 +4,20 @@ const router 	= express.Router();
 
 router.get('/CClist', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){
-		console.log('check2');
+		console.log('/CClist');
 		acCCModel.getAllContentControlManager(function(results){
 			console.log('results');
 			res.render('accountControlManager/acCCList', {userlist: results});
 		});
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
+router.get('/CreateCC', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){
+		res.render('accountControlManager/CreateCC');
 	}else{
 		res.redirect('/login');
 	}
