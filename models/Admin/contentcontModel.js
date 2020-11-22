@@ -51,5 +51,12 @@ module.exports ={
 		db.getResults(sql, function(results){
 			callback(results);
 		});
+	},
+	GetAllCCbykey: function(user,callback){
+		var sql = "select * from contentcontrolmanager Where accountstatus='Active' and ccid like '"+user+"'or name like '%"+user+"%'or email like '%"+user+"%'or gender like '%"+user+"%'or dob like '%"+user+"%'or address like '%"+user+"%'";
+		console.log(sql);
+		db.getResults(sql, function(results){
+			callback(results);
+		});
     },
 }

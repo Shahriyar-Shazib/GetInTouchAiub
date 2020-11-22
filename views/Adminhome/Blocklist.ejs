@@ -1,17 +1,42 @@
 <%- include('menu.ejs') %>
+<script>
+    $(document).ready(function(){
+        $('input[type=button]').click(function(){
+            var key=$('input[type=text]').val();
+            console.log(key);
+            abc ={
+                name :'Shahriyar'
+            }
+            $.ajax({
+                url: '/Adminhome/Searchblocklist/'+key,
+                type:'GET',
+                
+                 success:function(response){
+                    //$("#blocklist").load("search.ejs",abc);
+                   //var data=JSON.parse(this.responsetext) ;
+                   //console.log (data);
+                 }
+
+            })
+
+        })
+    })
+   </script>
     <div class="container-fluid">
         <main class="tm-main">
             <!-- Search form -->
             <div class="row tm-row">
                 <div class="col-12">
                     <form method="GET" class="form-inline tm-mb-80 tm-search-form">                
-                        <input class="form-control tm-search-input" name="query" type="text" placeholder="Search..." aria-label="Search">
-                        <button class="tm-search-button" type="submit">
+                        <input class="form-control tm-search-input" name="query" type="text"  placeholder="Search..." aria-label="Search">
+                        <input class="tm-search-button "  aria-hidden="true" type="button"name =""value='Search '>
+                       
                             <i class="fas fa-search tm-search-icon" aria-hidden="true"></i>
-                        </button>                                
+                                                 
                     </form>
                 </div>                
             </div>  
+            <div id ="blocklist">
             <div class="tm-site-header ">          
                 <h1  style ="color: skyblue;"class="text-center">General USer Block List</h1>
             </div>          
@@ -135,6 +160,7 @@
                 </div>   
                              
             </div>
+        </div>
             <footer class="row tm-row">
                 <hr class="col-12">
                 
