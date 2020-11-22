@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Decline Request</title>
+	<title>Delete User</title>
 	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
 	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
 </head>
@@ -10,7 +10,7 @@
 	<div id="workspace">
 		<form method="post">
 		<fieldset>
-			<legend>Decline Request</legend>
+			<legend>Delete User</legend>
 			<table>
 				<tr>
 					<td>Gu Id :</td>
@@ -40,14 +40,19 @@
 					<td>userstatus :</td>
 					<td><%=value[0].userstatus %></td>
 				</tr>
+				<tr>
+					<td>accountstatus :</td>
+					<td><%=value[0].accountstatus %></td>
+				</tr>
 			</table>
 			<div>
 				<h3>Are you sure?</h3>
-				<a href="/acGUController/registrationrequest">
+				<a href="/acGUController/GUlist">
 					<button type="button">
 						Back
 					</button>
 				</a>
+				<input type="hidden" name="guid" value="<%=value[0].guid %>">
 				<input type="submit" name="submit" value="Confirm">
 			</div>
 		</fieldset>
