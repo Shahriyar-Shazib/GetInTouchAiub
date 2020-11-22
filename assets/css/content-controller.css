@@ -57,3 +57,19 @@
 .table-custom{
     min-width: 115%;
 }
+
+.ban__days{
+    width: 15%;
+}
+
+.block__days{
+    width: 67%;
+}
+
+.form-control{
+    bottom: 0;
+}
+
+.tm-search-input{
+    bottom: 0;
+}
