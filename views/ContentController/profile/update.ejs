@@ -26,7 +26,18 @@
                     <%= alertOne%> 
                 </div>
             <% } %>  
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
+                <div class="row tm-row tm-row-post">
+                    <h3>Profile Picture:</h3>     
+                    <% if(user.profilepicture != null && user.profilepicture.length > 0){ %>
+                        <img src="/assets/pictures/<%= user.profilepicture  %> " class="profile-img" id="image-preview" alt="<%= user.name %>">
+                    <% }else{ %>
+                        <img src="/assets/pictures/no-profile-pic.png" class="profile-img" id="image-preview" alt="No profile pic">
+                    <% } %>
+                    <h3><pre>              </pre></h3>
+                    <input type="file" name="image" id="image">           
+                </div>
+                
                 <div class="row tm-row tm-row-post">
                     <h3>Name:</h3>              
                     <input class="form-control tm-search-input" name="name" type="text" value="<%=user.name%>" placeholder="Name..">
@@ -81,5 +92,6 @@
             
         </main>
     </div>
+    <script src="/assets/js/templatemo-script.js"></script>
 </body>
 </html>
