@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Edit Content Control Manager</title>
+	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
+	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
+	<script type="text/javascript" src="/assets/accountControlManager/js/UpdateCC.js"></script>
+</head>
+<body>
+	<%- include('acNavBar') %>
+	<div id="workspace">
+		<h1 align='center'>Edit Content Control Manager</h1>
+		<br/>
+		<table id="view">
+			<form method='post'>
+				<tr>
+					<td>CC ID</td>
+					<td><input type="text" id="ccid" name="ccid" value="<%= value[0].ccid %>" disabled></td>
+				</tr>
+				<tr id="show1"></tr>
+				<tr>
+					<td>Name</td>
+					<td><input type="text" id="name" name="name" value="<%= value[0].name %>"></td>
+				</tr>
+				<tr id="show2"></tr>
+				<tr>
+					<td>Email</td>
+					<td><input type="text" id="email" name="email" value="<%= value[0].email %>"></td>
+				</tr>
+				<tr id="show3"></tr>
+				<tr>
+					<td>Date of Birth</td>
+					<td><input type="text" id="dob" name="dob" value="<%= value[0].dob %>"></td>
+				</tr>
+				<tr>
+					<td>Address</td>
+					<td><input type="text" id="address" name="address" value="<%= value[0].address %>"></td>
+				</tr>
+				<tr>
+					<td>Profile Picture</td>
+					<td><input type="file" id="image" name="image"></td>
+				</tr>
+				<tr id="show5"></tr>
+				<tr>
+					<td colspan='2'>
+						<a href="/acHome">
+							<button type="button">
+								Back
+							</button>
+						</a>
+						<input type="submit" name="addcc" value="Update">
+						<input type="reset" name="reset">
+					</td>
+				</tr>
+			</form>
+		</table>
+		<div id="searchresult">
+		</div>
+	</div>
+</body>
+</html>

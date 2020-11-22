@@ -45,4 +45,11 @@ module.exports ={
 			callback(status);
 		});
 	},
+	GetAllblockCCbykey: function(user,callback){
+		var sql = "select * from contentcontrolmanager Where accountstatus='Blocked' and ccid like '"+user.key+"'or name like '%"+user.key+"%'or email like '%"+user.key+"%'or gender like '%"+user.key+"%'or dob like '%"+user.key+"%'or address like '%"+user.key+"%'";
+		console.log(sql);
+		db.getResults(sql, function(results){
+			callback(results);
+		});
+    },
 }

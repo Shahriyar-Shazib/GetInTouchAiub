@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Decline Request</title>
+	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
+	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
+</head>
+<body>
+	<%- include('acNavBar') %>
+	<div id="workspace">
+		<form method="post">
+		<fieldset>
+			<legend>Decline Request</legend>
+			<table>
+				<tr>
+					<td>Gu Id :</td>
+					<td><%=value[0].guid %></td>
+				</tr>
+				<tr>
+					<td>Name :</td>
+					<td><%=value[0].name %></td>
+				</tr>
+				<tr>
+					<td>Email :</td>
+					<td><%=value[0].email %></td>
+				</tr>
+				<tr>
+					<td>Gender :</td>
+					<td><%=value[0].gender %></td>
+				</tr>
+				<tr>
+					<td>Date Of Birth :</td>
+					<td><%=value[0].dob %></td>
+				</tr>
+				<tr>
+					<td>Address :</td>
+					<td><%=value[0].address %></td>
+				</tr>
+				<tr>
+					<td>userstatus :</td>
+					<td><%=value[0].userstatus %></td>
+				</tr>
+			</table>
+			<div>
+				<h3>Are you sure?</h3>
+				<a href="/acGUController/registrationrequest">
+					<button type="button">
+						Back
+					</button>
+				</a>
+				<input type="submit" name="submit" value="Confirm">
+			</div>
+		</fieldset>
+	</form>
+	</div>
+</body>
+</html>

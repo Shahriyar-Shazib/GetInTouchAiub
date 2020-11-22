@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Inbox</title>
+	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
+	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
+</head>
+<body>
+	<%- include('acNavBar') %>
+	<div id="workspace">
+		<h2 align='center'>Text From General Users</h2>
+		<br/>
+		<table id="view">
+			<tr>
+				<td>GU Id</td>
+				<td>Text</td>
+				<td>Action</td>
+			</tr>
+			<% for(var i=0; i< gutext.length; i++ ){ %>
+			<tr>
+				<td><%= gutext[i].guid %></td>
+				<td><%= gutext[i].text %></td>
+				<td> 
+					<a href="#">Reply</a>
+				</td>
+			</tr>
+			<% } %>
+		</table>
+		<br/>
+		<a href="/acText/Text">
+			<button type="button">
+				Back
+			</button>
+		</a>
+		<br/>
+		<div id="searchresult">
+		</div>
+	</div>
+</body>
+</html>

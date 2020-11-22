@@ -5,8 +5,15 @@
 </head>
 <body>
     <fieldset>
+	<%if(typeof al !='undefined') {%>
+			<%for(var i=0; i< al.length; i++ ){%>	
+			<div style="color:red;">
+			<%=	al[i].msg%>  
+				</div>
+			<%}%>
+			<%}%>
 	<form method="post">
-		
+		 
 			<legend>Insert MAnagement</legend>
 			<table>
                 <tr>

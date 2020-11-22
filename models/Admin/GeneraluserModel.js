@@ -47,4 +47,11 @@ module.exports = {
 			callback(status);
 		});
 	},
+	GetAllblockGUbykey: function(user,callback){
+		var sql = "select * from generaluser Where accountstatus='Blocked' and guid like '"+user.key+"'or name like '%"+user.key+"%'or email like '%"+user.key+"%'or gender like '%"+user.key+"%'or dob like '%"+user.key+"%'or address like '%"+user.key+"%'";
+		//console.log(sql);
+		db.getResults(sql, function(results){
+			callback(results);
+		});
+    },
 };

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create Notice</title>
+	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
+	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
+	<script type="text/javascript" src="/assets/accountControlManager/js/CreateText.js"></script>
+</head>
+<body>
+	<%- include('acNavBar') %>
+	<div id="workspace">
+		<h1 align='center'>Send Text</h1>
+		<br/>
+		<table id="view">
+			<form id="myform">
+			    Receiver Id:<br/>
+			    <input type="text" id="receiverid" name="receiverid"><br/>
+			   	<br/>
+				<div id="show1"></div>
+				Text:<br/>
+				<textarea rows="5" cols="80" id="text" name="text"></textarea><br/>
+				<div id="show2"></div>
+				<a href="/acHome">
+					<button type="button">
+						Back
+					</button>
+				</a>
+				<input type="button" id="sendtext" name="sendtext" value="Send">
+				<input type="reset" id="reset" name="reset">
+				<input type="hidden" id="id" name="id" value="<%= acid[0] %>">
+				<div id="output"></div>
+			</form>
+		</table>
+		<br/>
+		<div id="searchresult">
+		<br/>
+		</div>
+	</div>
+</body>
+</html>

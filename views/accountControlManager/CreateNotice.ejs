@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create Notice</title>
+	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
+	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
+	<script type="text/javascript" src="/assets/accountControlManager/js/CreateNotice.js"></script>
+</head>
+<body>
+	<%- include('acNavBar') %>
+	<div id="workspace">
+		<h1 align='center'>Create Notice</h1>
+		<br/>
+		<table id="view">
+			<form id="myform">
+			    To:<br/>
+			   	<select id="towhom" name="towhom">
+			   		<option value="">None</option>
+		   			<option value="General User">General User</option>
+		   			<option value="Content Control Manager">Content Control Manager</option>
+			   	</select><br/>
+				<div id="show1"></div>
+				Subject:<br/>
+				<input type="text" id="noticesubject" name="noticesubject"><br/>
+				<div id="show2"></div>
+				Body:<br/>
+				<textarea rows="5" cols="80" id="noticebody" name="noticebody"></textarea><br/>
+				<div id="show3"></div>
+				<a href="/acHome">
+					<button type="button">
+						Back
+					</button>
+				</a>
+				<input type="button" id="addnotice" name="addnotice" value="Send">
+				<input type="reset" id="reset" name="reset">
+				<input type="hidden" id="id" name="id" value="<%= acid[0] %>">
+				<div id="output"></div>
+			</form>
+		</table>
+		<br/>
+		<div id="searchresult">
+		<br/>
+		</div>
+	</div>
+</body>
+</html>

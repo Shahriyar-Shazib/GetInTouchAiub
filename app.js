@@ -7,11 +7,17 @@ const exSession 	= require('express-session');
 const cookieParser 	= require('cookie-parser');
 const login			= require('./controller/login');
 const home			= require('./controller/Adminhome');
+
 const contentcontroller			= require('./controller/ContentController/contentcontroller');
-const acHome 			= require('./controller/accountController/acHome')
-const acAdminController	= require('./controller/accountController/acAdminController')
+const acHome 					= require('./controller/accountController/acHome');
+const acAdminController			= require('./controller/accountController/acAdminController');
+const acCCController 			= require('./controller/accountController/acCCController');
+const acGUController 			= require('./controller/accountController/acGUController');
+const acNotice 					= require('./controller/accountController/acNotice');
+const acText 					= require('./controller/accountController/acText');
+
 const logout		= require('./controller/logout');
-//const user			= require('./controller/user');
+const{check,validationResult } = require('express-validator');
 const guHome = require('./controller/userController/guHome')
 
 const app 			= express();
@@ -22,7 +28,11 @@ app.set('view engine', 'ejs');
 //middleware
 app.use('/assets',express.static('assets'));
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(exSession({secret: 'my secret value', saveUninitialized: true, resave: false }));
+app.use(exSession({secret: 'my secret value', saveUninitialized: true, resave: false, cookie: {
+    httpOnly: true,
+    maxAge: 5*60*60*1000
+  }
+}));
 app.use(cookieParser());
 app.use(flash(app));
 app.use(flush());
@@ -31,9 +41,16 @@ app.use('/login', login);
 app.use('/Adminhome', home);
 app.use('/logout', logout);
 app.use('/contentcontroller', contentcontroller);
+
 app.use('/achome', acHome);
 app.use('/acadmincontroller',acAdminController);
+app.use('/acCCController', acCCController);
+app.use('/acGUController', acGUController);
+app.use('/acNotice', acNotice);
+app.use('/acText', acText);
+
 app.use('/userController', guHome);
+
 //app.use('/user', user);
 
 //route
