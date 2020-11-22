@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Received Text</title>
+	<link rel="stylesheet" href="/assets/generalUser/css/guStyle.css">
+	<script type="text/javascript" src="/assets/generalUser/js/jquery-3.5.1.js"></script>
+</head>
+<body>
+	<%- include('guMenu') %>
+	<div id="workspace">
+		<h2 align='center'>Received Text</h2>
+		<br/>
+		<table id="view">
+			<tr>
+				<td>Senders ID</td>
+				<td>Text</td>
+			</tr>
+			<% for(var i=0; i< text.length; i++ ){ %>
+			<tr>
+				<td><%= text[i].guid %></td>
+				<td><%= text[i].text %></td>
+			<% } %>
+		</table>
+		<br/>
+		<a href="/userController">
+			<button type="button">
+				Back
+			</button>
+		</a>
+	</div>
+</body>
+</html>
