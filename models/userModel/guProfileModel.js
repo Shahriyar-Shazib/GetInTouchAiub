@@ -10,9 +10,9 @@ module.exports ={
 		});
 	},
 
-	UpdateMyProfile: function(data , callback){
-		var sql = "UPDATE `generaluser` SET `name`=?,`email`=?,`dob`=?,`address`=? WHERE id=?";
-		db.execute(sql, [data.name,data.email,data.dob,data.address,data.id] ,function(status){
+	updateMyProfile: function(data , callback){
+		var sql = "UPDATE `generaluser` SET `name`=?,`email`=?,`dob`=?,`address`=? WHERE guid=?";
+		db.execute(sql, [data.name,data.email,data.dob,data.address,data.guid] ,function(status){
 			console.log(status);
 			callback(status);
 		});
