@@ -6,7 +6,7 @@
             <div class="row tm-row">
                 <div class="col-12">
                     <form method="GET" class="form-inline tm-mb-80 tm-search-form">                
-                        <input class="form-control tm-search-input" name="query" type="text" placeholder="Search..." aria-label="Search">
+                        <input class="form-control tm-search-input" id ="srcpost" name="query" type="text" placeholder="Search..." aria-label="Search">
                                                       
                     </form>
                 </div>                
@@ -39,7 +39,11 @@
                 <div class="tm-site-header ">          
                     <h1  style ="color: skyblue;"class="text-center">General User Posts</h1>
                 </div>
+                <div id ="post">
                 <div class="row tm-row">
+                
+                    
+                
                     <% for(var i=0; i< post.length; i++ ){ %>
                     <article class="col-12 col-md-6 tm-post">
                         <hr class="tm-hr-primary">
@@ -66,6 +70,7 @@
                     <%}%>
 
             </div>
+            </div>
             <div class="row tm-row tm-mt-100 tm-mb-75">
                
                 
@@ -78,6 +83,6 @@
         </main>
     </div>
     <script src="/assets/js/jquery.min.js"></script>
-    <script src="/assets/js/templatemo-script.js"></script>
+    <script src="/assets/js/Search.js"></script>
 </body>
 </html>

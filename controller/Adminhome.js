@@ -504,6 +504,27 @@ router.get('/AccountControllerList', (req, res)=>{
 })
 
 
+
+router .get('/SearchPost/:data',(req,res)=>{
+
+	if(req.params.data != null){
+		var data = JSON.parse(req.params.data);
+		console.log(data);
+		if(data.key.length == 0){
+			post.getAllpost(function(results){
+			
+					res.json({result: results});
+				
+			});
+		}else{
+			post.getAllpostbyKey(data.key, function(results){
+					res.json({result: results});
+				
+			});
+		}
+	}
+ 
+})
 //////pending Signup Request
 
 

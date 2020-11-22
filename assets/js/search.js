@@ -240,4 +240,61 @@ $(function() {
       }
     });
   });
+
+
+  ////////////////////Search///////////
+  $("#srcpost").on("keyup change", function (e)
+  {
+    var value = $('#srcpost').val();
+     var data = 
+     {
+         key : value
+     };
+   console.log(data);
+   var json = JSON.stringify(data);
+   console.log(json);
+
+   $.ajax({
+           type: 'GET',
+           url: '/Adminhome/SearchPost/'+json,
+           contentType: 'application/json',
+           dataType: "json",
+           success: function(results) {
+             var result = results.result;
+         
+             console.log(result);
+             var html = '';
+             if(result.length > 0){
+              html +='<div class="row tm-row">';
+                for (var i = 0; i< result.length; i++) {
+                 html +=' <article class="col-12 col-md-6 tm-post">'
+                 html += ' <hr class="tm-hr-primary">'
+                 html += '<div class="tm-post-link-inner">'
+                 html += ' </div>'
+                 html += '<span class="position-absolute tm-new-badge">General User</span>'
+                 html += '<h2 class="tm-pt-30 tm-color-primary tm-post-title">'+result[i].guid+'</h2>'
+                 html += '</a> '
+                 html +=  '<p class="tm-pt-30">'
+                 html +=  result[i].text  ;         
+                 html +=   '</p>'
+                 html +=  '<span> '+ result[i].file+' </span>'
+                html += '<div class="d-flex justify-content-between tm-pt-45">';
+                       html += '</div>';
+                       html += '<hr>';
+                       html += '<div class="d-flex justify-content-between">';
+                       html += '<span>Comment</span>';
+                       html += '</div>';
+                       html += '</article>';
+                      
+                 }
+           }
+
+           else{
+               html += '<h4>Not Data Found </h4>';
+             }
+       
+       $('#post').html(html);
+     }
+   });
+ });
 });
