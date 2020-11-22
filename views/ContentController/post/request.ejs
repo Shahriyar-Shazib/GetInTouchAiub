@@ -19,7 +19,7 @@
                         <%= posts[0].text%>
                     </p>
                     <% if(posts[0].file != null && posts[0].file.length > 0){ %>
-                        <img src="<%= posts[0].file  %> " class="profile-img" alt="error loading file">
+                        <img src="/assets/pictures/<%= posts[0].file  %> " class="profile-img" alt="error loading file">
                     <% }else{ %>
                         <p class="tm-pt-30">
                             //NO PHOTO ADDED\\

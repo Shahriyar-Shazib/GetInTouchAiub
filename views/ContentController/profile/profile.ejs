@@ -14,7 +14,7 @@
                 <hr class="tm-hr-primary tm-hr-primary-post">
             </div>
             <% if(user.profilepicture != null && user.profilepicture.length > 0){ %>
-                <img src="<%= user.profilepicture  %> " class="profile-img" alt="<%= user.name %>">
+                <img src="/assets/pictures/<%= user.profilepicture  %> " class="profile-img" alt="<%= user.name %>">
             <% }else{ %>
                 <img src="/assets/pictures/no-profile-pic.png" class="profile-img" alt="No profile pic">
             <% } %>          
