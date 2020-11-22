@@ -31,13 +31,21 @@ module.exports ={
 		});
 	},
 
+	insertUser: function(data , callback){
+		var sql= "INSERT INTO `user`(`id`, `userid`, `password`, `usertype`, `accountstatus`) VALUES (?,?,?,?,?)";
+		db.execute(sql, ['' , data.ccid , data.ccid , 'Content Control Manager' , 'Active'], function(status){
+			console.log(status);
+			callback(status);
+		});
+	},
+
 	bannedUserFromUser: function(data , callback){
 		var sql = "UPDATE `user` SET `accountstatus`='Blocked' WHERE userid=?";
 		console.log(data.guid);
 		db.execute(sql, [data.guid], function(status){
 			callback(status);
 		});
-	},
+	}
 
 	
 	/*CCSearch: function(data,callback){
