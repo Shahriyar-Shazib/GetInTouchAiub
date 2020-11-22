@@ -4,6 +4,7 @@ const guACModel = require.main.require('./models/userModel/guACModel');
 const guCCModel = require.main.require('./models/userModel/guCCModel');
 const guTextModel = require.main.require('./models/userModel/guTextModel');
 const guRegistrationModel = require.main.require('./models/userModel/guRegistrationModel');
+const guProfileModel = require.main.require('./models/userModel/guProfileModel');
 const router 	= express.Router();
 
 //Home
@@ -140,5 +141,23 @@ router.post('/registrationrequest' , (req, res)=>{
 		}
 	})
 })
+
+//profile
+
+router.get('/getmyprofile', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname']
+		};
+		guProfileModel.getMyProfile(data, function(results){
+			res.render('userController/Profile', {value:results});
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
 
 module.exports = router;
