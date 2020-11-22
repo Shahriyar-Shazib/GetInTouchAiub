@@ -15,6 +15,14 @@ module.exports ={
 		});
 	},
 
+	deleteCCFromUser: function(data , callback){
+		var sql = "DELETE FROM `user` WHERE userid=?";
+		console.log(data.ccid);
+		db.execute(sql, [data.ccid], function(status){
+			callback(status);
+		});
+	},
+
 	tbUserFromUser: function(data , callback){
 		var sql = "UPDATE `user` SET `accountstatus`='Temporarily Banned' WHERE userid=?";
 		console.log(data.guid);
