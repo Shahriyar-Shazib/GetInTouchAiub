@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Inbox</title>
+	<link rel="stylesheet" href="/assets/generalUser/css/guStyle.css">
+	<script type="text/javascript" src="/assets/generalUser/js/jquery-3.5.1.js"></script>
+</head>
+<body>
+	<%- include('guMenu') %>
+	<div id="workspace">
+		<h2 align='center'>Notification From Admin</h2>
+		<br/>
+		<a href="/userController/NotificationAdmin">
+			<button type="button">
+				Click Here
+			</button>
+		</a>
+		<br/>
+		<h2 align='center'>Notifications Content Control Manager</h2>
+		<br/>
+		<a href="/userController/NotificationCC">
+			<button type="button">
+				Click Here
+			</button>
+		</a>
+		<h2 align='center'>Notification From Account Control Manager</h2>
+		<br/>
+		<a href="/userController/NotificationAC">
+			<button type="button">
+				Click Here
+			</button>
+		</a>
+		<br/>
+		<div id="searchresult">
+		</div>
+	</div>
+</body>
+</html>

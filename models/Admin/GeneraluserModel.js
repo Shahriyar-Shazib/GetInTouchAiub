@@ -53,5 +53,12 @@ module.exports = {
 		db.getResults(sql, function(results){
 			callback(results);
 		});
+	},
+	GetAllGubykey: function(user,callback){
+		var sql = "select * from generaluser Where accountstatus='Active' and guid like '"+user+"'or name like '%"+user+"%'or email like '%"+user+"%'or gender like '%"+user+"%'or dob like '%"+user+"%'or address like '%"+user+"%'";
+		console.log(sql);
+		db.getResults(sql, function(results){
+			callback(results);
+		});
     },
 };

@@ -5,7 +5,7 @@ $(document).ready(function(){
 			"key" : $('#searchkey').val()
 		}
 		$.ajax({
-			url: '/acadmincontroller/searchadmin',
+			url: '/acGUController/searchGU',
 			type: 'GET',
 			dataType:'json',
 			data: jsonsend,

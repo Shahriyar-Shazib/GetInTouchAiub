@@ -69,10 +69,10 @@ module.exports ={
 	},
 
 	
-	/*CCSearch: function(data,callback){
-		var sql = "select * from contentcontrolmanager where ccid like '% ? %'"
-		db.getResults(sql, [data.key], function(results){
+	GUSearch: function(data , callback){
+		var sql = "SELECT * FROM `generaluser` WHERE guid LIKE '%"+data.key+"%' "
+		db.getResults(sql, null, function(results){
 			callback(results);
 		});
-	}*/
+	}
 }

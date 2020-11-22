@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Send Text</title>
+	<link rel="stylesheet" href="/assets/generalUser/css/guStyle.css">
+	<script type="text/javascript" src="/assets/generalUser/js/jquery-3.5.1.js"></script>
+	<script type="text/javascript" src="/assets/generalUser/js/SendText.js"></script>
+</head>
+<body>
+	<%- include('guMenu') %>
+	<div id="workspace">
+		<h1 align='center'>Send Text</h1>
+		<br/>
+		<table id="view">
+			<form>
+			    Receiver Id:<br/>
+			    <input type="text" id="receiverid" name="receiverid"><br/>
+			   	<br/>
+				Text:<br/>
+				<textarea rows="5" cols="80" id="text" name="text"></textarea><br/>
+				<input type="button" id="send" name="send" value="Send">
+				<input type="reset" id="reset" name="reset">
+				<a href="/userController">
+					<button type="button">
+						Back
+					</button>
+				</a>
+			</form>
+		</table>
+		<br/>
+		<div id="result">
+		<br/>
+		</div>
+	</div>
+</body>
+</html>

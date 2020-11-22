@@ -37,15 +37,12 @@ module.exports ={
 		db.execute(sql, [data.id], function(status){
 			callback(status);
 		});
-	}
+	},
 
-
-	/*,
-	
-	CCSearch: function(data,callback){
-		var sql = "select * from contentcontrolmanager where ccid like '% ? %'"
-		db.getResults(sql, [data.key], function(results){
+	CCSearch: function(data , callback){
+		var sql = "SELECT * FROM `contentcontrolmanager` WHERE ccid LIKE '%"+data.key+"%' "
+		db.getResults(sql, null, function(results){
 			callback(results);
 		});
-	}*/
+	}
 }

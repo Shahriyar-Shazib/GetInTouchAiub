@@ -83,7 +83,7 @@ router.get('/AdminList', (req, res)=>{
 	check('dob','invalid dob')
 	.notEmpty(),
 	check('address','invalid address')
-	.notEmpty(),
+	
 	
 	
 	   ],(req, res)=>{
@@ -114,6 +114,27 @@ router.get('/AdminList', (req, res)=>{
 	
 
 })
+router .get('/SearchAdminlist/:data',(req,res)=>{
+
+	if(req.params.data != null){
+		var data = JSON.parse(req.params.data);
+		//console.log(data);
+		if(data.key.length == 0){
+			AdminModel.getAllAdmin(function(results){
+			
+					res.json({result: results});
+				
+			});
+		}else{
+			AdminModel.GetAllAdminbykey(data.key, function(results){
+					res.json({result: results});
+				
+			});
+		}
+	}
+ 
+})
+
     
 /////Account Controller
 router.get('/AccountControllerList', (req, res)=>{
@@ -184,6 +205,26 @@ router.get('/AccountControllerList', (req, res)=>{
 		   });
 	   
 	   })
+	   router .get('/Searchaclist/:data',(req,res)=>{
+
+		if(req.params.data != null){
+			var data = JSON.parse(req.params.data);
+			console.log(data);
+			if(data.key.length == 0){
+				accContModel.getAllActiveAccCont(function(results){
+				
+						res.json({result: results});
+					
+				});
+			}else{
+				accContModel.GetAllACbykey(data.key, function(results){
+						res.json({result: results});
+					
+				});
+			}
+		}
+	 
+	})
  
 ///////Content Controller 
 
@@ -250,6 +291,26 @@ router.get('/AccountControllerList', (req, res)=>{
 	   });
    
    })
+   router .get('/Searchcclist/:data',(req,res)=>{
+
+	if(req.params.data != null){
+		var data = JSON.parse(req.params.data);
+		console.log(data);
+		if(data.key.length == 0){
+			contentcontModel.getAllActiveContentCont(function(results){
+			
+					res.json({result: results});
+				
+			});
+		}else{
+			contentcontModel.GetAllCCbykey(data.key, function(results){
+					res.json({result: results});
+				
+			});
+		}
+	}
+ 
+})
 
    /////////////General User
 
@@ -317,7 +378,26 @@ router.get('/AccountControllerList', (req, res)=>{
 		   });
 	   
 	   })
-	
+	   router .get('/Searchuserlist/:data',(req,res)=>{
+
+		if(req.params.data != null){
+			var data = JSON.parse(req.params.data);
+			console.log(data);
+			if(data.key.length == 0){
+				GuserModel.getAllActiveUser(function(results){
+				
+						res.json({result: results});
+					
+				});
+			}else{
+				GuserModel.GetAllGubykey(data.key, function(results){
+						res.json({result: results});
+					
+				});
+			}
+		}
+	 
+	})
 
      //////Notification
 

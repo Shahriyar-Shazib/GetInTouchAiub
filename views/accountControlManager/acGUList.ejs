@@ -4,6 +4,7 @@
 	<title>General User List</title>
 	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
 	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
+	<script type="text/javascript" src="/assets/accountControlManager/js/searchGU.js"></script>
 </head>
 <body>
 	<%- include('acNavBar') %>
@@ -46,7 +47,7 @@
 		<h2 align='center'>Search General User</h2>
 		
 		<form>
-			<input type="text" name="searchkey">
+			<input type="text" id="searchkey" name="searchkey">
 			<input type="button" name="search" value="Search">
 		</form>
 

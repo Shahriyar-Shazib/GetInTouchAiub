@@ -78,38 +78,13 @@ module.exports ={
 			callback(status);
 		});
 	},
-	blockUser: function(user,callback){
-	/*	var sql="UPDATE `user` SET `id`='"+user.id+"',`username`='"+user.username+"',`password`='"+user.password+"',`type`='"+user.type+"' WHERE `id`='"+user.id+"' "
-		db.execute(sql, function(status){
-			callback(status);
-		});*/
-	},
-	blockAccCont: function(user,callback){
-		/*	var sql="UPDATE `user` SET `id`='"+user.id+"',`username`='"+user.username+"',`password`='"+user.password+"',`type`='"+user.type+"' WHERE `id`='"+user.id+"' "
-			db.execute(sql, function(status){
-				callback(status);
-			});*/
-	},
-	blockcontentCont : function(user,callback){
-		/*	var sql="UPDATE `user` SET `id`='"+user.id+"',`username`='"+user.username+"',`password`='"+user.password+"',`type`='"+user.type+"' WHERE `id`='"+user.id+"' "
-			db.execute(sql, function(status){
-				callback(status);
-			});*/
-	},
-	
-	deleteAccCont: function(user, callback){
-		/*var sql="DELETE FROM `user` WHERE id='"+user.id+"'";
+
+	GetAllAdminbykey: function(user,callback){
+		var sql = "select * from admin Where  adminid like '"+user+"'or name like '%"+user+"%'or email like '%"+user+"%'or gender like '%"+user+"%'or dob like '%"+user+"%'or address like '%"+user+"%'";
 		console.log(sql);
-		db.execute(sql, function(status){
-			callback(status);
-		});*/
-	},
-	deleteContentCont: function(user, callback){
-		/*var sql="DELETE FROM `user` WHERE id='"+user.id+"'";
-		console.log(sql);
-		db.execute(sql, function(status){
-			callback(status);
-		});*/
-	}
+		db.getResults(sql, function(results){
+			callback(results);
+		});
+    },
 
 }

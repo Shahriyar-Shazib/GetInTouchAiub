@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Profile</title>
+	<link rel="stylesheet" href="/assets/generalUser/css/guStyle.css">
+	<script type="text/javascript" src="/assets/generalUser/js/jquery-3.5.1.js"></script>
+</head>
+<body>
+	<%- include('guMenu') %>
+	<div id="workspace">
+		<form method="post">
+		<fieldset>
+			<h2><%=value[0].name %></h2>
+			<br/>
+			<table id="view">
+				<tr>
+					<td>GU Id :</td>
+					<td><%=value[0].guid %></td>
+				</tr>
+				<tr>
+					<td>Name :</td>
+					<td><%=value[0].name %></td>
+				</tr>
+				<tr>
+					<td>Email :</td>
+					<td><%=value[0].email %></td>
+				</tr>
+				<tr>
+					<td>Gender :</td>
+					<td><%=value[0].gender %></td>
+				</tr>
+				<tr>
+					<td>Date Of Birth :</td>
+					<td><%=value[0].dob %></td>
+				</tr>
+				<tr>
+					<td>Address :</td>
+					<td><%=value[0].address %></td>
+				</tr>
+				<tr>
+					<td>User Status :</td>
+					<td><%=value[0].userstatus %></td>
+				</tr>
+				<tr>
+					<td>Account Status :</td>
+					<td><%=value[0].accountstatus %></td>
+				</tr>
+			</table>
+			<div>
+				<a href="/userController/UpdateProfile">
+					<button type="button">
+						Update Profile
+					</button>
+				</a>
+				<a href="/userController">
+					<button type="button">
+						Back
+					</button>
+				</a>
+				<input type="hidden" name="guid" value="<%=value[0].guid %>">
+			</div>
+		</fieldset>
+	</form>
+	</div>
+</body>
+</html>
