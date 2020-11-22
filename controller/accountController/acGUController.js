@@ -57,6 +57,86 @@ router.get('/GURemove/:id', (req, res)=>{
 	}
 })
 
+router.get('/GUTemporarilyBlock/:id', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){	
+		var data ={
+			id: req.params.id
+		};
+		acGUModel.getByIdGeneralUser(data, function(results){
+			console.log(results);
+			res.render('accountControlManager/temporarilyBlock', {value: results});
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/GUBanned/:id', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){	
+		var data ={
+			id: req.params.id
+		};
+		acGUModel.getByIdGeneralUser(data, function(results){
+			console.log(results);
+			res.render('accountControlManager/banned', {value: results});
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/GUTemporarilyBlock/:id', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){	
+		var data ={
+			id: req.params.id,
+			guid: req.body.guid
+		};
+		acGUModel.tbUserFromGU(data, function(status){
+			if(status)
+			{
+				acUserModel.tbUserFromUser(data, function(status){
+					if(status)
+					{
+						res.redirect('/acGUController/GUlist');
+					}
+				});
+			}
+			else
+			{
+				res.redirect('/acGUController/GUlist');
+			}
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/GUBanned/:id', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){	
+		var data ={
+			id: req.params.id,
+			guid: req.body.guid
+		};
+		acGUModel.bannedUserFromGU(data, function(status){
+			if(status)
+			{
+				acUserModel.bannedUserFromUser(data, function(status){
+					if(status)
+					{
+						res.redirect('/acGUController/GUlist');
+					}
+				});
+			}
+			else
+			{
+				res.redirect('/acGUController/GUlist');
+			}
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
 router.post('/GURemove/:id', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){	
 		var data ={

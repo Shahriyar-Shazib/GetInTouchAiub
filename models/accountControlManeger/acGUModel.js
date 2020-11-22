@@ -54,6 +54,20 @@ module.exports ={
 		});
 	},
 
+	tbUserFromGU: function(data , callback){
+		var sql = "UPDATE `generaluser` SET `accountstatus`='Temporarily Blocked' WHERE id=?";
+		db.execute(sql, [data.id], function(status){
+			callback(status);
+		});
+	},
+
+	bannedUserFromGU: function(data , callback){
+		var sql = "UPDATE `generaluser` SET `accountstatus`='Banned' WHERE id=?";
+		db.execute(sql, [data.id], function(status){
+			callback(status);
+		});
+	},
+
 	
 	/*CCSearch: function(data,callback){
 		var sql = "select * from contentcontrolmanager where ccid like '% ? %'"

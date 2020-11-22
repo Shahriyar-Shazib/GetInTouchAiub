@@ -13,7 +13,23 @@ module.exports ={
 		db.execute(sql, [data.guid], function(status){
 			callback(status);
 		});
-	}
+	},
+
+	tbUserFromUser: function(data , callback){
+		var sql = "UPDATE `user` SET `accountstatus`='Temporarily Banned' WHERE userid=?";
+		console.log(data.guid);
+		db.execute(sql, [data.guid], function(status){
+			callback(status);
+		});
+	},
+
+	bannedUserFromUser: function(data , callback){
+		var sql = "UPDATE `user` SET `accountstatus`='Blocked' WHERE userid=?";
+		console.log(data.guid);
+		db.execute(sql, [data.guid], function(status){
+			callback(status);
+		});
+	},
 
 	
 	/*CCSearch: function(data,callback){
