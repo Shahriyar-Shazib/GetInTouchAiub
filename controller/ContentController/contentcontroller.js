@@ -1,8 +1,10 @@
 const express = require('express');
 const fs = require('fs');
 const JSDOM = require('jsdom').JSDOM;
+const httpMsgs = require('http-msgs');
 const downloadsFolder = require('downloads-folder');
 const generalUserModel = require('../../models/ContentController/generalUserModel');
+const { BADNAME } = require('dns');
 const userModel = require.main.require('./models/ContentController/userModel');
 const postModel = require.main.require('./models/ContentController/postModel');
 const postRequestModel = require.main.require('./models/ContentController/postRequestModel');
@@ -11,6 +13,7 @@ const contributionModel = require.main.require('./models/ContentController/contr
 const warningUserModel = require.main.require('./models/ContentController/warningUserModel');
 const announcementModel = require.main.require('./models/ContentController/announcementModel');
 const contentControllerModel = require.main.require('./models/ContentController/contentControllerModel');
+const ccRequestForActionModel = require.main.require('./models/ContentController/ccRequestForActionModel');
 const router = express.Router();
 
 function clicker(serial){
@@ -190,6 +193,105 @@ router.post('/declinepost/:id', (req, res)=>{
 
 })
 
+router.get('/analyzeposter/:pid/:guid', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		var data = new Array(3);
+		postModel.getPostByGId(req.params.guid, function(results){
+			data[0] = results.length;
+			warningUserModel.getByGId(req.params.guid, function(results){
+				var declined = results.filter(function(result){
+					return result.warningtext == "";
+				});
+				data[1] = declined.length;
+				var warned = results.filter(function(result){
+					return result.warningtext.length > 0;
+				});
+				data[2] = warned.length;
+				generalUserModel.getByGIdGeneralUser(req.params.guid, function(result){
+					res.render('ContentController/post/analyzePoster', {clicked: clicker(1), data: data, pid: req.params.pid, user: result[0]});
+				});
+			});
+		});
+		
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/analyzeposter/:pid/:guid', (req, res)=>{
+	var ban = req.body.banDays;
+	var block = req.body.blockDays;
+	var warn = req.body.warning;
+
+	var status = false;
+
+	var action = {
+		ccid : req.cookies['uname']
+	};
+
+	if(ban.length > 0){
+		if(block.length > 0){
+			action.actiontype = "Block & Ban";
+			action.text = "Block general user: "+req.params.guid+" for "+block+" days from posting and ban for "+ban+" days.";
+		}else{
+			action.actiontype = "Ban";
+			action.text = "Ban general user: "+req.params.guid+" for "+ban+" days."; 
+		}
+		status = true;
+	}else if(block.length > 0){
+		action.actiontype = "Block";
+		action.text = "Block general user: "+req.params.guid+" for "+ban+" days from posting.";
+		status = true;
+	}
+
+	if(status){
+		ccRequestForActionModel.insert(action, function(status){
+			if(warn.length > 0){
+				var warning = {
+					ccid : req.cookies['uname'],
+					guid : req.params.guid,
+					warningtext : warn
+				}
+				warningUserModel.insert(warning, function(status){
+					res.redirect('/contentcontroller/declinepost/'+req.params.pid);
+				});				
+			}else{
+				res.redirect('/contentcontroller/declinepost/'+req.params.pid);
+			}			
+		});
+	}else{
+		var warning = {
+			ccid : req.cookies['uname'],
+			guid : req.params.guid,
+			warningtext : warn
+		}
+		warningUserModel.insert(warning, function(status){
+			res.redirect('/contentcontroller/declinepost/'+req.params.id);
+		});	
+	}
+})
+
+router.get('/banforever/:id/:guid', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		if(req.params.id != null){
+			var action = {
+				ccid : req.cookies['uname'],
+				actiontype: "Ban",
+				text: "Ban general user: "+req.params.guid+" forever."
+			};
+			ccRequestForActionModel.insert(action, function(status){
+				res.redirect('/contentcontroller/declinepost/'+req.params.id);
+			});
+		}
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/banforever/:id/:guid', (req,res)=>{
+
+})
+
 router.get('/announcement', (req, res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){	
 		announcementModel.getByCId(req.cookies['uname'], function(results){
@@ -275,6 +377,32 @@ router.post('/announcement/delete/:id', (req, res)=>{
 	
 })
 
+router.get('/searchannouncement/:data', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		if(req.params.data != null){
+			var data = JSON.parse(req.params.data);
+			if(data.query.length == 0){
+				announcementModel.getAll(function(results){
+					contentControllerModel.getByCId(req.cookies['uname'], function(result){
+						res.json({announcement: results, ccname: result});
+					});
+				});
+			}else{
+				announcementModel.getBySubjectPattern(data.query, function(results){
+					contentControllerModel.getByCId(req.cookies['uname'], function(result){
+						res.json({announcement: results, ccname: result});
+					});
+				});
+			}
+		}
+	}else{
+		res.redirect('/login');
+	}
+})
+router.post('/searchannouncement/:data', (req, res)=>{
+
+})
+
 router.get('/users',(req,res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
 		generalUserModel.getAll(function(results){
@@ -289,33 +417,28 @@ router.post('/users', (req,res)=>{
 
 })
 
-router.get('/analyzeposter/:pid/:guid', (req, res)=>{
+router.get('/searchusers/:data', (req, res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
-		var data = new Array(3);
-		postModel.getPostByGId(req.params.guid, function(results){
-			data[0] = results.length;
-			warningUserModel.getByGId(req.params.guid, function(results){
-				var declined = results.filter(function(result){
-					return result.warningtext == "";
+		if(req.params.data != null){
+			var data = JSON.parse(req.params.data);
+			console.log(data);
+			if(data.query.length == 0){
+				generalUserModel.getAll(function(results){
+					res.json({userlist: results});
 				});
-				data[1] = declined.length;
-				var warned = results.filter(function(result){
-					return result.warningtext.length > 0;
+			}else{
+				generalUserModel.getByNamePattern(data.query, function(results){
+					res.json({userlist: results});
 				});
-				data[2] = warned.length;
-				generalUserModel.getByGIdGeneralUser(req.params.guid, function(result){
-					res.render('ContentController/post/analyzePoster', {clicked: clicker(1), data: data, pid: req.params.pid, user: result[0]});
-				});
-			});
-		});
-		
+			}
+		}
 	}else{
 		res.redirect('/login');
 	}
 })
 
-router.post('/analyzeposter/:pid/:guid', (req, res)=>{
-
+router.post('/searchusers/:data', (req, res)=>{
+	
 })
 
 router.get('/users/report/:guid', (req, res)=>{
@@ -341,6 +464,24 @@ router.get('/users/report/:guid', (req, res)=>{
 	}else{
 		res.redirect('/login');
 	}
+})
+
+router.post('/users/report/:guid', (req, res)=>{
+
+})
+
+router.get('/users/profile/:gid', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		generalUserModel.getByGIdGeneralUser(req.params.gid, function(result){
+			res.render('ContentController/users/profile', {clicked: clicker(3), user: result[0]});
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/user/profile/:gid', (req,res)=>{
+
 })
 
 router.get('/reports', (req, res)=>{
