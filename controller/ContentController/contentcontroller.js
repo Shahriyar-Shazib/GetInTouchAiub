@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const JSDOM = require('jsdom').JSDOM;
 const httpMsgs = require('http-msgs');
+const multer = require('multer');
 const downloadsFolder = require('downloads-folder');
 const { body, check, validationResult } = require('express-validator');
 const generalUserModel = require('../../models/ContentController/generalUserModel');
@@ -16,6 +17,27 @@ const announcementModel = require.main.require('./models/ContentController/annou
 const contentControllerModel = require.main.require('./models/ContentController/contentControllerModel');
 const ccRequestForActionModel = require.main.require('./models/ContentController/ccRequestForActionModel');
 const router = express.Router();
+
+
+const storage = multer.diskStorage({
+	//destination for files
+	destination: function (request, file, callback) {
+	  callback(null, './assets/pictures/');
+	},
+  
+	//add back the extension
+	filename: function (request, file, callback) {
+	  callback(null, Date.now() + file.originalname);
+	},
+  });
+  
+  //upload parameters for multer
+  const upload = multer({
+	storage: storage,
+	limits: {
+	  fieldSize: 1024 * 1024 * 3,
+	},
+  });
 
 function clicker(serial){
 	var clicked = new Array(8);
@@ -501,7 +523,6 @@ router.get('/searchusers/:data', (req, res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
 		if(req.params.data != null){
 			var data = JSON.parse(req.params.data);
-			console.log(data);
 			if(data.query.length == 0){
 				generalUserModel.getAll(function(results){
 					res.json({userlist: results});
@@ -588,7 +609,7 @@ router.get('/profile/update', (req, res)=>{
 	}
 })
 
-router.post('/profile/update', [
+router.post('/profile/update', upload.single('image'), [
 	check('name')
 	.notEmpty()
 	.withMessage("Please provide your name"),
@@ -611,7 +632,8 @@ router.post('/profile/update', [
 		email: req.body.email,
 		gender: req.body.gender,
 		dob: req.body.dob,
-		address: req.body.address
+		address: req.body.address,
+		propicture: req.file.filename
 	};
 
 	const errors = validationResult(req);
@@ -622,6 +644,7 @@ router.post('/profile/update', [
 			user[0].gender = userUpdate.gender;
 			user[0].dob = userUpdate.dob;
 			user[0].address = userUpdate.address;
+			user[0].profilepicture = userUpdate.propicture;
 			contentControllerModel.update(user[0], function(status){
 				var alertOne = "Profile Updated successfully.";
 				res.render('ContentController/profile/update', {clicked: clicker(4), user: user[0], alertOne: alertOne});
@@ -708,7 +731,6 @@ router.get('/reports/usersreports', (req, res)=>{
 			data[1] = blocked.length;
 			warningUserModel.countAllDistinctGId(function(result){
 				var warned = result[0].counter;
-				console.log(warned);
 				data[2] = warned;
 				res.render('ContentController/reports/usersReports', {clicked: clicker(5), data: data});
 			});
