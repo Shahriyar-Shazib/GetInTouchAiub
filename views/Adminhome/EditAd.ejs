@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Insert MAnagement</title>
+	<title>Edit Account</title>
 </head>
 <body>
     <fieldset>
+	<%if(typeof al !='undefined') {%>
+			<%for(var i=0; i< al.length; i++ ){%>	
+			<div style="color:red;">
+			<%=	al[i].msg%>  
+				</div>
+			<%}%>
+			<%}%>
 	<form method="post">
 		
-			<legend>Insert MAnagement</legend>
+			<legend>Edit Admin</legend>
 			<table>
                 <tr>
 					<td>image :</td>

@@ -1,5 +1,6 @@
-const { static } = require('express');
+const { static, urlencoded } = require('express');
 const express 	= require('express');
+const { check, validationResult } = require('express-validator');
 const AdminModel = require.main.require('./models/Admin/adminModel');
 const accContModel = require.main.require('./models/Admin/accContModel');
 const contentcontModel = require.main.require('./models/Admin/contentcontModel');
@@ -29,25 +30,63 @@ router.get('/', (req, res)=>{
 router.get('/AdminList', (req, res)=>{
 	//res.render('Adminhome/ContentContList');
 	AdminModel.getAllAdmin(function(results){
-		res.render('Adminhome/AdminList', {userlist: results});
+		if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+				res.render('Adminhome/AdminList', {userlist: results});
+					
+		}else{
+			res.redirect('/login');
+		}
+		
 	});
    
    })
    router.get('/Adminprofile', (req, res)=>{
-	//res.render('Adminhome/AdminProfile'{user:});
+	
 	   AdminModel.getByIdAdmin(req.cookies['uname'],function(results){
-		   res.render('Adminhome/AdminProfile', {userlist: results});
-		   //console.log(results);
+		if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+			res.render('Adminhome/AdminProfile', {userlist: results});
+				
+	}else{
+		res.redirect('/login');
+	}
+		   
+		   
 	   });
    
    })
    router.get('/editAccount', (req, res)=>{
 	   AdminModel.getByIdAdmin(req.cookies['uname'],function(results){
-		   res.render('Adminhome/EditAd', {userlist: results});
+		if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+			res.render('Adminhome/EditAd', {userlist: results});
+				
+	}else{
+		res.redirect('/login');
+	}
+		   
 	   });
    
    })
-   router.post('/editAccount', (req, res)=>{
+   router.post('/editAccount', [
+
+	
+	
+	check('name','please insert the name')
+	
+	.notEmpty()
+	.withMessage('fild Must be filled up ')
+	.isLength({min:5})
+	.withMessage('Must be contain atleast 5 charecter'),
+	check('email','invalid email')
+	.isEmail()
+	.normalizeEmail(),
+	
+	check('dob','invalid dob')
+	.notEmpty(),
+	check('address','invalid address')
+	.notEmpty(),
+	
+	
+	   ],(req, res)=>{
 	   admin={
 		   adminid: req.body.username,
 		   name:req.body.name,
@@ -56,9 +95,23 @@ router.get('/AdminList', (req, res)=>{
 		   dob: req.body.dob,
 		   address:req.body.address,
 	   }
-	AdminModel.updateAdmin(admin,function(results){
+	   const errors =validationResult(req)
+	   {
+		   if (!errors.isEmpty())
+		   {
+			AdminModel.getByIdAdmin(req.cookies['uname'],function(results){
+			 //return res.status(422).jsonp(errors.array())
+			 const alert =errors.array();
+			 res.render('Adminhome/EditAd',{al:alert,userlist: results})
+			})
+		   }
+		   
+	   }
+	   AdminModel.updateAdmin(admin,function(results){
+		
 		res.redirect('/Adminhome/Adminprofile');
 	});
+	
 
 })
     
@@ -66,7 +119,13 @@ router.get('/AdminList', (req, res)=>{
 router.get('/AccountControllerList', (req, res)=>{
 	
 	accContModel.getAllActiveAccCont(function(results){
-		   res.render('Adminhome/AccContList', {userlist: results});
+		if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+			res.render('Adminhome/AccContList', {userlist: results});
+				
+	}else{
+		res.redirect('/login');
+	}
+		 
 	   });
    
    })
@@ -131,7 +190,13 @@ router.get('/AccountControllerList', (req, res)=>{
    router.get('/ContentControllerList', (req, res)=>{
 	//res.render('Adminhome/ContentContList');
 	contentcontModel.getAllActiveContentCont(function(results){
-		res.render('Adminhome/ContentContList', {userlist: results});
+		if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+			res.render('Adminhome/ContentContList', {userlist: results});
+				
+	}else{
+		res.redirect('/login');
+	}
+		
 	});
    
    })
@@ -208,7 +273,13 @@ router.get('/AccountControllerList', (req, res)=>{
 	router.get('/userlist', (req, res)=>{
  
 		GuserModel.getAllActiveUser(function(results){
-			res.render('Adminhome/UserList', {userlist: results});
+			if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+				res.render('Adminhome/UserList', {userlist: results});
+					
+		}else{
+			res.redirect('/login');
+		}
+			
 		});
 	
 	});
@@ -274,16 +345,26 @@ router.get('/AccountControllerList', (req, res)=>{
 		   id: req.params.id,
 		   userid: req.cookies['uname']
 	   };
-	   
-			  res.render('Adminhome/NotificationAd', users);
+	   if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+		res.render('Adminhome/NotificationAd', users);
 	  
+		}else{
+			res.redirect('/login');
+		}
+			 
 	  })
 
 	  router.get('/Notification', (req, res)=>{
 		//res.render('Adminhome/Mynotification');
 		
 		   AdminModel.MyNotification(req.cookies['uname'],function(results){
-			   res.render('Adminhome/Mynotification', {userlist: results});
+			if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+				res.render('Adminhome/Mynotification', {userlist: results});
+			  
+				}else{
+					res.redirect('/login');
+				}
+			   
 		   });
 	   
 	   })
@@ -294,7 +375,12 @@ router.get('/AccountControllerList', (req, res)=>{
    router.get('/PendingPost', (req, res)=>{
 	//res.render('Adminhome/PendingPostAd');
 	postreqModel.getAllpostreq(function(results){
-		   res.render('Adminhome/PendingPostAd', {userlist: results});
+		if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+			res.render('Adminhome/PendingPostAd', {userlist: results});
+			}else{
+				res.redirect('/login');
+			}
+		   
 	   });
    
    })
@@ -341,7 +427,12 @@ router.get('/AccountControllerList', (req, res)=>{
 
    router.get('/PendingSignup', (req, res)=>{
 	   regreqModel.getAllregreq(function(results){
-		   res.render('Adminhome/PendingSignUpAd', {userlist: results});
+		if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+			res.render('Adminhome/PendingSignUpAd', {userlist: results});
+			}else{
+				res.redirect('/login');
+			}
+		   
 	   });
    
    })
@@ -389,8 +480,12 @@ router.get('/AccountControllerList', (req, res)=>{
 	
 	   post.getAllpostAd(function(results){
 		post.getAllpost(function(result){
-		   
-			res.render('Adminhome/post',{post:results, gpost:result });
+			if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+				res.render('Adminhome/post',{post:results, gpost:result });
+				}else{
+					res.redirect('/login');
+				}
+			
 		});
 	
 	   });
@@ -410,7 +505,53 @@ router.get('/AccountControllerList', (req, res)=>{
 	   });
    
    })
-   router.post('/Insert',(req,res)=>{
+   router.post('/Insert',[
+
+check('username')/*.custom(uname=>{
+	return userModel.getByIdUservalid(uname,function(status){
+		//console.log(status);
+		if(status.length>0){
+			return Promise.reject('Username already taken');
+		}
+	})
+	
+})	*/
+.exists()
+.withMessage('Must exists')
+.isLength({min: 5})
+.withMessage('minimum 5 char long')
+.notEmpty()
+.withMessage('can not be empty'),
+
+check('name','please insert the name')
+
+.exists()
+.notEmpty()
+.withMessage('fild Must be filled up ')
+.isLength({min:5})
+.withMessage('Must be contain atleast 5 charecter'),
+check('email','invalid email')
+.isEmail()
+.normalizeEmail(),
+
+check('dob','invalid dob')
+.notEmpty(),
+check('address','invalid address')
+.notEmpty(),
+
+
+   ],
+   (req,res)=>{
+
+	  const errors =validationResult(req)
+	  {
+		  if (!errors.isEmpty())
+		  {
+			//return res.status(422).jsonp(errors.array())
+			const alert =errors.array();
+			res.render('Adminhome/Insert',{al:alert})
+		  }
+	  }
 	  var user={
 		   img:req.body.img,
 		   name: req.body.name,
@@ -423,7 +564,17 @@ router.get('/AccountControllerList', (req, res)=>{
 		   type: req.body.type,
 		   status: "Active"
 	   }
+	   let isvalid=true;
+	   userModel.getByIdUservalid(req.body.username,function(status){
+		//console.log(status);
+		if(status.length>0){
+			isvalid=false;
+		}
+	})
+	   //if (isvalid){
+
 	   if(req.body.type=="Admin"){
+		   
 		AdminModel.insertAdmin(user,function(results){
 			if (results){
 				userModel.insertUser(user,function(status){
@@ -461,11 +612,22 @@ router.get('/AccountControllerList', (req, res)=>{
 				})
 				}
 			});
-	   }
+	  }
+	/*}
+	else {
+		let msg='Username already in use'
+		res.render('Adminhome/Insert',{al:msg})
+	}*/
    })
-   router.get('/Insert', (req, res)=>{
 
-		   res.render('Adminhome/Insert');
+   router.get('/Insert', (req, res)=>{
+		
+	if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+		res.render('Adminhome/Insert');
+	  
+		}else{
+			res.redirect('/login');
+		};
 	  
    })
    
@@ -475,16 +637,36 @@ router.get('/AccountControllerList', (req, res)=>{
 		accContModel.GetAllblockAC(function(result){
 			contentcontModel.GetAllblockCC(function(resul){
 				//console.log (results,result,resul);
-				res.render('Adminhome/Blocklist',{Gusr:results,AC: result,CC:resul});
+				if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+					res.render('Adminhome/Blocklist',{Gusr:results,AC: result,CC:resul});
+				  
+					}else{
+						res.redirect('/login');
+					};
+				
 			})
 		})
 	})
-	
-	
-	//console.log (GU);
-	//
-	
 
+})
+
+router .get('/Searchblocklist/:id',(req,res)=>{
+	user={
+		key: req.params.id,	
+	}
+	GuserModel.GetAllblockGUbykey(user,function(results){
+		console.log(results)
+		/*accContModel.GetAllblockACbykey(user,function(result){
+			contentcontModel.GetAllblockCCbykey(user,function(resul){
+				console.log (results[0],result[0],resul[0]);
+				
+				res.json({Gusr: results})
+				//res.render('Adminhome/Blocklist',{Gusr:results,AC: result,CC:resul});
+			})
+		})*/
+		res.json({Gusr: results});
+	})
+ 
 })
 
 module.exports = router;

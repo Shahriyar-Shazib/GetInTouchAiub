@@ -12,9 +12,18 @@ module.exports = {
 			}
 		});
 	},
+	getByIdUservalid: function(user,callback){
+		var sql="SELECT * FROM `user` WHERE userid='"+user+"'";
+		
+		//console.log(sql);
+		db.getResults(sql,function (result){
+			callback(result);
+		});
+
+    },
 	
     getByIdUser: function(user,callback){
-		var sql="SELECT * FROM `user` WHERE id='"+user.id+"'";
+		var sql="SELECT * FROM `user` WHERE userid='"+user.id+"'";
 		db.getResults(sql,function (result){
 			callback(result);
 		});

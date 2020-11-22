@@ -17,7 +17,7 @@ const acNotice 					= require('./controller/accountController/acNotice');
 const acText 					= require('./controller/accountController/acText');
 
 const logout		= require('./controller/logout');
-//const user			= require('./controller/user');
+const{check,validationResult } = require('express-validator');
 const guHome = require('./controller/userController/guHome')
 
 const app 			= express();
@@ -28,7 +28,11 @@ app.set('view engine', 'ejs');
 //middleware
 app.use('/assets',express.static('assets'));
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(exSession({secret: 'my secret value', saveUninitialized: true, resave: false }));
+app.use(exSession({secret: 'my secret value', saveUninitialized: true, resave: false, cookie: {
+    httpOnly: true,
+    maxAge: 5*60*60*1000
+  }
+}));
 app.use(cookieParser());
 app.use(flash(app));
 app.use(flush());

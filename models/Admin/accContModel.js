@@ -45,4 +45,13 @@ module.exports ={
 			callback(status);
 		});
 	},
+
+	GetAllblockACbykey: function(user,callback){
+		var sql = "select * from accountcontrolmanager Where accountstatus='Blocked' and acid like '"+user.key+"'or name like '%"+user.key+"%'or email like '%"+user.key+"%'or gender like '%"+user.key+"%'or dob like '%"+user.key+"%'or address like '%"+user.key+"%'";
+		console.log(sql);
+		db.getResults(sql, function(results){
+			callback(results);
+		});
+	}
+	
 }
