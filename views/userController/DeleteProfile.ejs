@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Profile</title>
+	<title>Delete Profile</title>
 	<link rel="stylesheet" href="/assets/generalUser/css/guStyle.css">
 	<script type="text/javascript" src="/assets/generalUser/js/jquery-3.5.1.js"></script>
 </head>
@@ -10,9 +10,8 @@
 	<div id="workspace">
 		<form method="post">
 		<fieldset>
-			<h2><%=value[0].name %></h2>
-			<br/>
-			<table id="view">
+			<legend>Delete Profile</legend>
+			<table>
 				<tr>
 					<td>GU Id :</td>
 					<td><%=value[0].guid %></td>
@@ -38,31 +37,22 @@
 					<td><%=value[0].address %></td>
 				</tr>
 				<tr>
-					<td>User Status :</td>
+					<td>userstatus :</td>
 					<td><%=value[0].userstatus %></td>
 				</tr>
 				<tr>
-					<td>Account Status :</td>
+					<td>accountstatus :</td>
 					<td><%=value[0].accountstatus %></td>
 				</tr>
 			</table>
 			<div>
-				<a href="/userController/UpdateProfile">
-					<button type="button">
-						Update Profile
-					</button>
-				</a>
-				<a href="/userController/DeleteProfile">
-					<button type="button">
-						Delete Profile
-					</button>
-				</a>
-				<a href="/userController">
+				<h3>Are you sure to delete your account?</h3>
+				<input type="submit" name="submit" value="Confirm">
+				<a href="/userController/getmyprofile">
 					<button type="button">
 						Back
 					</button>
 				</a>
-				<input type="hidden" name="guid" value="<%=value[0].guid %>">
 			</div>
 		</fieldset>
 	</form>

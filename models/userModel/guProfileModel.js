@@ -16,5 +16,21 @@ module.exports ={
 			console.log(status);
 			callback(status);
 		});
+	},
+
+	deleteFromGU: function(data , callback){
+		var sql = "DELETE FROM `generaluser` WHERE guid=?";
+		db.execute(sql, [data.guid] ,function(status){
+			console.log(status);
+			callback(status);
+		});
+	},
+
+	deleteFromUser: function(data , callback){
+		var sql = "DELETE FROM `user` WHERE userid=?";
+		db.execute(sql, [data.guid] ,function(status){
+			console.log(status);
+			callback(status);
+		});
 	}
 }

@@ -200,5 +200,48 @@ router.post('/UpdateProfile', (req, res)=>{
 
 })
 
+router.get('/DeleteProfile', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname']
+		};
+		guProfileModel.getMyProfile(data, function(results){
+			res.render('userController/DeleteProfile', {value:results});
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
+router.post('/DeleteProfile', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname']
+		};
+		guProfileModel.deleteFromGU(data, function(status){
+			if(status)
+			{
+				guProfileModel.deleteFromUser(data, function(status){
+					if(status)
+					{
+						res.redirect('/login');
+					}
+					else
+					{
+						res.redirect('/userController/DeleteProfile');
+					}
+				});
+			}
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
+
 
 module.exports = router;
