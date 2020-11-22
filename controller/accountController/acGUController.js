@@ -240,19 +240,47 @@ router.get('/GUApprove/:id', (req, res)=>{
 	}
 })
 
-/*router.get('/searchadmin', (req, res)=>{
+router.get('/searchGU', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){
 		var data = {
 			key : req.query.key
 		};
-		//console.log(data.key);
-		acAdminModel.adminSearch(data, function(results){
-			res.send(results);
+		console.log(data.key);
+		acGUModel.GUSearch(data, function(results){
+			var strign=`<table id="view">
+						<tr>
+							<td>GU ID</td>
+							<td>Name</td>
+							<td>Email</td>
+							<td>Gender</td>
+							<td>Date Of Birth</td>
+							<td>Address</td>
+							<td>Profile Picture</td>
+							<td>User Status</td>
+							<td>Account Status</td>
+						</tr>`;
+			for(i=0; i<results.length ; i++)
+			{
+				strign=strign+"<tr>";
+				strign=strign+"<td>"+results[i].guid+"</td>";
+				strign=strign+"<td>"+results[i].name+"</td>";
+				strign=strign+"<td>"+results[i].email+"</td>";
+				strign=strign+"<td>"+results[i].gender+"</td>";
+				strign=strign+"<td>"+results[i].dob+"</td>";
+				strign=strign+"<td>"+results[i].address+"</td>";
+				strign=strign+"<td>"+results[i].profilepicture+"</td>";
+				strign=strign+"<td>"+results[i].userstatus+"</td>";
+				strign=strign+"<td>"+results[i].accountstatus+"</td>";
+				strign=strign+"</tr>";
+			}
+			strign=strign+`</table>`;
+			console.log(strign);
+			res.status(200).send({ status : strign });
 		});
 	}else{
 		res.redirect('/login');
 	}
 
-})*/
+})
 
 module.exports = router;
