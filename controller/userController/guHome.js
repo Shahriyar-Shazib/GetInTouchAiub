@@ -5,6 +5,8 @@ const guCCModel = require.main.require('./models/userModel/guCCModel');
 const guTextModel = require.main.require('./models/userModel/guTextModel');
 const router 	= express.Router();
 
+//Home
+
 router.get('/', (req, res)=>{
 	
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
@@ -13,6 +15,8 @@ router.get('/', (req, res)=>{
 		res.redirect('/login');
 	}
 })
+
+//Notice
 
 router.get('/Notifications', (req, res)=>{
 	
@@ -59,6 +63,8 @@ router.get('/NotificationAC', (req, res)=>{
 
 })
 
+//Text
+
 router.get('/received', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
 		var data = {
@@ -72,6 +78,37 @@ router.get('/received', (req, res)=>{
 		res.redirect('/login');
 	}
 
+})
+
+router.get('/SendText', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/SendText');
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/SendText', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+			var data = {
+			receiverid : req.body.receiverid,
+			text : req.body.text,
+			guid : req.cookies['uname']
+		};
+		guTextModel.sendtext(data , function(status){
+			if(status) 
+			{
+				res.status(200).send({ result : 'Message Sent Successfully!' });
+			}
+			else
+			{
+				res.status(200).send({ result : 'Failed To Sent Message!' });
+			}
+		});
+
+	}else{
+		res.redirect('/login');
+	}
 })
 
 module.exports = router;

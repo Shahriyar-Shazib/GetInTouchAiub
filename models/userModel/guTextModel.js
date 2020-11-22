@@ -8,5 +8,12 @@ module.exports ={
 			console.log(results);
 			callback(results);
 		});
+	},
+	sendtext: function(data , callback){
+		var sql = "INSERT INTO `gutext` VALUES (?,?,?,?)";
+		db.execute(sql, ['', data.guid , data.text , data.receiverid] ,function(status){
+			console.log(status);
+			callback(status);
+		});
 	}
 }
