@@ -13,6 +13,17 @@
                 <h1>Contribution</h1>
                 <hr class="tm-hr-primary tm-hr-primary-post">
             </div>
+            <%if(typeof alertOne != 'undefined'){%>
+                    <div class="alert alert-success" role="alert">
+                        <%= alertOne%> 
+                    </div>
+            <% } %>  
+
+            <%if(typeof alertTwo != 'undefined'){%>
+                <div class="alert alert-danger" role="alert">
+                    <%= alertTwo%> 
+                </div>
+            <% } %>  
             <div class="row tm-row tm-row-post">
                 <div id="container" class="report__container"></div>
                 <script src="https://cdn.anychart.com/js/latest/anychart-bundle.min.js"></script>

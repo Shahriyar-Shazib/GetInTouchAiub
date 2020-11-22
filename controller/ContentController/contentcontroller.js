@@ -3,6 +3,7 @@ const fs = require('fs');
 const JSDOM = require('jsdom').JSDOM;
 const httpMsgs = require('http-msgs');
 const downloadsFolder = require('downloads-folder');
+const { body, check, validationResult } = require('express-validator');
 const generalUserModel = require('../../models/ContentController/generalUserModel');
 const { BADNAME } = require('dns');
 const userModel = require.main.require('./models/ContentController/userModel');
@@ -218,7 +219,15 @@ router.get('/analyzeposter/:pid/:guid', (req, res)=>{
 	}
 })
 
-router.post('/analyzeposter/:pid/:guid', (req, res)=>{
+router.post('/analyzeposter/:pid/:guid', [
+	check('banDays', 'Banning days must be at least 1 day.')
+	.isFloat({min: 1})
+	.optional({nullable: true, checkFalsy: true})
+	,
+	check('blockDays', 'Blocking days must be at least 1 day.')
+	.isFloat({min: 1})
+	.optional({nullable: true, checkFalsy: true})
+], (req, res)=>{
 	var ban = req.body.banDays;
 	var block = req.body.blockDays;
 	var warn = req.body.warning;
@@ -229,45 +238,87 @@ router.post('/analyzeposter/:pid/:guid', (req, res)=>{
 		ccid : req.cookies['uname']
 	};
 
-	if(ban.length > 0){
-		if(block.length > 0){
-			action.actiontype = "Block & Ban";
-			action.text = "Block general user: "+req.params.guid+" for "+block+" days from posting and ban for "+ban+" days.";
-		}else{
-			action.actiontype = "Ban";
-			action.text = "Ban general user: "+req.params.guid+" for "+ban+" days."; 
-		}
-		status = true;
-	}else if(block.length > 0){
-		action.actiontype = "Block";
-		action.text = "Block general user: "+req.params.guid+" for "+ban+" days from posting.";
-		status = true;
-	}
+	const errors = validationResult(req);
+	if(errors.isEmpty()){
 
-	if(status){
-		ccRequestForActionModel.insert(action, function(status){
-			if(warn.length > 0){
-				var warning = {
-					ccid : req.cookies['uname'],
-					guid : req.params.guid,
-					warningtext : warn
-				}
-				warningUserModel.insert(warning, function(status){
-					res.redirect('/contentcontroller/declinepost/'+req.params.pid);
-				});				
+		if(ban.length > 0){
+			if(block.length > 0){
+				action.actiontype = "Block & Ban";
+				action.text = "Block general user: "+req.params.guid+" for "+block+" days from posting and ban for "+ban+" days.";
 			}else{
-				res.redirect('/contentcontroller/declinepost/'+req.params.pid);
-			}			
-		});
-	}else{
-		var warning = {
-			ccid : req.cookies['uname'],
-			guid : req.params.guid,
-			warningtext : warn
+				action.actiontype = "Ban";
+				action.text = "Ban general user: "+req.params.guid+" for "+ban+" days."; 
+			}
+			status = true;
+		}else if(block.length > 0){
+			action.actiontype = "Block";
+			action.text = "Block general user: "+req.params.guid+" for "+ban+" days from posting.";
+			status = true;
 		}
-		warningUserModel.insert(warning, function(status){
-			res.redirect('/contentcontroller/declinepost/'+req.params.id);
-		});	
+
+		if(status){
+			ccRequestForActionModel.insert(action, function(status){
+				if(warn.length > 0){
+					var warning = {
+						ccid : req.cookies['uname'],
+						guid : req.params.guid,
+						warningtext : warn
+					}
+					warningUserModel.insert(warning, function(status){
+						res.redirect('/contentcontroller/declinepost/'+req.params.pid);
+					});				
+				}else{
+					res.redirect('/contentcontroller/declinepost/'+req.params.pid);
+				}			
+			});
+		}else if(warn.length > 0){
+			var warning = {
+				ccid : req.cookies['uname'],
+				guid : req.params.guid,
+				warningtext : warn
+			}
+			warningUserModel.insert(warning, function(status){
+				res.redirect('/contentcontroller/declinepost/'+req.params.pid);
+			});	
+		}else{
+			var alertOne = "Must ban, block or warn to proceed.";
+			var data = new Array(3);
+			postModel.getPostByGId(req.params.guid, function(results){
+				data[0] = results.length;
+				warningUserModel.getByGId(req.params.guid, function(results){
+					var declined = results.filter(function(result){
+						return result.warningtext == "";
+					});
+					data[1] = declined.length;
+					var warned = results.filter(function(result){
+						return result.warningtext.length > 0;
+					});
+					data[2] = warned.length;
+					generalUserModel.getByGIdGeneralUser(req.params.guid, function(result){
+						res.render('ContentController/post/analyzePoster', {clicked: clicker(1), data: data, pid: req.params.pid, user: result[0], alertOne: alertOne});
+					});
+				});
+			});
+		}
+	}else{
+		const alert = errors.array();
+		var data = new Array(3);
+		postModel.getPostByGId(req.params.guid, function(results){
+			data[0] = results.length;
+			warningUserModel.getByGId(req.params.guid, function(results){
+				var declined = results.filter(function(result){
+					return result.warningtext == "";
+				});
+				data[1] = declined.length;
+				var warned = results.filter(function(result){
+					return result.warningtext.length > 0;
+				});
+				data[2] = warned.length;
+				generalUserModel.getByGIdGeneralUser(req.params.guid, function(result){
+					res.render('ContentController/post/analyzePoster', {clicked: clicker(1), data: data, pid: req.params.pid, user: result[0], alert: alert});
+				});
+			});
+		});
 	}
 })
 
@@ -320,22 +371,37 @@ router.get('/announcement/create', (req, res)=>{
 	}
 })
 
-router.post('/announcement/create', (req, res)=>{
+router.post('/announcement/create', [
+	check('subject', 'Insert the announcement subject')
+	.notEmpty()
+	.withMessage('Announcement must have a subject')
+	,
+	check('body', 'Insert the announcement body')
+	.notEmpty()
+	.withMessage('Announcement must have a body')
+], (req, res)=>{
 	var announcement = {
 		ccid: req.cookies['uname'],
 		subject: req.body.subject,
 		body: req.body.body
 	}
-	announcementModel.insert(announcement, function(status){
-		contributionModel.getByCId(req.cookies['uname'], function(result){
-			announcements = parseInt(result[0].announcements);
-			announcements = announcements + 1;
-			result[0].announcements = announcements;
-			contributionModel.update(result[0],function(status){
-				res.redirect('/contentcontroller/announcement');
+	const errors = validationResult(req);
+	if(errors.isEmpty()){
+		announcementModel.insert(announcement, function(status){
+			contributionModel.getByCId(req.cookies['uname'], function(result){
+				announcements = parseInt(result[0].announcements);
+				announcements = announcements + 1;
+				result[0].announcements = announcements;
+				contributionModel.update(result[0],function(status){
+					res.redirect('/contentcontroller/announcement');
+				});
 			});
 		});
-	});
+	}else{
+		const alert = errors.array();
+		res.render('ContentController/announcement/create', {clicked: clicker(2), alert: alert, announcement: announcement});
+	}
+	
 })
 
 router.get('/announcement/update/:id', (req, res)=>{
@@ -350,15 +416,29 @@ router.get('/announcement/update/:id', (req, res)=>{
 	}
 })
 
-router.post('/announcement/update/:id', (req, res)=>{
+router.post('/announcement/update/:id', [
+	check('subject', 'Insert the announcement subject')
+	.notEmpty()
+	.withMessage('Announcement must have a subject')
+	,
+	check('body', 'Insert the announcement body')
+	.notEmpty()
+	.withMessage('Announcement must have a body')
+], (req, res)=>{
 	var announcement = {
 		id: req.params.id,
 		subject: req.body.subject,
 		body: req.body.body
 	}
-	announcementModel.update(announcement, function(status){
-		res.redirect('/contentcontroller/announcement');
-	});
+	const errors = validationResult(req);
+	if(errors.isEmpty()){
+		announcementModel.update(announcement, function(status){
+			res.redirect('/contentcontroller/announcement');
+		});
+	}else{
+		const alert = errors.array();
+		res.render('ContentController/announcement/update', {clicked: clicker(2), announcement: announcement, alert: alert});
+	}
 })
 
 router.get('/announcement/delete/:id', (req, res)=>{
@@ -484,6 +564,124 @@ router.post('/user/profile/:gid', (req,res)=>{
 
 })
 
+router.get('/profile', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		contentControllerModel.getByCId(req.cookies['uname'] , function(result){
+			res.render('ContentController/profile/profile', {clicked: clicker(4), user: result[0]});
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/profile', (req, res)=>{
+
+})
+
+router.get('/profile/update', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		contentControllerModel.getByCId(req.cookies['uname'] , function(result){
+			res.render('ContentController/profile/update', {clicked: clicker(4), user: result[0]});
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/profile/update', [
+	check('name')
+	.notEmpty()
+	.withMessage("Please provide your name"),
+	check('email')
+	.notEmpty()
+	.withMessage("Please provide your email")
+	.trim()
+	.isEmail()
+	.withMessage('Please provide a valid email'),
+	check('dob')
+	.notEmpty()
+	.withMessage("Please provide your date of birth"),
+	check('address')
+	.notEmpty()
+	.withMessage("Please provide your address")
+], (req, res)=>{
+
+	var userUpdate = {
+		name: req.body.name,
+		email: req.body.email,
+		gender: req.body.gender,
+		dob: req.body.dob,
+		address: req.body.address
+	};
+
+	const errors = validationResult(req);
+	if(errors.isEmpty()){
+		contentControllerModel.getByCId(req.cookies['uname'], function(user){
+			user[0].name = userUpdate.name;
+			user[0].email = userUpdate.email;
+			user[0].gender = userUpdate.gender;
+			user[0].dob = userUpdate.dob;
+			user[0].address = userUpdate.address;
+			contentControllerModel.update(user[0], function(status){
+				var alertOne = "Profile Updated successfully.";
+				res.render('ContentController/profile/update', {clicked: clicker(4), user: user[0], alertOne: alertOne});
+			});
+		});
+	}else{
+		const alert = errors.array();
+		res.render('ContentController/profile/update', {clicked: clicker(4), user: userUpdate, alert: alert});
+	}
+})
+
+router.get('/account', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
+		res.render('ContentController/profile/account', {clicked: clicker(4)});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/account', [
+	check('pass')
+	.notEmpty()
+	.withMessage('Please input new password')
+	.isLength({min: 6})
+	.withMessage('Password must be at least 6 character long'),
+	check('confirmpass')
+	.notEmpty()
+	.withMessage('Please re-type the new password'),
+	check('currentpass')
+	.notEmpty()
+	.withMessage('Please input the current password'),
+	body('confirmpass').custom((value, { req }) => {
+		if (value !== req.body.pass) {
+			throw new Error('Password confirmation does not match password');
+		}else{
+			return true;
+		}
+	})
+], (req, res) => {
+	const errors = validationResult(req);
+	if(errors.isEmpty()){
+		userModel.getByUId(req.cookies['uname'], function(result){
+			if(result[0].password == req.body.currentpass){
+				result[0].password = req.body.pass;
+				userModel.updateUser(result[0], function(status){
+					var alertOne = "Password Updated Successfully.";
+					res.render('ContentController/profile/account', {clicked: clicker(4), alertOne: alertOne});
+				});
+			}else{
+				var alertTwo = "Incorrect Password."
+				res.render('ContentController/profile/account', {clicked: clicker(4), alertTwo: alertTwo});
+			}
+		});
+	}else{
+		const alert = errors.array();
+		res.render('ContentController/profile/account', {clicked: clicker(4), alert: alert});
+	}
+	
+});
+
 router.get('/reports', (req, res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
 		res.render('ContentController/reports/reports', {clicked: clicker(5)});
@@ -559,9 +757,13 @@ router.post('/reports/contentsreports', (req, res)=>{
 				var dn = Date.now();
 				chartPDF(data,"ContentReport", dn, function(status){
 					if(status){
-						req.flash("Success", "PDF of report has been downloded to your Downloads folder.");
+						//req.flash("Success", "PDF of report has been downloded to your Downloads folder.");
+						var alertOne = "PDF of content report has been downloded to your "+downloadsFolder()+" folder.";
+						res.render('ContentController/reports/contentsReports', {clicked: clicker(5), data: data, alertOne: alertOne});
 					}else{
-						req.flash("Error", "Failed to save report");
+						//req.flash("Error", "Failed to save report");
+						var alertTwo = "Failed to save content report";
+						res.render('ContentController/reports/contentsReports', {clicked: clicker(5), data: data, alertTwo: alertTwo});
 					}
 				});
 			});
@@ -606,10 +808,15 @@ router.post('/contribution', (req, res)=>{
 					data[5] = results[0].announcements;
 					var dn = Date.now();
 					chartPDF(data,"Contribution", dn, function(status){
+						var alert= "";
 						if(status){
-							req.flash("Success", "PDF of report has been downloded to your Downloads folder.");
+							//req.flash("Success", "PDF of report has been downloded to your Downloads folder.");
+							var alertOne = "PDF of contribution report has been downloded to your "+downloadsFolder()+" folder.";
+							res.render('ContentController/contribution/contribution', {clicked: clicker(6), data: data, cid: req.cookies['uname'], alert: alert});
 						}else{
-							req.flash("Error", "Failed to save report");
+							//req.flash("Error", "Failed to save report");
+							var alertTwo = "Failed to save contribution report.";
+							res.render('ContentController/contribution/contribution', {clicked: clicker(6), data: data, cid: req.cookies['uname'], alert: alert});
 						}
 					});
 				});

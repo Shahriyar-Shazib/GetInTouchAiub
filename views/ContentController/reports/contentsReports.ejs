@@ -13,6 +13,16 @@
                 <h1>Content Report</h1>
                 <hr class="tm-hr-primary tm-hr-primary-post">
             </div>
+            <%if(typeof alertOne != 'undefined'){%>
+                <div class="alert alert-success" role="alert">
+                    <%= alertOne%> 
+                </div>
+            <% } %>  
+            <%if(typeof alertTwo != 'undefined'){%>
+                <div class="alert alert-danger" role="alert">
+                    <%= alertTwo%> 
+                </div>
+            <% } %>  
             <div class="row tm-row tm-row-post">
                 <h3>Active Posts:</h3><%=data[0]%>
                 <h3>Approved Posts:</h3><%=data[1]%>

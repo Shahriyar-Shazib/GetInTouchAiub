@@ -19,10 +19,17 @@ module.exports = {
 			callback(result);
 		});
 
+	},
+	getByUId: function(userid,callback){
+		var sql="SELECT * FROM `user` WHERE userid=?";
+		db.getResults(sql,[userid],function (result){
+			callback(result);
+		});
+
     },
     updateUser: function(user, callback){
-		var sql="UPDATE `user` SET `userid`=?,`password`=?,`usertype`=?, accountstatus=? WHERE `id`='?";
-		db.execute(sql, [user.userId, user.password, user.type, user.accountstatus, user.id], function(status){
+		var sql="UPDATE `user` SET `userid`=?,`password`=?,`usertype`=?, accountstatus=? WHERE `id`=?";
+		db.execute(sql, [user.userid, user.password, user.usertype, user.accountstatus, user.id], function(status){
 			callback(status);
 		});
     }

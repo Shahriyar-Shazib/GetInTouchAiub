@@ -13,6 +13,19 @@
                 <h1>User Report</h1>
                 <hr class="tm-hr-primary tm-hr-primary-post">
             </div>
+            <%if(typeof alert != 'undefined'){%>
+                <%alert.forEach(function(error){%>
+                    <div class="alert alert-danger" role="alert">
+                        <%= error.msg %> 
+                    </div>
+                <% }) %>
+            <% } %> 
+
+            <%if(typeof alertOne != 'undefined'){%>
+                <div class="alert alert-danger" role="alert">
+                    <%= alertOne%> 
+                </div>
+            <% } %>  
             <div class="row tm-row tm-row-post">
                 <h3>Name:</h3><%=user.name%>
             </div>
@@ -47,21 +60,34 @@
                 <div class="row tm-row tm-mt-100 tm-mb-75">
                 
                     <a href="" id="banFor" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20 disabled request__btn__decline">Ban For</a>    
-                    <input class="form-control tm-search-input ban__days" id="banDays" name="banDays" type="number" value="" placeholder="days..">     
+                    <input class="form-control tm-search-input ban__days" id="banDays" name="banDays" type="number"  placeholder="days..">     
 
             
                     <a href="" id="blockFor" name="blockFor"  class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20 disabled request__btn__decline">Block From Posting</a>    
-                    <input class="form-control tm-search-input ban__days" id="blockDays" name="blockDays" type="number" value="" placeholder="days..">     
+                    <input class="form-control tm-search-input ban__days" id="blockDays" name="blockDays" type="number"  placeholder="days..">     
 
             
                     <a href="" id="warn" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20 disabled request__btn__decline">Warn</a>    
-                    <textarea class="form-control tm-search-input tm-search-input-body" id="warning" name="warning" type="textarea" value="" placeholder="Warning Text..."></textarea>
+                    <textarea class="form-control tm-search-input tm-search-input-body" id="warning" name="warning" type="textarea"  placeholder="Warning Text..."></textarea>
                 
                     <input type="submit" name="submit" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20 request__btn__report" value="Proceed">
 
                 
                 </div> 
             </form>
+            <%if(typeof alert != 'undefined'){%>
+                <%alert.forEach(function(error){%>
+                    <div class="alert alert-danger" role="alert">
+                        <%= error.msg %> 
+                    </div>
+                <% }) %>
+            <% } %> 
+
+            <%if(typeof alertOne != 'undefined'){%>
+                <div class="alert alert-danger" role="alert">
+                    <%= alertOne%> 
+                </div>
+            <% } %>  
             <footer class="row tm-row">
                 <hr class="col-12">             
             </footer>

@@ -11,20 +11,30 @@
         <main class="tm-main">       
             <div class="row tm-row announcement__header">
                 <h1>Edit Announcement</h1>
+                <hr class="tm-hr-primary tm-hr-primary-post">
             </div>
+
+            <%if(typeof alert != 'undefined'){%>
+                <%alert.forEach(function(error){%>
+                    <div class="alert alert-danger" role="alert">
+                        <%= error.msg %> 
+                    </div>
+                <% }) %>
+            <% } %>  
+
             <form method="post">
                 <div class="row tm-row tm-row-post">
-                    <hr class="tm-hr-primary tm-hr-primary-post">
                     <h3>Subject</h3>
-                    <input class="form-control tm-search-input" name="subject" type="text" value="<%= announcement.subject%>">
+                    <input class="form-control tm-search-input" name="subject" type="text" value="<%if(typeof announcement != 'undefined'){%><%=announcement.subject%><%}%>">
                     <div class="row tm-row tm-row-post"><pre> </pre></div>  
                     
                     <h3>Body</h3>
-                    <textarea class="form-control tm-search-input tm-search-input-body" name="body" type="textarea"><%= announcement.body%></textarea>
+                    <textarea class="form-control tm-search-input tm-search-input-body" name="body" type="textarea"><%if(typeof announcement != 'undefined'){%><%=announcement.body%><%}%></textarea>
                 </div>
                 <div class="row tm-row tm-mt-100 tm-mb-75">
                     <div class="tm-prev-next-wrapper">
                         <input type="submit" name="submit" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20 announcement__btn__update" value="Update">
+                        <a href="/contentcontroller/announcement" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20">Back</a>
                     </div>               
                 </div>    
             </form>  
