@@ -29,6 +29,13 @@ module.exports = {
 			callback(results);
 		});
 	},
+	getAllpostbyKey: function( data,callback){
+		var sql = "SELECT * FROM `gupost` where guid like '"+data+"' or text like '"+data+"'";
+		db.getResults(sql, function(results){
+			
+			callback(results);
+		});
+	},
     /*getAllpostreq: function(callback){
 		var sql = "SELECT * FROM `gupostrequest`";
 		db.getResults(sql, function(results){

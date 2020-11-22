@@ -159,5 +159,89 @@ router.get('/getmyprofile', (req, res)=>{
 
 })
 
+router.get('/UpdateProfile', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname']
+		};
+		guProfileModel.getMyProfile(data, function(results){
+			res.render('userController/UpdateProfile', {value:results});
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
+router.post('/UpdateProfile', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname'],
+			name : req.body.name,
+			email : req.body.email,
+			dob : req.body.dob,
+			address : req.body.address
+		};
+		guProfileModel.updateMyProfile(data, function(status){
+			if(status)
+			{
+				res.status(200).send({ result : 'Profile updated Successfully!' });
+			}
+			else
+			{
+				res.status(200).send({ result : 'Failed to update profile!' });
+			}
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
+router.get('/DeleteProfile', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname']
+		};
+		guProfileModel.getMyProfile(data, function(results){
+			res.render('userController/DeleteProfile', {value:results});
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
+router.post('/DeleteProfile', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname']
+		};
+		guProfileModel.deleteFromGU(data, function(status){
+			if(status)
+			{
+				guProfileModel.deleteFromUser(data, function(status){
+					if(status)
+					{
+						res.redirect('/login');
+					}
+					else
+					{
+						res.redirect('/userController/DeleteProfile');
+					}
+				});
+			}
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
+
 
 module.exports = router;
