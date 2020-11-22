@@ -3,6 +3,7 @@ const guAdminModel = require.main.require('./models/userModel/guAdminModel');
 const guACModel = require.main.require('./models/userModel/guACModel');
 const guCCModel = require.main.require('./models/userModel/guCCModel');
 const guTextModel = require.main.require('./models/userModel/guTextModel');
+const guRegistrationModel = require.main.require('./models/userModel/guRegistrationModel');
 const router 	= express.Router();
 
 //Home
@@ -109,6 +110,35 @@ router.post('/SendText', (req, res)=>{
 	}else{
 		res.redirect('/login');
 	}
+})
+
+//registration
+
+router.get('/registrationform' , (req, res)=>{
+	res.render('userController/registrationForm');
+})
+
+router.post('/registrationrequest' , (req, res)=>{
+	var data = {
+		guid : req.body.guid,
+		name : req.body.name,
+		email : req.body.email,
+		gender: req.body.gender,
+		dob : req.body.dob,
+		address : req.body.address,
+		userstatus : req.body.userstatus
+	};
+	console.log(data);
+	guRegistrationModel.registrationRequest(data , function(status){
+		if(status)
+		{
+			res.status(200).send({ result : 'Registration request submited Successfully!' });
+		}
+		else
+		{
+			res.status(200).send({ result : 'Failed to submit registration request!' });	
+		}
+	})
 })
 
 module.exports = router;
