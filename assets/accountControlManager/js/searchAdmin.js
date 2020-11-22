@@ -1,7 +1,8 @@
 $(document).ready(function(){
+
 	$('input[type=button]').click(function(){
 		let jsonsend = {
-			"key" : $('input[type=text]').val()
+			"key" : $('#searchkey').val()
 		}
 		$.ajax({
 			url: '/acadmincontroller/searchadmin',
@@ -9,7 +10,7 @@ $(document).ready(function(){
 			dataType:'json',
 			data: jsonsend,
 			success: function(response){
-				$("#searchresult").html(response);
+				$("#searchresult").html(response.status);
 			},
 			error: function(error){
 

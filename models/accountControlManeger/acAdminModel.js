@@ -7,12 +7,12 @@ module.exports ={
 		db.getResults(sql, null, function(results){
 			callback(results);
 		});
-	}/*,
+	},
 	
-	adminSearch: function(data,callback){
-		var sql = "select * from admin where adminid like '% ? %'"
-		db.getResults(sql, [data.key], function(results){
+	adminSearch: function(data , callback){
+		var sql = "SELECT * FROM `admin` WHERE adminid LIKE '%"+data.key+"%' "
+		db.getResults(sql, null, function(results){
 			callback(results);
 		});
-	}*/
+	}
 }
