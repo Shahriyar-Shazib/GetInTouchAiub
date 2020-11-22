@@ -41,5 +41,11 @@ module.exports = {
 		db.getResults(sql, null, function(results){
 			callback(results);
 		});
+	},
+	getBySubjectPattern: function(pattern, callback){
+		var sql = "select * from ccannouncement where subject like '%"+pattern+"%'";
+		db.getResults(sql, null, function(results){
+			callback(results);
+		});
 	}
 };

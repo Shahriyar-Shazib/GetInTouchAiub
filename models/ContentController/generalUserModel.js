@@ -21,5 +21,11 @@ module.exports = {
 		db.getResults(sql, null, function(results){
 			callback(results);
 		});
+	},
+	getByNamePattern: function(pattern, callback){
+		var sql = "select * from generaluser where name like '%"+pattern+"%'";
+		db.getResults(sql, null, function(results){
+			callback(results);
+		});
 	}
 };
