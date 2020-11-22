@@ -1,12 +1,16 @@
 <%- include('../menu.ejs') %>
     <div class="container-fluid">
-        <main class="tm-main">    
+        <main class="tm-main">  
+            <div class="form-inline tm-mb-80 tm-search-form">                
+                <input id="query-userList" class="form-control tm-search-input" name="query-userList" type="text" placeholder="Search by Name..."  aria-label="Search">
+            </div>
             <div class="row tm-row">
                 <h1>General Users</h1>
+                
                 <hr class="tm-hr-primary tm-hr-primary-post">
-            </div>      
+            </div>       
             <div class="row tm-row tm-row-post">
-                <div>
+                <div id="update-user-list">
                       <table class="table table-custom">
                         <thead class="thead-light">
                           <tr>
@@ -17,19 +21,21 @@
                           </tr>
                         </thead>
                         <tbody>
-                            <% for(var i=0; i< userlist.length; i++ ){ %>
-                                <tr>
-                                    <td><%= userlist[i].guid %></td>
-                                    <td><%= userlist[i].name %></td>
-                                    <td><%= userlist[i].email %></td>
-                                    <td>
-                                        <div class="tm-prev-next-wrapper d-inline">
-                                            <a href="/contentcontroller/users/profile/<%=userlist[i].guid%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20">Profile</a>
-                                            <a href="/contentcontroller/users/report/<%=userlist[i].guid%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next">Report</a>
-                                        </div> 
-                                    </td>
-                                </tr>
-                            <% } %>
+                            <!--<div id="update-user-list">-->
+                                <% for(var i=0; i< userlist.length; i++ ){ %>
+                                    <tr>
+                                        <td><%= userlist[i].guid %></td>
+                                        <td><%= userlist[i].name %></td>
+                                        <td><%= userlist[i].email %></td>
+                                        <td>
+                                            <div class="tm-prev-next-wrapper d-inline">
+                                                <a href="/contentcontroller/users/profile/<%=userlist[i].guid%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20">Profile</a>
+                                                <a href="/contentcontroller/users/report/<%=userlist[i].guid%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next">Report</a>
+                                            </div> 
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            <!--</div>-->
                         </tbody>
                       </table>
                 </div>   
@@ -42,3 +48,4 @@
             </footer>
         </main>
     </div>
+    <script src="/assets/js/templatemo-script.js"></script>
