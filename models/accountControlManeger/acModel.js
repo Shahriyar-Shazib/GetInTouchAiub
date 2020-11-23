@@ -16,5 +16,13 @@ module.exports ={
 			console.log(status);
 			callback(status);
 		});
+	},
+
+	deactivateMyProfile: function(data , callback){
+		var sql = "UPDATE `accountcontrolmanager` SET `accountstatus`=? WHERE acid=?";
+		db.execute(sql, ['Deactivated' , data.acid] ,function(status){
+			console.log(status);
+			callback(status);
+		});
 	}
 }
