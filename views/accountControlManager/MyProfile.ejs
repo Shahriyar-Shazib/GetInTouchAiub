@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Profile</title>
+	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
+	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
+</head>
+<body>
+	<%- include('acNavBar') %>
+	<div id="workspace">
+		<form method="post">
+		<fieldset>
+			<h2><%=user[0].name %></h2>
+			<br/>
+			<table id="view">
+				<tr>
+					<td>AC Id :</td>
+					<td><%=user[0].acid %></td>
+				</tr>
+				<tr>
+					<td>Name :</td>
+					<td><%=user[0].name %></td>
+				</tr>
+				<tr>
+					<td>Email :</td>
+					<td><%=user[0].email %></td>
+				</tr>
+				<tr>
+					<td>Gender :</td>
+					<td><%=user[0].gender %></td>
+				</tr>
+				<tr>
+					<td>Date Of Birth :</td>
+					<td><%=user[0].dob %></td>
+				</tr>
+				<tr>
+					<td>Address :</td>
+					<td><%=user[0].address %></td>
+				</tr>
+				<tr>
+					<td>accountstatus :</td>
+					<td><%=user[0].accountstatus %></td>
+				</tr>
+			</table>
+			<div>
+				
+				<a href="/acController/UpdateProfile">
+					<button type="button">
+						Update Profile
+					</button>
+				</a>
+				<a href="/acController/DeactivateProfile">
+					<button type="button">
+						Deactivate Profile
+					</button>
+				</a>
+				<a href="/acController/ChangePassword">
+					<button type="button">
+						Change Password
+					</button>
+				</a>
+				<a href="/achome">
+					<button type="button">
+						Back
+					</button>
+				</a>
+				<input type="hidden" name="acid" value="<%=user[0].acid %>">
+			</div>
+		</fieldset>
+	</form>
+	</div>
+</body>
+</html>
