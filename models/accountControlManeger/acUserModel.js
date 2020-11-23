@@ -1,6 +1,14 @@
 const db = require('../db-secure');
 
 module.exports ={
+	getAllUser: function(callback){
+		var sql = "Select * FROM `user`";
+		db.getResults(sql, null , function(results){
+			console.log(results);
+			callback(results);
+		});
+	},
+	
 	CreateUser: function(data , callback){
 		var sql = "insert into user VALUES (?,?,?,?,?)";
 		db.execute(sql, ['',data.guid,data.guid,'General User','Active'], function(status){
