@@ -184,11 +184,11 @@ router.get('/GUApprove/:id', (req, res)=>{
 		var data ={
 			id: req.params.id
 		};
-		console.log("entered");
+		//console.log("entered");
 		acGUModel.getByIdRegistrationRequest(data, function(results){
 			if(results.length==1)
 			{
-				console.log("first query results found");
+				//console.log("first query results found");
 				info ={
 					id :results[0].id,
 					guid: results[0].guid,
@@ -200,15 +200,15 @@ router.get('/GUApprove/:id', (req, res)=>{
 					profilepicture: results[0].profilepicture,
 					userstatus: results[0].userstatus
 				};
-				console.log(info);
+				//console.log(info);
 				acGUModel.CreateGU(info , function(status){
 					if(status)
 					{	
-						console.log("second qury results Success");
+						//console.log("second qury results Success");
 						acUserModel.CreateUser(info,function(status){
 							if(status)
 							{
-								console.log("third query results Success");
+								//console.log("third query results Success");
 								acGUModel.deleteRegistrationRequest(info , function(status){
 									if(status)
 									{
@@ -222,21 +222,21 @@ router.get('/GUApprove/:id', (req, res)=>{
 							}
 							else
 							{
-								console.log("third query results failed1");
+								//console.log("third query results failed1");
 								res.redirect('/acGUController/registrationrequest');
 							}
 						});
 					}
 					else
 					{
-						console.log("second query results failed");
+						//console.log("second query results failed");
 						res.redirect('/acGUController/registrationrequest');
 					}
 				});
 			}
 			else
 			{
-				console.log("first query results failed");
+				//console.log("first query results failed");
 				res.redirect('/acGUController/registrationrequest');
 			}
 		});

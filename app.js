@@ -18,6 +18,7 @@ const acGUController 			= require('./controller/accountController/acGUController
 const acNotice 					= require('./controller/accountController/acNotice');
 const acText 					= require('./controller/accountController/acText');
 const acController 				= require('./controller/accountController/acController');
+const acReportGenerate 			= require('./controller/accountController/acReportGenerate');
 
 const logout		= require('./controller/logout');
 const{check,validationResult } = require('express-validator');
@@ -53,6 +54,7 @@ app.use('/acGUController', acGUController);
 app.use('/acNotice', acNotice);
 app.use('/acText', acText);
 app.use('/acController',acController);
+app.use('/acReportGenerate',acReportGenerate);
 
 app.use('/userController', guHome);
 
