@@ -17,11 +17,13 @@ router.get('/CreateText', (req, res)=>{
 })
 
 router.post('/CreateText' , [
+
 		check('receiverid','Can not be empty')
 			.notEmpty()
 		,
 		check('text','Can not be empty')
 			.notEmpty()
+	
 	] , (req, res)=>{
 
 	const errors = validationResult(req);
