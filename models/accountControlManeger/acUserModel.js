@@ -55,12 +55,4 @@ module.exports ={
 			callback(status);
 		});
 	}
-
-	
-	/*CCSearch: function(data,callback){
-		var sql = "select * from contentcontrolmanager where ccid like '% ? %'"
-		db.getResults(sql, [data.key], function(results){
-			callback(results);
-		});
-	}*/
 }
