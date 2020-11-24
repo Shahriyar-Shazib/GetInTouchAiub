@@ -1,4 +1,7 @@
+//requir express to use route
 const express 	= require('express');
+const router 	= express.Router();
+//requir general user models
 const guAdminModel = require.main.require('./models/userModel/guAdminModel');
 const guACModel = require.main.require('./models/userModel/guACModel');
 const guCCModel = require.main.require('./models/userModel/guCCModel');
@@ -7,9 +10,12 @@ const guRegistrationModel = require.main.require('./models/userModel/guRegistrat
 const guProfileModel = require.main.require('./models/userModel/guProfileModel');
 const guPostModel = require.main.require('./models/userModel/guPostModel');
 const guModel = require.main.require('./models/userModel/guModel');
-const router 	= express.Router();
+//for PDF report generate
 const PDFDocument	= require('pdfkit');
 const fs 			= require('fs');
+//for validation
+const bodyParser 	= require('body-parser');
+const{ check , validationResult } = require('express-validator');
 
 //Home
 
@@ -178,25 +184,59 @@ router.get('/UpdateProfile', (req, res)=>{
 
 })
 
-router.post('/UpdateProfile', (req, res)=>{
+router.post('/UpdateProfile', [
+		check('name')
+			.notEmpty().withMessage('Name field can not be empty')
+			.isLength({ min: 4 }).withMessage('Minimumm length must need to be 4')
+		,
+		check('email')
+			.notEmpty().withMessage('Email field can not be empty')
+			.isEmail().withMessage('Must need to be a valid email example@example.com')
+		,
+		check('dob')
+			.notEmpty().withMessage('Email field can not be empty')
+			.isDate().withMessage('Must need to be YYYY-MM-DD')
+		,
+		check('address')
+			.notEmpty().withMessage('Can not be empty')
+			.isLength({ min: 7 }).withMessage('Minimumm length must need to be 7')
+
+	] , (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
-		var data = {
-			guid : req.cookies['uname'],
-			name : req.body.name,
-			email : req.body.email,
-			dob : req.body.dob,
-			address : req.body.address
-		};
-		guProfileModel.updateMyProfile(data, function(status){
-			if(status)
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
+			var data = {
+				guid : req.cookies['uname'],
+				name : req.body.name,
+				email : req.body.email,
+				dob : req.body.dob,
+				address : req.body.address
+			};
+			guProfileModel.updateMyProfile(data, function(status){
+				if(status)
+				{
+					res.status(200).send({ result : 'Profile updated Successfully!' });
+				}
+				else
+				{
+					res.status(200).send({ result : 'Failed to update profile!' });
+				}
+			});
+		}
+		else
+		{
+			console.log(errors.array());
+			var earray = errors.array();
+			var errorstrign = ``;
+
+			for(i=0 ; i<earray.length ; i++)
 			{
-				res.status(200).send({ result : 'Profile updated Successfully!' });
+				errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
 			}
-			else
-			{
-				res.status(200).send({ result : 'Failed to update profile!' });
-			}
-		});
+
+			res.status(200).send({ result : errorstrign });
+		}
 
 	}else{
 		res.redirect('/login');
