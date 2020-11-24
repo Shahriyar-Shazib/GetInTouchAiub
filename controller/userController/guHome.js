@@ -100,24 +100,51 @@ router.get('/SendText', (req, res)=>{
 	}
 })
 
-router.post('/SendText', (req, res)=>{
-	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
-			var data = {
-			receiverid : req.body.receiverid,
-			text : req.body.text,
-			guid : req.cookies['uname']
-		};
-		guTextModel.sendtext(data , function(status){
-			if(status) 
-			{
-				res.status(200).send({ result : 'Message Sent Successfully!' });
-			}
-			else
-			{
-				res.status(200).send({ result : 'Failed To Sent Message!' });
-			}
-		});
+router.post('/SendText', [
+		
+		check('receiverid')
+			.notEmpty().withMessage('ReceiverId field can not be empty')
+			.isLength({ min: 4 }).withMessage('Minimumm length must need to be 4')
+		,
+		check('text')
+			.notEmpty().withMessage('Text field can not be empty')
+		
+	] , (req, res)=>{
 
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
+			var data = {
+				receiverid : req.body.receiverid,
+				text : req.body.text,
+				guid : req.cookies['uname']
+			};
+			guTextModel.sendtext(data , function(status){
+				if(status) 
+				{
+					res.status(200).send({ result : 'Message Sent Successfully!' });
+				}
+				else
+				{
+					res.status(200).send({ result : 'Failed To Sent Message!' });
+				}
+			});
+		}
+		else
+		{
+			console.log(errors.array());
+			var earray = errors.array();
+			var errorstrign = ``;
+
+			for(i=0 ; i<earray.length ; i++)
+			{
+				errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
+			}
+
+			res.status(200).send({ result : errorstrign });
+		}
+		
 	}else{
 		res.redirect('/login');
 	}
