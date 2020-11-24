@@ -385,6 +385,7 @@ router.post('/RequestToCheckIdProblem', [
 	}
 })
 
+//All approvel post view, edit & delete
 
 router.get('/MyPostList', (req, res)=>{
 	
@@ -394,6 +395,53 @@ router.get('/MyPostList', (req, res)=>{
 		};
 		guPostModel.myPostList(data, function(results){
 			res.render('userController/MyPostList', {value : results});
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/MyPostDelete/:id', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			id : req.params.id
+		};
+		console.log(data);
+		guPostModel.myPostById(data, function(results){
+			res.render('userController/MyPostDelete', {value : results});
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/MyPostDelete/:id', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			id : req.params.id
+		};
+		console.log(data);
+		guPostModel.myPostDelete(data, function(status){
+			if(status)
+			{
+				var data = {
+					guid : req.cookies['uname']
+				};
+				guPostModel.myPostList(data, function(results){
+					res.render('userController/MyPostList', {value : results});
+				});
+			}
+			else
+			{
+				guPostModel.myPostById(data, function(results){
+					res.render('userController/MyPostDelete', {value : results});
+				});
+			}
+			
 		});
 
 	}else{

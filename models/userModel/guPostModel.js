@@ -36,5 +36,19 @@ module.exports ={
 			console.log(status);
 			callback(status);
 		});
+	},
+	myPostById: function(data , callback){
+		var sql = "select * from gupost where id=?";
+		db.getResults(sql, [data.id] ,function(results){
+			console.log(results);
+			callback(results);
+		});
+	},
+	myPostDelete: function(data , callback){
+		var sql = "DELETE FROM `gupost` WHERE id=?";
+		db.execute(sql, [data.id] ,function(status){
+			console.log(status);
+			callback(status);
+		});
 	}
 }
