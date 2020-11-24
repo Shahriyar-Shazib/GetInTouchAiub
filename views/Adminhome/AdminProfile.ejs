@@ -49,7 +49,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<div class="w3-banner-grids">
 			<div class="col-md-6 w3-banner-grid-left">
 				<div class="w3-banner-img">
-					<img src="/assets/images/ban661.jpg" alt="img">
+					    <% if(userlist[0].profilepicture != null && userlist[0].profilepicture.length > 0){ %>
+                <img src="/assets/pictures/<%= userlist[0].profilepicture  %> " class="profile-img" alt="<%= userlist[0].name %>">
+            <% }else{ %>
+                <img src="/assets/pictures/no-profile-pic.png" class="profile-img" alt="No profile pic">
+            <% } %>  
 					<h3 class="test"><%= userlist[0].name%></h3>
 					<p class="test" >Admin</p>
 				</div>

@@ -60,5 +60,11 @@ module.exports ={
 			callback(results);
 		});
     },
-	
+	GetAllAC: function(callback){
+		var sql = "select * from accountcontrolmanager";
+		//console.log(sql);
+		db.getResults(sql, function(results){
+			callback(results);
+		});
+    },
 }
