@@ -41,26 +41,60 @@ router.get('/CCEdit/:id', (req, res)=>{
 
 })
 
-router.post('/CCEdit/:id', (req, res)=>{
+router.post('/CCEdit/:id', [
+		check('name')
+			.notEmpty().withMessage('Can not be empty')
+			.isLength({ min: 5 }).withMessage('Minimumm length must need to be 5')
+		,
+		check('email')
+			.notEmpty().withMessage('Can not be empty')
+			.isEmail().withMessage('Must need to be a valid email example@example.com')
+		,
+		check('dob')
+			.notEmpty().withMessage('Can not be empty')
+			.isDate().withMessage('Must need to be YYYY-MM-DD')
+		,
+		check('address')
+			.notEmpty().withMessage('Can not be empty')
+			.isLength({ min: 5 }).withMessage('Minimumm length must need to be 5')
+	] , (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){
-		var data = {
-			id: req.params.id,
-			name: req.body.name,
-			email: req.body.email,
-			dob: req.body.dob,
-			address: req.body.address
-		};
-		acCCModel.UpdateCC(data , function(status){
-			if (status) 
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
+			var data = {
+				id: req.params.id,
+				name: req.body.name,
+				email: req.body.email,
+				dob: req.body.dob,
+				address: req.body.address
+			};
+			acCCModel.UpdateCC(data , function(status){
+				if (status) 
+				{
+					res.redirect('/acCCController/CClist');	
+				}
+				else
+				{
+					res.redirect('/acCCController/CCEdit/'+data.id);
+				}
+				
+			});
+		}
+		else
+		{
+			console.log(errors.array());
+			var em = errors.array();
+			var errormassage = ``;
+
+			for(i=0 ; i<em.length ; i++)
 			{
-				res.redirect('/acCCController/CClist');	
+				errormassage=errormassage+ em[i].param + " : " + em[i].msg +"<br/>"
 			}
-			else
-			{
-				res.redirect('/acCCController/CCEdit/'+data.id);
-			}
-			
-		});
+
+			res.status(200).send({ status : errormassage });
+		}
+	
 	}else{
 		res.redirect('/login');
 	}
@@ -85,12 +119,11 @@ router.post('/CreateCC', [
 		,
 		check('dob')
 			.notEmpty().withMessage('Can not be empty')
-			.isDate().withMessage('Must need to be mm/dd/yyyy')
+			.isDate().withMessage('Must need to be YYYY-MM-DD')
 		,
 		check('address')
 			.notEmpty().withMessage('Can not be empty')
 			.isLength({ min: 5 }).withMessage('Minimumm length must need to be 5')
-
 	] , (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){
 		const errors = validationResult(req);

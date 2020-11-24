@@ -3,8 +3,8 @@ const db = require('../db-secure');
 module.exports ={
 	
 	getAllTextOfGU: function(acid, callback){
-		var sql = "select * from gutext where receiverid=?";
-		db.getResults(sql, [acid] ,function(results){
+		var sql = "select * from gurequestforaction where towhom=?";
+		db.getResults(sql, ['Account Control Manager'] ,function(results){
 			callback(results);
 		});
 	},
