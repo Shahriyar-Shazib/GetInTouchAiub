@@ -200,7 +200,7 @@ router.post('/PostNewContent', [
 							}
 						});
 					}else{
-						res.status(200).send('error');
+						res.status(200).send({ result : 'error!' });
 					}
 				});
 			}
@@ -237,6 +237,104 @@ router.post('/PostNewContent', [
 
 			res.status(200).send({ result : errorstrign });
 		}
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/MyPost', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/MyPost');
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/PendingPostList', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname']
+		};
+		guPostModel.pendingPostList(data, function(results){
+			res.render('userController/PendingPostList', {value : results});
+		});
+		
+	}else{
+		res.redirect('/login');
+	}
+})
+
+
+
+router.get('/RequestToApprove', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/RequestToApprove');
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/RequestToApprove', [
+		
+		check('text')
+			.notEmpty().withMessage('Text field can not be empty')
+		
+	] , (req, res)=>{
+
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
+			var data = {
+				guid : req.cookies['uname'],
+				towhom : "Content Control Manager",
+				actiontype :"Post Apporve",
+				text : req.body.text
+				
+			};
+			guPostModel.requestToApprove(data , function(status){
+				if(status) 
+				{
+					res.status(200).send({ result : 'Request Sent Successfully!' });
+				}
+				else
+				{
+					res.status(200).send({ result : 'Failed To Sent Request!' });
+				}
+			});
+		}
+		else
+		{
+			console.log(errors.array());
+			var earray = errors.array();
+			var errorstrign = ``;
+
+			for(i=0 ; i<earray.length ; i++)
+			{
+				errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
+			}
+
+			res.status(200).send({ result : errorstrign });
+		}
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/MyPostList', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname']
+		};
+		guPostModel.myPostList(data, function(results){
+			res.render('userController/MyPostList', {value : results});
+		});
 
 	}else{
 		res.redirect('/login');

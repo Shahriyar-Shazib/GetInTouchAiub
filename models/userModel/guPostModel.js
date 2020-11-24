@@ -15,5 +15,26 @@ module.exports ={
 			console.log(results);
 			callback(results);
 		});
+	},
+	pendingPostList: function(data , callback){
+		var sql = "select * from gupostrequest where guid=?";
+		db.getResults(sql, [data.guid] ,function(results){
+			console.log(results);
+			callback(results);
+		});
+	},
+	myPostList: function(data , callback){
+		var sql = "select * from gupost where guid=?";
+		db.getResults(sql, [data.guid] ,function(results){
+			console.log(results);
+			callback(results);
+		});
+	},
+	requestToApprove: function(data , callback){
+		var sql = "INSERT INTO `gurequestforaction` VALUES (?,?,?,?,?)";
+		db.execute(sql, ['', data.guid , data.towhom , data.actiontype , data.text] ,function(status){
+			console.log(status);
+			callback(status);
+		});
 	}
 }
