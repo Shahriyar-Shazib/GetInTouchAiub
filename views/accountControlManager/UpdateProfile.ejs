@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Update Profile</title>
+	<link rel="stylesheet" href="/assets/accountControlManager/css/acStyle.css">
+	<script type="text/javascript" src="/assets/accountControlManager/js/jquery-3.5.1.js"></script>
+</head>
+<body>
+	<%- include('acNavBar') %>
+	<div id="workspace">
+		<form method="post">
+		<fieldset>
+			<h2><%=user[0].name %></h2>
+			<br/>
+			<form method='post'>
+				<table id="view">
+					<tr>
+						<td>AC Id :</td>
+						<td><input type='text' id='id' name='id' value='<%=user[0].acid %>' disabled></td>
+					</tr>
+					<tr>
+						<td>Name :</td>
+						<td><input type='text' id='name' name='name' value='<%=user[0].name %>'></td>
+					</tr>
+					<tr>
+						<td>Email :</td>
+						<td><input type='text' id='email' name='email' value='<%=user[0].email %>'></td>
+					</tr>
+					<tr>
+						<td>Date Of Birth :</td>
+						<td><input type='text' id='dob' name='dob' value='<%=user[0].dob %>'></td>
+					</tr>
+					<tr>
+						<td>Address :</td>
+						<td><input type='text' id='address' name='address' value='<%=user[0].address %>'></td>
+					</tr>
+					<tr>
+						<td colspan='2'>
+							<input type="submit" name="update" value="Update Profile">
+							<a href="/acController/getmyinfo">
+								<button type="button">
+									Back
+								</button>
+							</a>
+							<input type="hidden" name="acid" value="<%=user[0].acid %>">
+						</td>
+					</tr>
+				</table>
+			</form>
+		</fieldset>
+	</form>
+	</div>
+</body>
+</html>

@@ -2,6 +2,8 @@ const express 	= require('express');
 const acCCModel = require.main.require('./models/accountControlManeger/acCCModel');
 const acUserModel = require.main.require('./models/accountControlManeger/acUserModel');
 const router 	= express.Router();
+const bodyParser 	= require('body-parser');
+const{ check , validationResult } = require('express-validator');
 
 router.get('/CClist', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){
@@ -65,30 +67,71 @@ router.post('/CCEdit/:id', (req, res)=>{
 
 })
 
-router.post('/CreateCC', (req, res)=>{
+router.post('/CreateCC', [
+		check('ccid')
+			.notEmpty().withMessage('Can not be empty')
+			.isLength({ min: 4 }).withMessage('Minimumm length must need to be 4')
+		,
+		check('name')
+			.notEmpty().withMessage('Can not be empty')
+			.isLength({ min: 5 }).withMessage('Minimumm length must need to be 5')
+		,
+		check('email')
+			.notEmpty().withMessage('Can not be empty')
+			.isEmail().withMessage('Must need to be a valid email example@example.com')
+		,
+		check('gender')
+			.notEmpty().withMessage('Can not be empty')
+		,
+		check('dob')
+			.notEmpty().withMessage('Can not be empty')
+			.isDate().withMessage('Must need to be mm/dd/yyyy')
+		,
+		check('address')
+			.notEmpty().withMessage('Can not be empty')
+			.isLength({ min: 5 }).withMessage('Minimumm length must need to be 5')
+
+	] , (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "Account Control Manager"){
-		var data=
+		const errors = validationResult(req);
+		if(errors.isEmpty())
 		{
-			ccid: req.body.ccid,
-			name: req.body.name,
-			email: req.body.email,
-			gender: req.body.gender,
-			dob: req.body.dob,
-			address: req.body.address
-		};
-		console.log(data);
-		acCCModel.insertCC(data, function(status){
-			if(status)
+			var data=
 			{
-				acUserModel.insertUser(data, function(status){
-					res.status(200).send({ status : 'Content Controller Added!!' });
-				});
+				ccid: req.body.ccid,
+				name: req.body.name,
+				email: req.body.email,
+				gender: req.body.gender,
+				dob: req.body.dob,
+				address: req.body.address
+			};
+			console.log(data);
+			acCCModel.insertCC(data, function(status){
+				if(status)
+				{
+					acUserModel.insertUser(data, function(status){
+						res.status(200).send({ status : 'Content Controller Added!!' });
+					});
+				}
+				else
+				{
+					res.status(200).send({ status : 'Failed to add content controller!!' });
+				}
+			});
 			}
-			else
+		else
+		{
+			console.log(errors.array());
+			var em = errors.array();
+			var errormassage = ``;
+
+			for(i=0 ; i<em.length ; i++)
 			{
-				res.status(200).send({ status : 'Failed to add content controller!!' });
+				errormassage=errormassage+ em[i].param + " : " + em[i].msg +"<br/>"
 			}
-		});
+
+			res.status(200).send({ status : errormassage });
+		}
 	}else{
 		res.redirect('/login');
 	}

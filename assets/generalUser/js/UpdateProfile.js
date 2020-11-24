@@ -14,7 +14,7 @@ $(document).ready(function(){
 			dataType:'json',
 			data: jsonsend,
 			success: function(response){
-				if(response)
+				if(response.result == "Profile updated Successfully!")
 				{
 					$('#guid').val('');
 					$('#name').val('');
@@ -25,7 +25,7 @@ $(document).ready(function(){
 				}
 				else
 				{
-					$("#result").html('Failed, please try again to send..');
+					$("#result").html(response.result);
 				}
 			},
 			error: function(error){

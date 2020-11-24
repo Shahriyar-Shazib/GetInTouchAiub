@@ -16,7 +16,7 @@ $(document).ready(function(){
 			dataType:'json',
 			data: jsonsend,
 			success: function(response){
-				if(response)
+				if(response.result=="Registration request submited Successfully!")
 				{
 					$('#guid').val('');
 					$('#name').val('');
@@ -28,7 +28,7 @@ $(document).ready(function(){
 				}
 				else
 				{
-					$("#result").html('Failed, please try again to send..');
+					$("#result").html(response.result);
 				}
 				
 

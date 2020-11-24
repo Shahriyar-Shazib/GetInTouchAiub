@@ -1,11 +1,21 @@
+//requir express to use route
 const express 	= require('express');
+const router 	= express.Router();
+//requir general user models
 const guAdminModel = require.main.require('./models/userModel/guAdminModel');
 const guACModel = require.main.require('./models/userModel/guACModel');
 const guCCModel = require.main.require('./models/userModel/guCCModel');
 const guTextModel = require.main.require('./models/userModel/guTextModel');
 const guRegistrationModel = require.main.require('./models/userModel/guRegistrationModel');
 const guProfileModel = require.main.require('./models/userModel/guProfileModel');
-const router 	= express.Router();
+const guPostModel = require.main.require('./models/userModel/guPostModel');
+const guModel = require.main.require('./models/userModel/guModel');
+//for PDF report generate
+const PDFDocument	= require('pdfkit');
+const fs 			= require('fs');
+//for validation
+const bodyParser 	= require('body-parser');
+const{ check , validationResult } = require('express-validator');
 
 //Home
 
@@ -119,27 +129,73 @@ router.get('/registrationform' , (req, res)=>{
 	res.render('userController/registrationForm');
 })
 
-router.post('/registrationrequest' , (req, res)=>{
-	var data = {
-		guid : req.body.guid,
-		name : req.body.name,
-		email : req.body.email,
-		gender: req.body.gender,
-		dob : req.body.dob,
-		address : req.body.address,
-		userstatus : req.body.userstatus
-	};
-	console.log(data);
-	guRegistrationModel.registrationRequest(data , function(status){
-		if(status)
+router.post('/registrationrequest' , [
+		check('guid')
+			.notEmpty().withMessage('Name field can not be empty')
+			.isLength({ min: 4 }).withMessage('Minimumm length must need to be 4')
+		,
+		check('name')
+			.notEmpty().withMessage('Name field can not be empty')
+			.isLength({ min: 7 }).withMessage('Minimumm length must need to be 7')
+		,
+		check('email')
+			.notEmpty().withMessage('Email field can not be empty')
+			.isEmail().withMessage('Must need to be a valid email example@example.com')
+		,
+		check('gender')
+			.notEmpty().withMessage('Gender must need to be selected')
+		,
+		check('dob')
+			.notEmpty().withMessage('DOB field can not be empty')
+			.isDate().withMessage('Must need to be YYYY-MM-DD')
+		,
+		check('address')
+			.notEmpty().withMessage('Address field can not be empty')
+			.isLength({ min: 7 }).withMessage('Minimumm length must need to be 7')
+		,
+		check('userstatus')
+			.notEmpty().withMessage('UserStatus must need to be selected')
+
+	] , (req, res)=>{
+	const errors = validationResult(req);
+	if(errors.isEmpty())
+	{
+
+		var data = {
+			guid : req.body.guid,
+			name : req.body.name,
+			email : req.body.email,
+			gender: req.body.gender,
+			dob : req.body.dob,
+			address : req.body.address,
+			userstatus : req.body.userstatus
+		};
+		console.log(data);
+		guRegistrationModel.registrationRequest(data , function(status){
+			if(status)
+			{
+				res.status(200).send({ result : 'Registration request submited Successfully!' });
+			}
+			else
+			{
+				res.status(200).send({ result : 'Failed to submit registration request!' });	
+			}
+		})
+	}
+	else
+	{
+		console.log(errors.array());
+		var earray = errors.array();
+		var errorstrign = ``;
+
+		for(i=0 ; i<earray.length ; i++)
 		{
-			res.status(200).send({ result : 'Registration request submited Successfully!' });
+			errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
 		}
-		else
-		{
-			res.status(200).send({ result : 'Failed to submit registration request!' });	
-		}
-	})
+
+		res.status(200).send({ result : errorstrign });
+	}
+
 })
 
 //profile
@@ -174,25 +230,59 @@ router.get('/UpdateProfile', (req, res)=>{
 
 })
 
-router.post('/UpdateProfile', (req, res)=>{
+router.post('/UpdateProfile', [
+		check('name')
+			.notEmpty().withMessage('Name field can not be empty')
+			.isLength({ min: 4 }).withMessage('Minimumm length must need to be 4')
+		,
+		check('email')
+			.notEmpty().withMessage('Email field can not be empty')
+			.isEmail().withMessage('Must need to be a valid email example@example.com')
+		,
+		check('dob')
+			.notEmpty().withMessage('Email field can not be empty')
+			.isDate().withMessage('Must need to be YYYY-MM-DD')
+		,
+		check('address')
+			.notEmpty().withMessage('Can not be empty')
+			.isLength({ min: 7 }).withMessage('Minimumm length must need to be 7')
+
+	] , (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
-		var data = {
-			guid : req.cookies['uname'],
-			name : req.body.name,
-			email : req.body.email,
-			dob : req.body.dob,
-			address : req.body.address
-		};
-		guProfileModel.updateMyProfile(data, function(status){
-			if(status)
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
+			var data = {
+				guid : req.cookies['uname'],
+				name : req.body.name,
+				email : req.body.email,
+				dob : req.body.dob,
+				address : req.body.address
+			};
+			guProfileModel.updateMyProfile(data, function(status){
+				if(status)
+				{
+					res.status(200).send({ result : 'Profile updated Successfully!' });
+				}
+				else
+				{
+					res.status(200).send({ result : 'Failed to update profile!' });
+				}
+			});
+		}
+		else
+		{
+			console.log(errors.array());
+			var earray = errors.array();
+			var errorstrign = ``;
+
+			for(i=0 ; i<earray.length ; i++)
 			{
-				res.status(200).send({ result : 'Profile updated Successfully!' });
+				errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
 			}
-			else
-			{
-				res.status(200).send({ result : 'Failed to update profile!' });
-			}
-		});
+
+			res.status(200).send({ result : errorstrign });
+		}
 
 	}else{
 		res.redirect('/login');
@@ -242,6 +332,154 @@ router.post('/DeleteProfile', (req, res)=>{
 
 })
 
+//Post search
 
+router.get('/SearchPost', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/SearchPost');
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/AjaxSearchPost', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			text : req.query.text
+		};
+		console.log(data.text);
+		guPostModel.ajaxSearchPost(data, function(results){
+			var strign=`<table id="view">
+						<tr>
+							<td>GU ID</td>
+							<td>Text</td>
+						</tr>`;
+			for(i=0; i<results.length ; i++)
+			{
+				strign=strign+"<tr>";
+				strign=strign+"<td>"+results[i].guid+"</td>";
+				strign=strign+"<td>"+results[i].text+"</td>";
+				strign=strign+"</tr>";
+			}
+			strign=strign+`</table>`;
+			console.log(strign);
+			res.status(200).send({ result : strign });
+		});
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
+//Other general user search
+
+router.get('/SearchGU', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/SearchGU');
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/AjaxSearchGU', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			text : req.query.text
+		};
+		console.log(data.text);
+		guModel.ajaxSearchGU(data, function(results){
+			var strign=`<table id="view">
+						<tr>
+							<td>GU ID</td>
+							<td>Name</td>
+							<td>Email</td>
+							<td>Gender</td>
+							<td>DOB</td>
+							<td>Address</td>
+							<td>User Status</td>
+						</tr>`;
+			for(i=0; i<results.length ; i++)
+			{
+				strign=strign+"<tr>";
+				strign=strign+"<td>"+results[i].guid+"</td>";
+				strign=strign+"<td>"+results[i].name+"</td>";
+				strign=strign+"<td>"+results[i].email+"</td>";
+				strign=strign+"<td>"+results[i].gender+"</td>";
+				strign=strign+"<td>"+results[i].dob+"</td>";
+				strign=strign+"<td>"+results[i].address+"</td>";
+				strign=strign+"<td>"+results[i].userstatus+"</td>";
+				strign=strign+"</tr>";
+			}
+			strign=strign+`</table>`;
+			console.log(strign);
+			res.status(200).send({ result : strign });
+		});
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
+//report
+
+router.get('/Report', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/Report', {uname : req.cookies['uname']});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/Report', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		// Create a document
+		const doc = new PDFDocument();
+		 
+		var date = new Date();	//date object
+		month = date.getMonth()+1;
+		doc.pipe(fs.createWriteStream("assets/generalUser/reports/"+date.getTime()+"[report].pdf"));
+		doc.fontSize(45);	//set the font size
+		doc.text("Repost : " + date.getDate() + "-" +month+ "-" + date.getFullYear(), 20, 20);
+		doc.text("for - " + req.cookies['uname'] +"[General User]",   20, 80);
+		guTextModel.getAllText(function(results){
+			if(results.length > -1)
+			{
+				totalsendtext = 0;
+				totalreceivetext = 0;
+				total = 0;
+
+				for(i=0 ; i<results.length ; i++)
+				{
+					if(results[i].guid == req.cookies['uname'])
+					{
+						totalsendtext=totalsendtext+1;
+						total=total+1;
+					}
+					if(results[i].receiverid == req.cookies['uname'])
+					{
+						totalreceivetext=totalreceivetext+1;
+						total=total+1;	
+					}
+				}
+				
+				doc.fontSize(15);
+				doc.text("Number of send text to other users = " + totalsendtext , 40, 180);
+				doc.text("Number of received text from other users = " + totalreceivetext , 40, 220);
+				doc.fontSize(30);
+				doc.text("Total number of send and received text = " + total , 20 , 260);
+				doc.end();
+				res.redirect('/userController/Report');
+			}
+			else
+			{
+				res.redirect('/userController/Report');
+			}
+
+	});
+	}else{
+		res.redirect('/login');
+	}
+})
 
 module.exports = router;

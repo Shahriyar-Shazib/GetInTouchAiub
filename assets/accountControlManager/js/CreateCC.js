@@ -9,13 +9,14 @@ $(document).ready(function(){
 			"dob": $('#dob').val(),
 			"address": $('#address').val()
 		}
+		console.log(jsonsend);
 		$.ajax({
 			url: '/acCCController/CreateCC',
 			type: 'POST',
 			dataType:'json',
 			data: jsonsend,
 			success: function(response){
-				if(response)
+				if(response.status == "Content Controller Added!!")
 				{
 					$('#ccid').val('');
 					$('#name').val('');
@@ -27,7 +28,7 @@ $(document).ready(function(){
 				}
 				else
 				{
-					$("#searchresult").html('Failed, please try again to send..');
+					$("#searchresult").html(response.status);
 				}
 				
 
