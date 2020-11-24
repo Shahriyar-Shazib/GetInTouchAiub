@@ -835,11 +835,11 @@ router.post('/contribution', (req, res)=>{
 						if(status){
 							//req.flash("Success", "PDF of report has been downloded to your Downloads folder.");
 							var alertOne = "PDF of contribution report has been downloded to your "+downloadsFolder()+" folder.";
-							res.render('ContentController/contribution/contribution', {clicked: clicker(6), data: data, cid: req.cookies['uname'], alert: alert});
+							res.render('ContentController/contribution/contribution', {clicked: clicker(6), data: data, cid: req.cookies['uname'], alertOne: alertOne});
 						}else{
 							//req.flash("Error", "Failed to save report");
 							var alertTwo = "Failed to save contribution report.";
-							res.render('ContentController/contribution/contribution', {clicked: clicker(6), data: data, cid: req.cookies['uname'], alert: alert});
+							res.render('ContentController/contribution/contribution', {clicked: clicker(6), data: data, cid: req.cookies['uname'], alertTwo: alertTwo});
 						}
 					});
 				});
