@@ -267,7 +267,7 @@ router.get('/PendingPostList', (req, res)=>{
 	}
 })
 
-
+//Request To Approve Post
 
 router.get('/RequestToApprove', (req, res)=>{
 	
@@ -325,6 +325,66 @@ router.post('/RequestToApprove', [
 		res.redirect('/login');
 	}
 })
+
+//Request To Unblock
+
+router.get('/RequestToCheckIdProblem', (req, res)=>{
+	
+	if(req.cookies['uname'] != null){
+		res.render('userController/RequestToCheckIdProblem');
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/RequestToCheckIdProblem', [
+		
+		check('text')
+			.notEmpty().withMessage('Text field can not be empty')
+		
+	] , (req, res)=>{
+
+	if(req.cookies['uname'] != null){
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
+			var data = {
+				guid : req.cookies['uname'],
+				towhom : "Acount Control Manager",
+				actiontype :"Check Id Problem",
+				text : req.body.text
+				
+			};
+			guPostModel.requestToApprove(data , function(status){
+				if(status) 
+				{
+					res.status(200).send({ result : 'Request Sent Successfully!' });
+				}
+				else
+				{
+					res.status(200).send({ result : 'Failed To Sent Request!' });
+				}
+			});
+		}
+		else
+		{
+			console.log(errors.array());
+			var earray = errors.array();
+			var errorstrign = ``;
+
+			for(i=0 ; i<earray.length ; i++)
+			{
+				errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
+			}
+
+			res.status(200).send({ result : errorstrign });
+		}
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
 
 router.get('/MyPostList', (req, res)=>{
 	
