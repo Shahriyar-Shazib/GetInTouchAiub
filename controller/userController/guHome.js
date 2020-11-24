@@ -129,27 +129,73 @@ router.get('/registrationform' , (req, res)=>{
 	res.render('userController/registrationForm');
 })
 
-router.post('/registrationrequest' , (req, res)=>{
-	var data = {
-		guid : req.body.guid,
-		name : req.body.name,
-		email : req.body.email,
-		gender: req.body.gender,
-		dob : req.body.dob,
-		address : req.body.address,
-		userstatus : req.body.userstatus
-	};
-	console.log(data);
-	guRegistrationModel.registrationRequest(data , function(status){
-		if(status)
+router.post('/registrationrequest' , [
+		check('guid')
+			.notEmpty().withMessage('Name field can not be empty')
+			.isLength({ min: 4 }).withMessage('Minimumm length must need to be 4')
+		,
+		check('name')
+			.notEmpty().withMessage('Name field can not be empty')
+			.isLength({ min: 7 }).withMessage('Minimumm length must need to be 7')
+		,
+		check('email')
+			.notEmpty().withMessage('Email field can not be empty')
+			.isEmail().withMessage('Must need to be a valid email example@example.com')
+		,
+		check('gender')
+			.notEmpty().withMessage('Gender must need to be selected')
+		,
+		check('dob')
+			.notEmpty().withMessage('DOB field can not be empty')
+			.isDate().withMessage('Must need to be YYYY-MM-DD')
+		,
+		check('address')
+			.notEmpty().withMessage('Address field can not be empty')
+			.isLength({ min: 7 }).withMessage('Minimumm length must need to be 7')
+		,
+		check('userstatus')
+			.notEmpty().withMessage('UserStatus must need to be selected')
+
+	] , (req, res)=>{
+	const errors = validationResult(req);
+	if(errors.isEmpty())
+	{
+
+		var data = {
+			guid : req.body.guid,
+			name : req.body.name,
+			email : req.body.email,
+			gender: req.body.gender,
+			dob : req.body.dob,
+			address : req.body.address,
+			userstatus : req.body.userstatus
+		};
+		console.log(data);
+		guRegistrationModel.registrationRequest(data , function(status){
+			if(status)
+			{
+				res.status(200).send({ result : 'Registration request submited Successfully!' });
+			}
+			else
+			{
+				res.status(200).send({ result : 'Failed to submit registration request!' });	
+			}
+		})
+	}
+	else
+	{
+		console.log(errors.array());
+		var earray = errors.array();
+		var errorstrign = ``;
+
+		for(i=0 ; i<earray.length ; i++)
 		{
-			res.status(200).send({ result : 'Registration request submited Successfully!' });
+			errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
 		}
-		else
-		{
-			res.status(200).send({ result : 'Failed to submit registration request!' });	
-		}
-	})
+
+		res.status(200).send({ result : errorstrign });
+	}
+
 })
 
 //profile
