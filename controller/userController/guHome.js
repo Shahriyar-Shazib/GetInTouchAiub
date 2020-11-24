@@ -256,7 +256,7 @@ router.get('/SearchPost', (req, res)=>{
 router.get('/AjaxSearchPost', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
 		var data = {
-			text : req.body.text
+			text : req.query.text
 		};
 		console.log(data.text);
 		guPostModel.ajaxSearchPost(data, function(results){
@@ -281,6 +281,8 @@ router.get('/AjaxSearchPost', (req, res)=>{
 	}
 
 })
+
+//report
 
 router.get('/Report', (req, res)=>{
 	
