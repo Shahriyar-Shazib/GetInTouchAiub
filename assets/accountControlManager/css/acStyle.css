@@ -105,3 +105,6 @@ button:hover {
 input[type=reset]:hover {
   background-color: #45a049;
 }
+img {
+  border-radius: 50%;
+}
