@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Post New Content</title>
+	<link rel="stylesheet" href="/assets/generalUser/css/guStyle.css">
+	<script type="text/javascript" src="/assets/generalUser/js/jquery-3.5.1.js"></script>
+	<script type="text/javascript" src="/assets/generalUser/js/PostNewContent.js"></script>
+</head>
+<body>
+	<%- include('guMenu') %>
+	<div id="workspace">
+		<h1 align='center'>Post New Content</h1>
+		<br/>
+		<table id="view">
+			<form method="post" enctype="multipart/form-data">
+			    My Id:<br/>
+			    <input type="text" id="myid" name="myid" value="<%= myid.guid %>" disabled><br/>
+			   	<br/>
+				Text:<br/>
+				<textarea rows="5" cols="80" id="text" name="text"></textarea><br/><br/>
+				<input type="file" id="myfile" name="myfile">
+				<br/>
+				<br/>
+				<br/>
+				<input type="submit" id="post" name="post" value="Post">
+				<input type="reset" id="reset" name="reset">
+				<a href="/userController">
+					<button type="button">
+						Back
+					</button>
+				</a>
+			</form>
+		</table>
+		<br/>
+		<div id="result">
+		<br/>
+		</div>
+	</div>
+</body>
+</html>

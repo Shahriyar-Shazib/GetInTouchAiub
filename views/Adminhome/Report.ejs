@@ -1,0 +1,73 @@
+
+    <%- include('menu.ejs') %>
+    
+        
+   
+    <div class="container-fluid">
+        <main class="tm-main">
+            <div class="row tm-row">
+                <div class="col-12">
+                    <div class="row tm-row announcement__header">
+                        <h1>Reports</h1>
+                        <hr class="tm-hr-primary tm-hr-primary-post"> 
+                    </div>
+                </div>                
+            </div>            
+
+               <canvas id="userrepo" width="400"height="400" style="margin-top:30px">
+          
+          </canvas>
+                
+            </div> 
+       
+
+          <script>
+
+          var ctx = document.getElementById('userrepo');
+        var myChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['General User', 'Account Control manager', 'Content Control Manager', 'Admin', 'Blocked user'],
+                            datasets: [{
+                                label: 'Report of USers',
+                                data: [<%=count.gucount%>, <%=count.account%>,<%= count.cccount%>, <%=count.adcount%>,<%=count.bloccount%>],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)'
+                                    
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)'
+                                    
+                                ],
+                                borderWidth: 5
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                                       
+                      
+          </script> 
+            </div>   
+            <footer class="row tm-row">
+                <hr class="col-12">              
+            </footer>
+        </main>
+    </div>
+</body>
+</html>

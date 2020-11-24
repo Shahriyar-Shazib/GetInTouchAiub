@@ -16,7 +16,9 @@ const fs 			= require('fs');
 //for validation
 const bodyParser 	= require('body-parser');
 const{ check , validationResult } = require('express-validator');
-
+//file upload
+var exSession 	= require('express-session');
+var exUpload 	= require('express-fileupload');
 //Home
 
 router.get('/', (req, res)=>{
@@ -100,22 +102,346 @@ router.get('/SendText', (req, res)=>{
 	}
 })
 
-router.post('/SendText', (req, res)=>{
+router.post('/SendText', [
+		
+		check('receiverid')
+			.notEmpty().withMessage('ReceiverId field can not be empty')
+			.isLength({ min: 4 }).withMessage('Minimumm length must need to be 4')
+		,
+		check('text')
+			.notEmpty().withMessage('Text field can not be empty')
+		
+	] , (req, res)=>{
+
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
 			var data = {
-			receiverid : req.body.receiverid,
-			text : req.body.text,
-			guid : req.cookies['uname']
-		};
-		guTextModel.sendtext(data , function(status){
-			if(status) 
+				receiverid : req.body.receiverid,
+				text : req.body.text,
+				guid : req.cookies['uname']
+			};
+			guTextModel.sendtext(data , function(status){
+				if(status) 
+				{
+					res.status(200).send({ result : 'Message Sent Successfully!' });
+				}
+				else
+				{
+					res.status(200).send({ result : 'Failed To Sent Message!' });
+				}
+			});
+		}
+		else
+		{
+			console.log(errors.array());
+			var earray = errors.array();
+			var errorstrign = ``;
+
+			for(i=0 ; i<earray.length ; i++)
 			{
-				res.status(200).send({ result : 'Message Sent Successfully!' });
+				errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
+			}
+
+			res.status(200).send({ result : errorstrign });
+		}
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+//Post New Content
+
+router.get('/PostNewContent', (req, res)=>{
+	var data = {
+		guid : req.cookies['uname']
+	};
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/PostNewContent' , {myid:data});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/PostNewContent', [
+
+		check('text')
+			.notEmpty().withMessage('Text field can not be empty')
+	] , (req, res)=>{
+
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
+			if(req.files != null)
+			{
+				file = req.files.myfile;
+				console.log(file);
+				date = new Date();
+				file.mv('./assets/generalUser/post/'+date.getTime()+file.name, function(error){
+
+					if(error == null){
+						var data = {
+							guid : req.cookies['uname'],
+							text : req.body.text,
+							file : "./assets/generalUser/post/"+date.getTime()+file.name
+						};
+						console.log(data);
+						guPostModel.postNewContent(data , function(status){
+							if(status) 
+							{
+								res.status(200).send({ result : 'Post request send Successfully!' });
+							}
+							else
+							{
+								res.status(200).send({ result : 'Failed To Sent post request!' });
+							}
+						});
+					}else{
+						res.status(200).send({ result : 'error!' });
+					}
+				});
 			}
 			else
 			{
-				res.status(200).send({ result : 'Failed To Sent Message!' });
+				var data = {
+					guid : req.cookies['uname'],
+					text : req.body.text,
+					file : null
+				};
+				console.log(data);
+				guPostModel.postNewContent(data , function(status){
+					if(status) 
+					{
+						res.status(200).send({ result : 'Post request send Successfully!' });
+					}
+					else
+					{
+						res.status(200).send({ result : 'Failed To Sent post request!' });
+					}
+				});
 			}
+		}
+		else
+		{
+			console.log(errors.array());
+			var earray = errors.array();
+			var errorstrign = ``;
+
+			for(i=0 ; i<earray.length ; i++)
+			{
+				errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
+			}
+
+			res.status(200).send({ result : errorstrign });
+		}
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/MyPost', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/MyPost');
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/PendingPostList', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname']
+		};
+		guPostModel.pendingPostList(data, function(results){
+			res.render('userController/PendingPostList', {value : results});
+		});
+		
+	}else{
+		res.redirect('/login');
+	}
+})
+
+//Request To Approve Post
+
+router.get('/RequestToApprove', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/RequestToApprove');
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/RequestToApprove', [
+		
+		check('text')
+			.notEmpty().withMessage('Text field can not be empty')
+		
+	] , (req, res)=>{
+
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
+			var data = {
+				guid : req.cookies['uname'],
+				towhom : "Content Control Manager",
+				actiontype :"Post Apporve",
+				text : req.body.text
+				
+			};
+			guPostModel.requestToApprove(data , function(status){
+				if(status) 
+				{
+					res.status(200).send({ result : 'Request Sent Successfully!' });
+				}
+				else
+				{
+					res.status(200).send({ result : 'Failed To Sent Request!' });
+				}
+			});
+		}
+		else
+		{
+			console.log(errors.array());
+			var earray = errors.array();
+			var errorstrign = ``;
+
+			for(i=0 ; i<earray.length ; i++)
+			{
+				errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
+			}
+
+			res.status(200).send({ result : errorstrign });
+		}
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+//Request To Unblock
+
+router.get('/RequestToCheckIdProblem', (req, res)=>{
+	
+	if(req.cookies['uname'] != null){
+		res.render('userController/RequestToCheckIdProblem');
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/RequestToCheckIdProblem', [
+		
+		check('text')
+			.notEmpty().withMessage('Text field can not be empty')
+		
+	] , (req, res)=>{
+
+	if(req.cookies['uname'] != null){
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
+			var data = {
+				guid : req.cookies['uname'],
+				towhom : "Acount Control Manager",
+				actiontype :"Check Id Problem",
+				text : req.body.text
+				
+			};
+			guPostModel.requestToApprove(data , function(status){
+				if(status) 
+				{
+					res.status(200).send({ result : 'Request Sent Successfully!' });
+				}
+				else
+				{
+					res.status(200).send({ result : 'Failed To Sent Request!' });
+				}
+			});
+		}
+		else
+		{
+			console.log(errors.array());
+			var earray = errors.array();
+			var errorstrign = ``;
+
+			for(i=0 ; i<earray.length ; i++)
+			{
+				errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
+			}
+
+			res.status(200).send({ result : errorstrign });
+		}
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+//All approvel post view, edit & delete
+
+router.get('/MyPostList', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			guid : req.cookies['uname']
+		};
+		guPostModel.myPostList(data, function(results){
+			res.render('userController/MyPostList', {value : results});
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/MyPostDelete/:id', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			id : req.params.id
+		};
+		console.log(data);
+		guPostModel.myPostById(data, function(results){
+			res.render('userController/MyPostDelete', {value : results});
+		});
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/MyPostDelete/:id', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			id : req.params.id
+		};
+		console.log(data);
+		guPostModel.myPostDelete(data, function(status){
+			if(status)
+			{
+				var data = {
+					guid : req.cookies['uname']
+				};
+				guPostModel.myPostList(data, function(results){
+					res.render('userController/MyPostList', {value : results});
+				});
+			}
+			else
+			{
+				guPostModel.myPostById(data, function(results){
+					res.render('userController/MyPostDelete', {value : results});
+				});
+			}
+			
 		});
 
 	}else{

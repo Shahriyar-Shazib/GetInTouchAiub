@@ -61,5 +61,12 @@ module.exports = {
 		db.execute(sql, function(status){
 			callback(status);
 		});
-	}
+	},
+	getblockuser: function(callback){
+		var sql="SELECT * FROM `user` WHERE accountstatus='Blocked'";
+		db.getResults(sql,function (result){
+			callback(result);
+		});
+
+    },
 };

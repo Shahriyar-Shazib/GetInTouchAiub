@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Request To Check Id Problem</title>
+	<link rel="stylesheet" href="/assets/generalUser/css/guStyle.css">
+	<script type="text/javascript" src="/assets/generalUser/js/jquery-3.5.1.js"></script>
+	<script type="text/javascript" src="/assets/generalUser/js/RequestToCheckIdProblem.js"></script>
+</head>
+<body>
+	<div id="workspace">
+		<h1 align='center'>Request To Check Id Problem</h1>
+		<br/>
+		<table id="view">
+			<form>
+			    To:<br/>
+			    <input type="text" id="towhom" name="towhom" value="Account Control Manager" disabled><br/>
+			   	<br/>
+			   	Action Type:<br/>
+			   	<input type="text" name="actiontype" value="Check Id Problem" disabled>
+				Text:<br/>
+				<textarea rows="5" cols="80" id="text" name="text"></textarea><br/>
+				<input type="button" id="send" name="send" value="Send">
+				<input type="reset" id="reset" name="reset">
+				<a href="/login">
+					<button type="button">
+						Back
+					</button>
+				</a>
+			</form>
+		</table>
+		<br/>
+		<div id="result">
+		<br/>
+		</div>
+	</div>
+</body>
+</html>

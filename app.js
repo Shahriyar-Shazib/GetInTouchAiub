@@ -22,6 +22,7 @@ const acReportGenerate 			= require('./controller/accountController/acReportGene
 
 const logout		= require('./controller/logout');
 const{check,validationResult } = require('express-validator');
+var exUpload 	= require('express-fileupload');
 const guHome = require('./controller/userController/guHome')
 
 const app 			= express();
@@ -30,6 +31,7 @@ const app 			= express();
 app.set('view engine', 'ejs');
 
 //middleware
+app.use(exUpload());
 app.use('/assets',express.static('assets'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(exSession({secret: 'my secret value', saveUninitialized: true, resave: false, cookie: {

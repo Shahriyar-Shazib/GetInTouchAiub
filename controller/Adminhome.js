@@ -1,5 +1,7 @@
 const { static, urlencoded } = require('express');
+const fs = require('fs');
 const express 	= require('express');
+const multer = require('multer');
 const { check, validationResult } = require('express-validator');
 const AdminModel = require.main.require('./models/Admin/adminModel');
 const accContModel = require.main.require('./models/Admin/accContModel');
@@ -10,6 +12,27 @@ const postreqModel = require.main.require('./models/Admin/postReq');
 const regreqModel = require.main.require('./models/Admin/regreqModel');
 const post = require.main.require('./models/Admin/post');
 const router 	= express.Router();
+
+
+const storage = multer.diskStorage({
+	//destination for files
+	destination: function (request, file, callback) {
+	  callback(null, './assets/pictures/');
+	},
+  
+	//add back the extension
+	filename: function (request, file, callback) {
+	  callback(null, Date.now() + file.originalname);
+	},
+  });
+  
+  //upload parameters for multer
+  const upload = multer({
+	storage: storage,
+	limits: {
+	  fieldSize: 1024 * 1024 * 3,
+	},
+  });
 
 router.get('/', (req, res)=>{
 	
@@ -45,6 +68,7 @@ router.get('/AdminList', (req, res)=>{
    router.get('/Adminprofile', (req, res)=>{
 	
 	   AdminModel.getByIdAdmin(req.cookies['uname'],function(results){
+		   //console.log(results)
 		if(req.cookies['uname'] != null && req.session.type=="Admin"){	
 			res.render('Adminhome/AdminProfile', {userlist: results});
 				
@@ -68,7 +92,7 @@ router.get('/AdminList', (req, res)=>{
 	   });
    
    })
-   router.post('/editAccount', [
+   router.post('/editAccount', /* upload.single('image')*/ [
 
 	
 	
@@ -90,6 +114,7 @@ router.get('/AdminList', (req, res)=>{
 	
 	   ],(req, res)=>{
 	   admin={
+		   //img:req.file.filename,
 		   adminid: req.body.username,
 		   name:req.body.name,
 		   email: req.body.email,
@@ -107,13 +132,13 @@ router.get('/AdminList', (req, res)=>{
 			 res.render('Adminhome/EditAd',{al:alert,userlist: results})
 			})
 		   }
-		   
-	   }
-	   AdminModel.updateAdmin(admin,function(results){
+		   else {
+			AdminModel.updateAdmin(admin,function(results){
 		
-		res.redirect('/Adminhome/Adminprofile');
-	});
-	
+				res.redirect('/Adminhome/Adminprofile');
+			});
+		}
+	   }
 
 })
 router .get('/SearchAdminlist/:data',(req,res)=>{
@@ -608,17 +633,9 @@ router .get('/SearchPost/:data',(req,res)=>{
 	   });
    
    })
-   router.post('/Insert',[
+   router.post('/Insert',upload.single('img'),[
 
-check('username')/*.custom(uname=>{
-	return userModel.getByIdUservalid(uname,function(status){
-		//console.log(status);
-		if(status.length>0){
-			return Promise.reject('Username already taken');
-		}
-	})
-	
-})	*/
+check('username')
 .exists()
 .withMessage('Must exists')
 .isLength({min: 5})
@@ -644,7 +661,20 @@ check('address','invalid address')
 
 
    ],
+
    (req,res)=>{
+	var user={
+		img:req.file.filename,
+		name: req.body.name,
+		username: req.body.username,
+		password: "1",
+		email:req.body.email,
+		gender:req.body.gender,
+		dob:req.body.dob,
+		add:req.body.address,
+		type: req.body.type,
+		status: "Active"
+	}
 
 	  const errors =validationResult(req)
 	  {
@@ -655,18 +685,8 @@ check('address','invalid address')
 			res.render('Adminhome/Insert',{al:alert})
 		  }
 	  }
-	  var user={
-		   img:req.body.img,
-		   name: req.body.name,
-		   username: req.body.username,
-		   password: "",
-		   email:req.body.email,
-		   gender:req.body.gender,
-		   dob:req.body.dob,
-		   add:req.body.address,
-		   type: req.body.type,
-		   status: "Active"
-	   }
+	 //console.log (req.body.img)
+	
 	   let isvalid=true;
 	   userModel.getByIdUservalid(req.body.username,function(status){
 		//console.log(status);
@@ -753,23 +773,42 @@ check('address','invalid address')
 
 })
 
-router .get('/Searchblocklist/:id',(req,res)=>{
-	user={
-		key: req.params.id,	
-	}
-	GuserModel.GetAllblockGUbykey(user,function(results){
-		console.log(results)
-		/*accContModel.GetAllblockACbykey(user,function(result){
-			contentcontModel.GetAllblockCCbykey(user,function(resul){
-				console.log (results[0],result[0],resul[0]);
-				
-				res.json({Gusr: results})
-				//res.render('Adminhome/Blocklist',{Gusr:results,AC: result,CC:resul});
+
+router .get('/report',(req,res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Admin"){	
+
+		GuserModel.getallgu(function(gu){
+			accContModel.GetAllAC(function(ac){
+				contentcontModel.GetAllCC(function(cc){
+					AdminModel.getAllAdmin(function(ad){
+						userModel.getblockuser(function (blockuser){
+
+							 count ={
+								gucount:gu.length,
+								account:ac.length,
+								cccount:cc.length,
+								adcount:ad.length,
+								bloccount:blockuser.length
+							}
+							
+							res.render('Adminhome/report',count);
+						})
+
+						
+					})
+					
+
+				})
 			})
-		})*/
-		res.json({Gusr: results});
-	})
- 
+
+		})
+		
+	  
+		}else{
+			res.redirect('/login');
+		};
+
+	
 })
 
 module.exports = router;

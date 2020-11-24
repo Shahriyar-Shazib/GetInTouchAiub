@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pending Post List</title>
+	<link rel="stylesheet" href="/assets/generalUser/css/guStyle.css">
+</head>
+<body>
+	<%- include('guMenu') %>
+	<div id="workspace">
+		<h1 align='center'>Pending Post List</h1>
+		<br/>
+		<table id="view">
+			<tr>
+				<td>Gu ID</td>
+				<td>Text</td>
+				<td>File</td>
+			</tr>
+			<% for(var i=0; i< value.length; i++ ){ %>
+			<tr>
+				<td><%= value[i].guid %></td>
+				<td><%= value[i].text %></td>
+				<td><%= value[i].file %></td>
+			</tr>
+			<% } %>
+		</table>
+		<br/>
+		<a href="/userController/RequestToApprove">
+			<button>
+				Request To Approve
+			</button>
+		</a>
+		<a href="/userController/MyPost">
+			<button>
+				Back
+			</button>
+		</a>
+		<br/>
+		<div id="result">
+		</div>
+	</div>
+</body>
+</html>

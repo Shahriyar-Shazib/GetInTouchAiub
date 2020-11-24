@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Post List</title>
+	<link rel="stylesheet" href="/assets/generalUser/css/guStyle.css">
+</head>
+<body>
+	<%- include('guMenu') %>
+	<div id="workspace">
+		<h1 align='center'>My Post List</h1>
+		<br/>
+		<table id="view">
+			<tr>
+				<td>Gu ID</td>
+				<td>Text</td>
+				<td>File</td>
+				<td>Action</td>
+			</tr>
+			<% for(var i=0; i< value.length; i++ ){ %>
+			<tr>
+				<td><%= value[i].guid %></td>
+				<td><%= value[i].text %></td>
+				<td><%= value[i].file %></td>
+				<td>
+					<a href="/userController/MyPostEdit/<%=value[i].id%>">Edit</a> |
+					<a href="/userController/MyPostDelete/<%=value[i].id%>">Delete</a>
+				</td>
+			</tr>
+			<% } %>
+		</table>
+		<a href="/userController/MyPost">
+			<button>
+				Back
+			</button>
+		</a>
+		<br/>
+		<div id="result">
+		</div>
+	</div>
+</body>
+</html>

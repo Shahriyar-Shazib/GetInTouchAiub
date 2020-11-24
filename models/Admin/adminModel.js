@@ -63,7 +63,7 @@ module.exports ={
 	},
 
 	insertAdmin: function(user, callback){
-		var sql = "insert into admin VALUES ('', '"+user.username+"' , '"+user.name+"' , '"+user.email+"', '"+user.gender+"' , '"+user.dob+"' , '"+user.add+"','')";
+		var sql = "insert into admin VALUES ('', '"+user.username+"' , '"+user.name+"' , '"+user.email+"', '"+user.gender+"' , '"+user.dob+"' , '"+user.add+"','"+user.img+"')";
 		
 		//console.log(sql);
 

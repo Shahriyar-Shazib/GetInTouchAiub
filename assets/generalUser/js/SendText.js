@@ -11,7 +11,7 @@ $(document).ready(function(){
 			dataType:'json',
 			data: jsonsend,
 			success: function(response){
-				if(response)
+				if(response.result=="Message Sent Successfully!")
 				{
 					$('#receiverid').val('');
 					$('#text').val('');
@@ -19,7 +19,7 @@ $(document).ready(function(){
 				}
 				else
 				{
-					$("#result").html('Failed, please try again to send..');
+					$("#result").html(response.result);
 				}
 				
 
