@@ -75,7 +75,7 @@ router.post('/UpdateProfile', [
 							email : req.body.email,
 							dob : req.body.dob,
 							address : req.body.address,
-							profilepicture : "./assets/accountControlManager/profilepicture/"+date.getTime()+file.name
+							profilepicture : "/assets/accountControlManager/profilepicture/"+date.getTime()+file.name
 						};
 						console.log(data);
 						acModel.updateMyInfo(data, function(status){
