@@ -632,19 +632,20 @@ router.post('/profile/update', upload.single('image'), [
 		email: req.body.email,
 		gender: req.body.gender,
 		dob: req.body.dob,
-		address: req.body.address,
-		propicture: req.file.filename
+		address: req.body.address
 	};
 
 	const errors = validationResult(req);
-	if(errors.isEmpty()){
+	if(errors.isEmpty()){		
 		contentControllerModel.getByCId(req.cookies['uname'], function(user){
 			user[0].name = userUpdate.name;
 			user[0].email = userUpdate.email;
 			user[0].gender = userUpdate.gender;
 			user[0].dob = userUpdate.dob;
 			user[0].address = userUpdate.address;
-			user[0].profilepicture = userUpdate.propicture;
+			if(req.file != null){
+				user[0].profilepicture = req.file.filename;			
+			}
 			contentControllerModel.update(user[0], function(status){
 				var alertOne = "Profile Updated successfully.";
 				res.render('ContentController/profile/update', {clicked: clicker(4), user: user[0], alertOne: alertOne});
