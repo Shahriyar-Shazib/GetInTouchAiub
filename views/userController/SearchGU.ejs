@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Search General User</title>
+	<link rel="stylesheet" href="/assets/generalUser/css/guStyle.css">
+	<script type="text/javascript" src="/assets/generalUser/js/jquery-3.5.1.js"></script>
+	<script type="text/javascript" src="/assets/generalUser/js/SearchGU.js"></script>
+</head>
+<body>
+	<%- include('guMenu') %>
+	<div id="workspace">
+		<h1 align='center'>Search Any General User Using ID</h1>
+		<br/>
+		<form>
+			<input type="text" id="text" name="text">
+			<input type="button" name="search" value="Search">
+		</form>
+		<div id="result">
+		</div>
+	</div>
+</body>
+</html>

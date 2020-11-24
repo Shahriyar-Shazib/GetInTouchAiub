@@ -6,9 +6,11 @@ const guTextModel = require.main.require('./models/userModel/guTextModel');
 const guRegistrationModel = require.main.require('./models/userModel/guRegistrationModel');
 const guProfileModel = require.main.require('./models/userModel/guProfileModel');
 const guPostModel = require.main.require('./models/userModel/guPostModel');
+const guModel = require.main.require('./models/userModel/guModel');
 const router 	= express.Router();
 const PDFDocument	= require('pdfkit');
 const fs 			= require('fs');
+
 //Home
 
 router.get('/', (req, res)=>{
@@ -244,7 +246,8 @@ router.post('/DeleteProfile', (req, res)=>{
 
 })
 
-//search
+//Post search
+
 router.get('/SearchPost', (req, res)=>{
 	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
 		res.render('userController/SearchPost');
@@ -270,6 +273,55 @@ router.get('/AjaxSearchPost', (req, res)=>{
 				strign=strign+"<tr>";
 				strign=strign+"<td>"+results[i].guid+"</td>";
 				strign=strign+"<td>"+results[i].text+"</td>";
+				strign=strign+"</tr>";
+			}
+			strign=strign+`</table>`;
+			console.log(strign);
+			res.status(200).send({ result : strign });
+		});
+	}else{
+		res.redirect('/login');
+	}
+
+})
+
+//Other general user search
+
+router.get('/SearchGU', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/SearchGU');
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/AjaxSearchGU', (req, res)=>{
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		var data = {
+			text : req.query.text
+		};
+		console.log(data.text);
+		guModel.ajaxSearchGU(data, function(results){
+			var strign=`<table id="view">
+						<tr>
+							<td>GU ID</td>
+							<td>Name</td>
+							<td>Email</td>
+							<td>Gender</td>
+							<td>DOB</td>
+							<td>Address</td>
+							<td>User Status</td>
+						</tr>`;
+			for(i=0; i<results.length ; i++)
+			{
+				strign=strign+"<tr>";
+				strign=strign+"<td>"+results[i].guid+"</td>";
+				strign=strign+"<td>"+results[i].name+"</td>";
+				strign=strign+"<td>"+results[i].email+"</td>";
+				strign=strign+"<td>"+results[i].gender+"</td>";
+				strign=strign+"<td>"+results[i].dob+"</td>";
+				strign=strign+"<td>"+results[i].address+"</td>";
+				strign=strign+"<td>"+results[i].userstatus+"</td>";
 				strign=strign+"</tr>";
 			}
 			strign=strign+`</table>`;
