@@ -16,7 +16,9 @@ const fs 			= require('fs');
 //for validation
 const bodyParser 	= require('body-parser');
 const{ check , validationResult } = require('express-validator');
-
+//file upload
+var exSession 	= require('express-session');
+var exUpload 	= require('express-fileupload');
 //Home
 
 router.get('/', (req, res)=>{
@@ -144,7 +146,98 @@ router.post('/SendText', [
 
 			res.status(200).send({ result : errorstrign });
 		}
-		
+
+	}else{
+		res.redirect('/login');
+	}
+})
+
+//Post New Content
+
+router.get('/PostNewContent', (req, res)=>{
+	var data = {
+		guid : req.cookies['uname']
+	};
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		res.render('userController/PostNewContent' , {myid:data});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.post('/PostNewContent', [
+
+		check('text')
+			.notEmpty().withMessage('Text field can not be empty')
+	] , (req, res)=>{
+
+	if(req.cookies['uname'] != null && req.cookies['usertype'] == "General User"){
+		const errors = validationResult(req);
+		if(errors.isEmpty())
+		{
+			if(req.files != null)
+			{
+				file = req.files.myfile;
+				console.log(file);
+				date = new Date();
+				file.mv('./assets/generalUser/post/'+date.getTime()+file.name, function(error){
+
+					if(error == null){
+						var data = {
+							guid : req.cookies['uname'],
+							text : req.body.text,
+							file : "./assets/generalUser/post/"+date.getTime()+file.name
+						};
+						console.log(data);
+						guPostModel.postNewContent(data , function(status){
+							if(status) 
+							{
+								res.status(200).send({ result : 'Post request send Successfully!' });
+							}
+							else
+							{
+								res.status(200).send({ result : 'Failed To Sent post request!' });
+							}
+						});
+					}else{
+						res.status(200).send('error');
+					}
+				});
+			}
+			else
+			{
+				var data = {
+					guid : req.cookies['uname'],
+					text : req.body.text,
+					file : null
+				};
+				console.log(data);
+				guPostModel.postNewContent(data , function(status){
+					if(status) 
+					{
+						res.status(200).send({ result : 'Post request send Successfully!' });
+					}
+					else
+					{
+						res.status(200).send({ result : 'Failed To Sent post request!' });
+					}
+				});
+			}
+		}
+		else
+		{
+			console.log(errors.array());
+			var earray = errors.array();
+			var errorstrign = ``;
+
+			for(i=0 ; i<earray.length ; i++)
+			{
+				errorstrign=errorstrign+ earray[i].param + " : " + earray[i].msg +"<br/>"
+			}
+
+			res.status(200).send({ result : errorstrign });
+		}
+
 	}else{
 		res.redirect('/login');
 	}
