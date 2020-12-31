@@ -571,6 +571,27 @@ router.post('/users/report/:guid', (req, res)=>{
 
 })
 
+router.get('/api/users/report/:query', (req, res)=>{
+	var query = JSON.parse(req.params.query);
+	var guid = query.guid;
+
+	var data = new Array(3);
+	postModel.getPostByGId(guid, function(results){
+		data[0] = results.length;
+		warningUserModel.getByGId(guid, function(results){
+			var declined = results.filter(function(result){
+				return result.warningtext == "";
+			});
+			data[1] = declined.length;
+			var warned = results.filter(function(result){
+				return result.warningtext.length > 0;
+			});
+			data[2] = warned.length;
+			res.json(data);
+		});
+	});
+})
+
 router.get('/users/profile/:gid', (req, res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){
 		generalUserModel.getByGIdGeneralUser(req.params.gid, function(result){
