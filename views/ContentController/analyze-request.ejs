@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetInTouchAiub</title>
+</head>
+<body>
+    <%- include('menu.ejs') %>
+    <div class="container-fluid">
+        <main class="tm-main">       
+            <div class="row tm-row announcement__header">
+                <h1>Analyze Request</h1>
+                <hr class="tm-hr-primary tm-hr-primary-post">
+            </div>
+            <div class="row tm-row tm-row-post">
+                <h4>GID:</h4><%=request.gid%>
+            </div>
+            <div class="row tm-row tm-row-post">
+                <h4>Action Type:</h4><%=request.actiontype%>
+            </div>
+            <div class="row tm-row tm-row-post">
+                <h4>Text:</h4><%=request.text%>
+            </div>
+            <div class="row tm-row tm-row-post">
+                <h4>Created At:</h4><%=request.created_at%>
+            </div>
+            <div class="row tm-row tm-row-post">
+                <h4>Votes:</h4><%=votes%> %
+            </div>
+            <div class="row tm-row tm-row-post">
+                <h4>Acceptance Rate:</h4><%=request.accepted%> %
+            </div>
+            <div class="row tm-row tm-row-post">
+               
+                <div id="container" class="report__container"></div>
+                <script src="https://cdn.anychart.com/js/latest/anychart-bundle.min.js"></script>
+                <script type="text/javascript">
+                    anychart.onDocumentLoad(function() {
+                        // create chart and set data
+
+                        var active = "<%=data[0]%>";
+                        var declined = "<%=data[1]%>";
+                        var warned = "<%=data[2]%>";
+                        var chart = anychart.pie([["Active Post", active], ["Declined Post", declined], ["Warnings", warned]]);
+                        // set chart title
+                        chart.title("User Report");
+                        // set chart container and draw
+                        chart.container("container").draw();
+                    });
+                </script>
+            </div>
+            <div class="row tm-row tm-mt-100 tm-mb-75">
+                <a href="/contentcontroller" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20">Back</a>
+                <a href="/contentcontroller/action/vote/<%=request.aid%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20 request__btn__decline">Vote</a>
+                <a href="/contentcontroller/action/veto/<%=request.aid%>" class="mb-2 tm-btn tm-btn-primary tm-prev-next tm-mr-20 request__btn__report">Veto</a> 
+            </div>    
+            <footer class="row tm-row">
+                <hr class="col-12">             
+            </footer>
+            
+        </main>
+    </div>
+</body>
+</html>

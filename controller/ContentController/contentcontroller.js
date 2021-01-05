@@ -1,5 +1,7 @@
 const express = require('express');
 const fs = require('fs');
+const axios = require('axios');
+const needle = require('needle');
 const JSDOM = require('jsdom').JSDOM;
 const httpMsgs = require('http-msgs');
 const multer = require('multer');
@@ -101,17 +103,17 @@ function chartPDF(values,type,dn,callback){
 	});
 }
 
-router.get('/', (req, res)=>{
+// router.get('/', (req, res)=>{
 	
-	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){	
-		postRequestModel.getAll(function(results){
-			//get content controller name
-			res.render('ContentController/index', {clicked: clicker(0), posts: results});
-		});	
-	}else{
-		res.redirect('/login');
-	}
-})
+// 	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){	
+// 		postRequestModel.getAll(function(results){
+// 			//get content controller name
+// 			res.render('ContentController/index', {clicked: clicker(0), posts: results});
+// 		});	
+// 	}else{
+// 		res.redirect('/login');
+// 	}
+// })
 
 router.post('/', (req, res)=>{
 
@@ -571,6 +573,8 @@ router.post('/users/report/:guid', (req, res)=>{
 
 })
 
+//-----------------------------------start final-----------------------------
+
 router.get('/api/users/report/:query', (req, res)=>{
 	var query = JSON.parse(req.params.query);
 	var guid = query.guid;
@@ -591,6 +595,214 @@ router.get('/api/users/report/:query', (req, res)=>{
 		});
 	});
 })
+
+router.post('/api/actions/request/:data', (req, res)=>{
+	var data = JSON.parse(req.params.data);
+	data.votes = [];
+	let rawdata = fs.readFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json');
+	//let rawdata = fs.readFileSync('./assets/json/pending_request.json');
+	let pending_request = JSON.parse(rawdata);
+	var count= Object.keys(pending_request).length;
+	pending_request_update = {...pending_request, [count]: data};
+	let json = JSON.stringify(pending_request_update);
+	fs.writeFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json', json);
+	
+	//fs.writeFileSync('./assets/json/pending_request.json', json);
+	res.sendStatus(200);
+})
+
+router.get('/', (req, res)=>{
+	
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){	
+		//let rawdata = fs.readFileSync('./assets/json/pending_request.json');
+		let rawdata = fs.readFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json');
+		let pending_request = JSON.parse(rawdata);
+		var requestIds = Object.keys(pending_request);
+		var count= requestIds.length;
+		var requests = [];
+		for(var i = 0; i < count-1; i++){
+			var status = true;
+			for(var j =0 ; j < pending_request[i+1].votes.length; j++){
+				if(pending_request[i+1].votes[j][0] == req.cookies['uname']){
+					status = false;
+					break;
+				}
+			}
+			if(status){
+				request = pending_request[i+1];
+				request.aid = i+1;			
+				request.votes = (request.votes.length / 3) * 100;
+				requests.push(request);
+			}
+		}
+		res.render('ContentController/index-second', {clicked: clicker(0), requests: requests});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/action/user/:gid/action/:aid', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){	
+		//let rawdata = fs.readFileSync('./assets/json/pending_request.json');
+		let rawdata = fs.readFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json');
+		let pending_request = JSON.parse(rawdata);
+		var request = pending_request[req.params.aid];
+		request.aid = req.params.aid;
+		var votes = (request.votes.length / 3) * 100;
+		var accepted = request.votes.filter(function(votes){
+			return votes[1] == "1";
+		});
+		request.accepted = (accepted.length / 3) * 100;
+		var data = new Array(3);
+		postModel.getPostByGId(req.params.gid, function(results){
+			data[0] = results.length;
+			warningUserModel.getByGId(req.params.gid, function(results){
+				var declined = results.filter(function(result){
+					return result.warningtext == "";
+				});
+				data[1] = declined.length;
+				var warned = results.filter(function(result){
+					return result.warningtext.length > 0;
+				});
+				data[2] = warned.length;
+				res.render('ContentController/analyze-request', {clicked: clicker(0), request: request, data: data, votes: votes});
+			});
+		});
+	}else{
+		res.redirect('/login');
+	}
+})
+
+function checkRequestForAction(id, res){
+	let rawdata = fs.readFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json');
+	//let rawdata = fs.readFileSync('./assets/json/pending_request.json');
+	var pending_request = JSON.parse(rawdata);
+	var size = (Object.keys(pending_request).length - 1);
+	var aid = parseInt(id);
+	var request = pending_request[aid];
+	var votes = (request.votes.length / 3) * 100;
+	var accepted = request.votes.filter(function(votes){
+		return votes[1] == "1";
+	});
+	accepted = (accepted.length / 3) * 100;
+	if(accepted > 50){
+		if(aid == size){
+			delete pending_request[size];
+			let json = JSON.stringify(pending_request);
+			//fs.writeFileSync('./assets/json/pending_request.json', json);
+			needle.post('http://localhost:8000/api/contentcontroller/action/accepted',{id: request.id},{ json: true },
+				(err, res) => {
+					if (err) {
+						console.error(err);
+					}else{
+						console.log(res.body);
+					}   
+				}
+			);
+			fs.writeFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json', json);
+			res.redirect('/contentcontroller');
+		}else{
+			var i = 0;
+			for(i=aid; i < size; i++){
+				pending_request[i] = pending_request[i+1];
+			}
+			if(i == size){
+				delete pending_request[size];
+				let json = JSON.stringify(pending_request);
+				needle.post('http://localhost:8000/api/contentcontroller/action/accepted',{id: request.id},{ json: true },
+					(err, res) => {
+						if (err) {
+							console.error(err);
+						}else{
+							console.log(res.body);
+						}   
+					}
+				);
+				fs.writeFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json', json);
+				//fs.writeFileSync('./assets/json/pending_request.json', json);
+				res.redirect('/contentcontroller');
+			}
+			
+		}			
+	}else if((accepted < 50 && votes == 100) || (accepted == 0 && votes > 50)){
+		if(aid == size){
+			delete pending_request[size];
+			let json = JSON.stringify(pending_request);
+			fs.writeFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json', json);
+			//fs.writeFileSync('./assets/json/pending_request.json', json);
+			needle.post('http://localhost:8000/api/contentcontroller/action/rejected',{id: request.id},{ json: true },
+				(err, res) => {
+					if (err) {
+						console.error(err);
+					}else{
+						console.log(res.body);
+					}   
+				}
+			);
+			res.redirect('/contentcontroller');
+		}else{
+			var i = 0;
+			for(i=aid; i < size; i++){
+				pending_request[i] = pending_request[i+1];
+			}
+			if(i == size){
+				delete pending_request[size];
+				let json = JSON.stringify(pending_request);
+				fs.writeFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json', json);
+				//fs.writeFileSync('./assets/json/pending_request.json', json);
+				needle.post('http://localhost:8000/api/contentcontroller/action/rejected',{id: request.id},{ json: true },
+					(err, res) => {
+						if (err) {
+							console.error(err);
+						}else{
+							console.log(res.body);
+						}   
+					}
+				);
+				res.redirect('/contentcontroller');
+			}
+		}
+	}else{
+		res.redirect('/contentcontroller');
+	}
+}
+
+router.get('/action/vote/:aid', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){	
+		let rawdata = fs.readFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json');
+		//let rawdata = fs.readFileSync('./assets/json/pending_request.json');
+		let pending_request = JSON.parse(rawdata);
+		var request = pending_request[req.params.aid];
+		request.votes.push([req.cookies['uname'], "1"]);
+		pending_request[req.params.aid] = request;
+		let json = JSON.stringify(pending_request);		
+		fs.writeFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json', json);
+		//fs.writeFileSync('./assets/json/pending_request.json', json);
+		checkRequestForAction(req.params.aid, res);		
+	}else{
+		res.redirect('/login');
+	}
+})
+
+router.get('/action/veto/:aid', (req, res)=>{
+	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){	
+		let rawdata = fs.readFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json');
+		//let rawdata = fs.readFileSync('./assets/json/pending_request.json');
+		let pending_request = JSON.parse(rawdata);
+		var request = pending_request[req.params.aid];
+		request.votes.push([req.cookies['uname'], "0"]);
+		pending_request[req.params.aid] = request;
+		let json = JSON.stringify(pending_request);
+		
+		fs.writeFileSync('/home/al-sany/Study/ATP3/Project/final/pending_request.json', json);
+		//fs.writeFileSync('./assets/json/pending_request.json', json);
+		checkRequestForAction(req.params.aid,res);
+	}else{
+		res.redirect('/login');
+	}
+})
+
+//----------------------------------------end final-------------------------------
 
 router.get('/users/profile/:gid', (req, res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Content Control Manager"){

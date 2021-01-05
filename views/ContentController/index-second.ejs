@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetInTouchAiub</title>
+</head>
+<body>
+    <%- include('menu') %>
+    <div class="container-fluid">
+        <main class="tm-main">
+            <div class="row tm-row">
+                <h1>Pending Action Request</h1>
+                <hr class="tm-hr-primary tm-hr-primary-post">
+            </div>             
+            <div class="row tm-row">
+                <% if(requests.length > 0){%> 
+                    <table class="table table-custom">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Type</th>
+                            <th scope="col">Created At</th>
+                            <th scope="col">Votes</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <% for(var i=0; i< requests.length; i++ ){ %>
+                                <tr>
+                                    <td><%= requests[i].actiontype %></td>
+                                    <td><%= requests[i].created_at %></td>
+                                    <td><%= requests[i].votes %> %</td>
+                                    <td>
+                                        <div class="tm-prev-next-wrapper d-inline">
+                                            <a href="/contentcontroller/action/user/<%=requests[i].gid%>/action/<%=requests[i].aid%>/" class="mb-2 tm-btn tm-btn-primary tm-prev-next">Inspect</a>
+                                        </div> 
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                <% }else{ %>
+                    No request left for you to inspect
+                <% } %> 
+            </div>
+          
+            <footer class="row tm-row">
+                <hr class="col-12">              
+            </footer>
+        </main>
+    </div>
+</body>
+</html>
