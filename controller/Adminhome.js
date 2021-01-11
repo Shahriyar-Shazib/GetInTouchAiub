@@ -3,6 +3,7 @@ const fs = require('fs');
 const express 	= require('express');
 const multer = require('multer');
 const { check, validationResult } = require('express-validator');
+const { count } = require('console');
 const AdminModel = require.main.require('./models/Admin/adminModel');
 const accContModel = require.main.require('./models/Admin/accContModel');
 const contentcontModel = require.main.require('./models/Admin/contentcontModel');
@@ -12,6 +13,8 @@ const postreqModel = require.main.require('./models/Admin/postReq');
 const regreqModel = require.main.require('./models/Admin/regreqModel');
 const post = require.main.require('./models/Admin/post');
 const router 	= express.Router();
+const request = require('request');
+//const fs = require('fs');
 
 
 const storage = multer.diskStorage({
@@ -773,7 +776,7 @@ check('address','invalid address')
 
 })
 
-
+/*
 router .get('/report',(req,res)=>{
 	if(req.cookies['uname'] != null && req.session.type=="Admin"){	
 
@@ -810,5 +813,259 @@ router .get('/report',(req,res)=>{
 
 	
 })
+*/
 
+router .get('/report',(req,res)=>{
+		
+
+		GuserModel.getallgu(function(gu){
+			accContModel.GetAllAC(function(ac){
+				contentcontModel.GetAllCC(function(cc){
+					AdminModel.getAllAdmin(function(ad){
+						userModel.getblockuser(function (blockuser){
+
+							 counts ={
+								gucount:gu.length,
+								account:ac.length,
+								cccount:cc.length,
+								adcount:ad.length,
+								bloccount:blockuser.length
+							}
+							console.log(counts);
+							res.send(counts);//return res(count) ;
+						})
+
+						
+					})
+					
+
+				})
+			})
+
+		})
+			
+})
+router.post('/accontroller',(req,res)=>{
+	console.log(req.body.Acid);
+	const accontroller={
+		'Acid' : req.body.Acid,
+        'name' : req.body.name,
+        'email': req.body.email,
+        'gender': req.body.gender,
+        'dob' :  req.body.dob,
+        'address' : req.body.address,
+        'created_by' :req.body.created_by,
+        'type' :'Account Control Manager',
+        'Voted_by' : [req.body.created_by],
+        'profilepicture' : ''
+	};
+	const data=loadJson('ac.json');
+	
+	data.accontroller.push(accontroller);
+	saveJSON('ac.json',data);
+
+
+res.send(data);
+
+})
+router.post('/cccontroller',(req,res)=>{
+	console.log(req.body.Ccid);
+	const cccontroller={
+		'Ccid' : req.body.Ccid,
+        'name'  : req.body.name,
+        'email'  :req.body.email,
+        'gender'  :req.body.gender,
+        'dob'  :req.body.dob,
+        'address' :req.body.address,
+        'created_by':req.body.created_by,
+        'type' :'Account Control Manager',
+        'Voted_by':[req.body.created_by],
+        'profilepicture' :''
+	};
+	const data=loadJson('cc.json');
+	
+	data.cccontroller.push(cccontroller);
+	saveJSON('cc.json',data);
+
+res.send(data);
+
+
+})
+router.get('/getpending/management',(req,res)=>{
+	const acmanagemant=loadJson('ac.json');
+	const ccmanagement=loadJson('cc.json');
+	const management=[acmanagemant,ccmanagement];
+	res.send(management)
+	//console.log(management);
+
+})
+router.post('/Approveac',(req,res)=>{
+	const data=loadJson('ac.json');
+	for(var i=0; i<data.accontroller.length; i++){
+	
+		if(data.accontroller[i].Acid==req.body.acid)
+		{
+			
+			data.accontroller[i].Voted_by.push(req.body.userid);
+		}	
+	}
+	//saveJSON('ac.json',data);
+	dat=checkValidityinsertAc(req.body.acid,data);
+	
+	res.send(dat);
+
+	
+})
+router.post('/Approvecc',(req,res)=>{
+	const data=loadJson('cc.json');
+	for(var i=0; i<data.cccontroller.length; i++){
+	
+		if(data.cccontroller[i].Ccid==req.body.ccid)
+		{
+			//console.log(data.cccontroller[i].Ccid);
+			data.cccontroller[i].Voted_by.push(req.body.userid);
+			//console.log (data.cccontroller[i].Voted_by[0]);
+		}	
+	}
+	
+	saveJSON('cc.json',data);
+	dat=checkValidityinsertCc(req.body.ccid);
+	// saveJSON('cc.json',dat);
+	//console.log(data.cccontroller[2].Voted_by.length)
+	res.send(dat)
+	
+	
+	
+})
+
+function checkValidityinsertAc(acid,data){
+	
+	var flag=false;
+	//console.log(data);
+	for(var i=0; i<data.accontroller.length; i++){
+	
+		if(data.accontroller[i].Acid==acid)
+		{
+			
+			var user={
+						img:'',
+						name: data.accontroller[i].name,
+						username: data.accontroller[i].Acid,
+						password: "1",
+						email:data.accontroller[i].email,
+						gender:data.accontroller[i].gender,
+						dob:data.accontroller[i].dob,
+						add:data.accontroller[i].address,
+						type: data.accontroller[i].type,
+						status: "Active"
+					}
+							//console.log(user);
+			var votecount=data.accontroller[i].Voted_by.length;
+				AdminModel.getAllAdmin(function(results){
+			
+					var parsentage=((votecount/results.length)*100)
+					console.log(parsentage);
+					if(parsentage>51)
+					{
+						flag=true;
+						//console.log(data.accontroller[1].Acid)
+						accContModel.insertAccCont(user,function(result){
+							if(result){
+									userModel.insertUser(user,function(status){
+										if (status)
+										{
+											console.log('inserted Successfully');
+										}
+									})
+								
+							}
+
+						})
+					}
+				});
+				
+			
+		}
+		if(flag==true){
+					data.accontroller.splice(i, 1);
+				}	
+		console.log(data.accontroller[i]);
+	}
+	saveJSON('ac.json',data);
+	return data;
+}
+function checkValidityinsertCc(ccid){
+	const data=loadJson('cc.json');
+	console.log(data);
+	var flag =false;
+	for(var i=0; i<data.cccontroller.length; i++){
+	
+		if(data.cccontroller[i].Ccid==ccid)
+		{
+			console.log(data.cccontroller[i].Ccid)
+			var user={
+							img:'',
+							name: data.cccontroller[i].name,
+							username: data.cccontroller[i].Ccid,
+							password: "1",
+							email:data.cccontroller[i].email,
+							gender:data.cccontroller[i].gender,
+							dob:data.cccontroller[i].dob,
+							add:data.cccontroller[i].address,
+							type: data.cccontroller[i].type,
+							status: "Active"
+							}
+							
+			var votecount=data.cccontroller[i].Voted_by.length;
+			console.log(votecount);
+				AdminModel.getAllAdmin(function(results){
+			
+					var parsentage=((votecount/results.length)*100)
+					console.log(parsentage);
+					if(parsentage>51)
+					{
+						flag=true;
+						
+						//console.log(data.accontroller[1].Acid)
+						contentcontModel.insertContentCont(user,function(result){
+							if(result){
+								userModel.insertUser(user,function(status){
+								if (status)
+								{
+									console.log('inserted Successfully');
+								}
+							})
+								
+							}
+
+						})
+						//data.accontroller.splice(i, 1);
+						
+					}
+				});
+
+					if (flag) {
+						data.cccontroller.splice(i, 1);
+					}
+		}	
+		
+	}
+	
+	
+		saveJSON('cc.json',data);
+		return data;
+}
+
+function loadJson(filename=''){
+	return JSON.parse(
+		fs.existsSync(filename)
+		? fs.readFileSync(filename).toString()
+		: '""'
+		)
+}
+function saveJSON(filename='',json ='""'){
+	return fs.writeFileSync(
+		filename,JSON.stringify(json)
+		)
+}
 module.exports = router;
